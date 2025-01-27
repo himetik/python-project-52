@@ -80,7 +80,8 @@ DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv(
             'DATABASE_URL',
-            'postgresql://postgres:password@localhost:5432/database'
+            # local config
+            'postgresql://postgres:011235!@localhost:5432/database'
         )
     )
 }
