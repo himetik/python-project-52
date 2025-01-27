@@ -17,8 +17,7 @@ dependencies = [
 ]
 
 [tool.setuptools]
-include = ["apps*", "task_manager*"]
 include-package-data = true
 
-[tool.setuptools.package-data]
-"*" = ["templates/*", "static/*"]
+[tool.setuptools.packages.find]
+include = ["apps*", "task_manager*"]
