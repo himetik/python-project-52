@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-28 12:56+0000\n"
+"POT-Creation-Date: 2025-01-28 21:00+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,38 +19,94 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: task_manager/settings.py:125
+#: settings.py:128
 msgid "English"
 msgstr "Английский"
 
-#: task_manager/settings.py:126
+#: settings.py:129
 msgid "Russian"
 msgstr "Русский"
 
-#: task_manager/templates/apps/users/users.html:6
-msgid "Users"
-msgstr "Пользователи"
+#: templates/apps/users/create.html:4 templates/base.html:37
+msgid "Registration"
+msgstr "Регистрация"
 
-#: task_manager/templates/apps/users/users.html:12
-msgid "Username"
-msgstr "Имя пользователя"
+#: templates/apps/users/create.html:11
+msgid "Register"
+msgstr "Регистрация"
 
-#: task_manager/templates/apps/users/users.html:13
-msgid "Full name"
-msgstr "Полное имя"
+#: templates/apps/users/delete.html:5
+#, fuzzy
+#| msgid "Delete"
+msgid "Deleting user"
+msgstr "Удалить"
 
-#: task_manager/templates/apps/users/users.html:14
-msgid "Created date"
-msgstr "Дата создания"
+#: templates/apps/users/delete.html:13
+msgid "Are you sure you want to delete"
+msgstr "Уверены, что хотите удалить"
 
-#: task_manager/templates/apps/users/users.html:26
+#: templates/apps/users/delete.html:20
+msgid "Yes, delete"
+msgstr "Да, удалить"
+
+#: templates/apps/users/update.html:5
+#, fuzzy
+#| msgid "Update"
+msgid "Update user"
+msgstr "Обновить"
+
+#: templates/apps/users/update.html:12 templates/apps/users/users.html:26
 msgid "Update"
 msgstr "Обновить"
 
-#: task_manager/templates/apps/users/users.html:28
+#: templates/apps/users/users.html:6 templates/base.html:23
+msgid "Users"
+msgstr "Пользователи"
+
+#: templates/apps/users/users.html:12
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: templates/apps/users/users.html:13
+msgid "Full name"
+msgstr "Полное имя"
+
+#: templates/apps/users/users.html:14
+msgid "Created date"
+msgstr "Дата создания"
+
+#: templates/apps/users/users.html:28
 msgid "Delete"
 msgstr "Удалить"
 
-#: task_manager/templates/index.html:4 task_manager/templates/index.html:7
-msgid "Stright"
-msgstr "Прямо"
+#: templates/base.html:9
+msgid "Task manager"
+msgstr "Менеджер Задач"
+
+#: templates/base.html:16
+msgid "Task Manager"
+msgstr "Менеджер Задач"
+
+#: templates/base.html:30
+msgid "Logout"
+msgstr "Выход"
+
+#: templates/base.html:34 templates/login.html:5
+msgid "Login"
+msgstr "Вход"
+
+#: templates/index.html:9
+msgid "Welcome"
+msgstr "Здравствуйте"
+
+#: templates/index.html:10
+msgid "Task Manager Web App"
+msgstr "Веб Приложение Менеджер Задач"
+
+#: templates/index.html:12
+msgid "Source Code"
+msgstr "Исходный код"
+
+#: templates/login.html:12
+msgid "Sign in"
+msgstr "Вход"
