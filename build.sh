@@ -10,3 +10,9 @@ export PATH="$HOME/.local/bin:$PATH"
 which uv
 
 uv pip install .
+
+python manage.py migrate
+
+python manage.py compilemessages
+
+python manage.py collectstatic --noinput
