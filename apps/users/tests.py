@@ -4,9 +4,26 @@ from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
 from django.conf import settings
 from apps.users.forms import CustomUserCreationForm
+from django.utils.translation import gettext as _
+
 
 
 User = get_user_model()
+
+
+class SetUpLoggedUserMixin:
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='password123'
+        )
+        login_successful = self.client.login(
+            username='testuser',
+            password='password123'
+        )
+        if not login_successful:
+            raise Exception("Failed to log in test user")
+        super().setUp() if hasattr(super(), 'setUp') else None
 
 
 class UserIndexViewTest(TestCase):
@@ -134,3 +151,50 @@ class UserUpdateViewTest(TestCase):
         self.client.post(self.url, data=self.valid_data)
         self.user1.refresh_from_db()
         self.assertNotEqual(self.user1.username, 'updated_user1')
+
+
+class UserLoginViewTest(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='password123'
+        )
+
+    def test_login_view_status_code(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'login.html')
+
+    def test_login_with_valid_credentials(self):
+        data = {
+            'username': 'testuser',
+            'password': 'password123'
+        }
+        response = self.client.post(reverse('login'), data)
+        self.assertRedirects(response, settings.LOGIN_REDIRECT_URL)
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), _('You are logged in'))
+
+    def test_login_with_invalid_credentials(self):
+        data = {
+            'username': 'testuser',
+            'password': 'wrongpassword'
+        }
+        response = self.client.post(reverse('login'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'login.html')
+        self.assertFalse(response.context['user'].is_authenticated)
+
+
+class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
+    def test_logout_view_status_code(self):
+        response = self.client.post(reverse('logout'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_logout_success(self):
+        response = self.client.post(reverse('logout'))
+        self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
+        response = self.client.get(reverse('login'))
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+        messages = list(response.wsgi_request._messages)
+        self.assertEqual(str(messages[0]), _('You are logged out'))
