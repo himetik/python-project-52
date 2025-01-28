@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.views.generic import ListView, CreateView, DeleteView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
-from apps.users.forms import CustomUserCreationForm
+from apps.users.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.conf import settings
 from django.utils.translation import gettext as _
 from django.contrib.auth.views import LoginView, LogoutView
@@ -38,6 +38,22 @@ class UserDeleteView(SuccessMessageMixin, UserPassesTestMixin, DeleteView):
     template_name = 'apps/users/delete.html'
     success_url = reverse_lazy('users')
     success_message = _('The user has been successfully deleted')
+
+    def test_func(self):
+        user = self.get_object()
+        return self.request.user == user
+
+    def handle_no_permission(self):
+        messages.error(self.request, _('You are not authorized to modify another user.'))
+        return redirect('users')
+
+
+class UserUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
+    model = get_user_model()
+    form_class = CustomUserChangeForm
+    template_name = 'apps/users/update.html'
+    success_url = reverse_lazy('users')
+    success_message = _('The user has been successfully updated')
 
     def test_func(self):
         user = self.get_object()
