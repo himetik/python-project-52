@@ -21,9 +21,9 @@ from apps.users.views import UserLoginView, UserLogoutView
 
 
 urlpatterns = [
+    path('', IndexView.as_view(), name='index'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
-    path('', IndexView.as_view(), name='index'),
     path('users/', include('apps.users.urls')),
     path('admin/', admin.site.urls),
 ]
