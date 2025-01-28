@@ -4,8 +4,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from apps.users.forms import CustomUserCreationForm
 from django.conf import settings
 from django.utils.translation import gettext as _
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):
@@ -13,6 +14,14 @@ class UserLoginView(SuccessMessageMixin, LoginView):
     form_class = AuthenticationForm
     success_url = settings.LOGIN_REDIRECT_URL
     success_message = _('You are logged in')
+
+
+class UserLogoutView(SuccessMessageMixin, LogoutView):
+    next_page = settings.LOGOUT_REDIRECT_URL
+
+    def dispatch(self, request, *args, **kwargs):
+        messages.info(request, _('You are logged out'))
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UserCreateView(SuccessMessageMixin, CreateView):
