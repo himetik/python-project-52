@@ -1,6 +1,12 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
+from django.conf import settings
+from apps.users.forms import CustomUserCreationForm
+
+
+User = get_user_model()
 
 
 class UserIndexViewTest(TestCase):
@@ -28,3 +34,58 @@ class UserIndexViewTest(TestCase):
         self.assertIn(self.user1, response.context['users'])
         self.assertIn(self.user2, response.context['users'])
         self.assertEqual(len(response.context['users']), 2)
+
+
+class UserCreateViewTest(TestCase):
+    def setUp(self):
+        self.url = reverse('users_create')
+        self.valid_data = {
+            'username': 'testuser',
+            'password1': 'ComplexPwd123!',
+            'password2': 'ComplexPwd123!',
+        }
+        self.invalid_data = {
+            'username': '',
+            'password1': 'pwd',
+            'password2': 'pwd123',
+        }
+
+    def test_get_request_renders_correct_template(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'apps/users/create.html')
+        self.assertIsInstance(response.context['form'], CustomUserCreationForm)
+
+    def test_post_valid_data_creates_user_and_redirects(self):
+        response = self.client.post(self.url, data=self.valid_data)
+        self.assertRedirects(response, settings.LOGIN_URL)
+        self.assertTrue(User.objects.filter(username='testuser').exists())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any(
+            message.message == 'The user has been successfully registered' and message.level == messages[0].level
+            for message in messages
+        ))
+
+    def test_post_invalid_data_does_not_create_user_and_shows_errors(self):
+        response = self.client.post(self.url, data=self.invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'apps/users/create.html')
+        form = response.context['form']
+        self.assertTrue(form.errors)
+        self.assertIn('username', form.errors)
+        self.assertIn('password2', form.errors)
+
+    def test_form_fields_presence(self):
+        response = self.client.get(self.url)
+        form = response.context['form']
+        expected_fields = ['username', 'password1', 'password2']
+        for field in expected_fields:
+            self.assertIn(field, form.fields)
+
+    def test_success_message_present_on_successful_registration(self):
+        response = self.client.post(self.url, data=self.valid_data, follow=True)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any(
+            message.message == 'The user has been successfully registered'
+            for message in messages
+        ))
