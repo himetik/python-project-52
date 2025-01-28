@@ -112,3 +112,25 @@ class UserDeleteViewTest(TestCase):
         self.assertRedirects(response, reverse('users'))
         messages = list(response.context['messages'])
         self.assertTrue(any(message.message == 'You are not authorized to modify another user.' for message in messages))
+
+
+class UserUpdateViewTest(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(username='user1', password='password123')
+        self.user2 = User.objects.create_user(username='user2', password='password123')
+        self.url = reverse('users_update', args=[self.user1.id])
+        self.valid_data = {
+            'username': 'updated_user1',
+        }
+
+    def test_user_can_update_own_profile(self):
+        self.client.login(username='user1', password='password123')
+        self.client.post(self.url, data=self.valid_data)
+        self.user1.refresh_from_db()
+        self.assertEqual(self.user1.username, 'updated_user1')
+
+    def test_user_cannot_update_another_user_profile(self):
+        self.client.login(username='user2', password='password123')
+        self.client.post(self.url, data=self.valid_data)
+        self.user1.refresh_from_db()
+        self.assertNotEqual(self.user1.username, 'updated_user1')
