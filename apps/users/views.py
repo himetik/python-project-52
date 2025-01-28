@@ -4,6 +4,15 @@ from django.contrib.messages.views import SuccessMessageMixin
 from apps.users.forms import CustomUserCreationForm
 from django.conf import settings
 from django.utils.translation import gettext as _
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
+
+
+class UserLoginView(SuccessMessageMixin, LoginView):
+    template_name = 'login.html'
+    form_class = AuthenticationForm
+    success_url = settings.LOGIN_REDIRECT_URL
+    success_message = _('You are logged in')
 
 
 class UserCreateView(SuccessMessageMixin, CreateView):
