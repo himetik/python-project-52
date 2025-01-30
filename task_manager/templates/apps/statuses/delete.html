@@ -1,0 +1,20 @@
+{% extends "form.html" %}
+{% load django_bootstrap5 i18n %}
+
+{% block header %}
+{% trans 'Deleting a status' %}
+{% endblock %}
+
+{% block form_action %}
+{% url 'statuses_delete' pk=status.pk %}
+{% endblock %}
+
+{%block text %}
+{% trans 'Are you sure you want to delete' %} {{ status }}?
+{% endblock %}
+
+{% block button_class %}
+btn-danger
+{% endblock %}
+
+{% block button_value %}{% trans 'Yes, delete' %}{% endblock %}
