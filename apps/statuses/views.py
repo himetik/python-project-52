@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.views.generic import ListView, CreateView, DeleteView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from apps.statuses.models import Status
 from django.contrib.messages.views import SuccessMessageMixin
 from apps.statuses.forms import StatusForm
@@ -44,3 +44,11 @@ class StatusDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
+
+
+class StatusUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Status
+    form_class = StatusForm
+    template_name = 'apps/statuses/update.html'
+    success_url = reverse_lazy('statuses')
+    success_message = _("The status has been successfully changed")
