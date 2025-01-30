@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DeleteView
 from apps.statuses.models import Status
 from django.contrib.messages.views import SuccessMessageMixin
 from apps.statuses.forms import StatusForm
@@ -27,3 +27,20 @@ class StatusCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView
     form_class = StatusForm
     success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully created')
+
+
+class StatusDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Status
+    template_name = 'apps/statuses/delete.html'
+    success_url = reverse_lazy('statuses')
+    success_message = _('The status has been successfully deleted')
+
+    def has_related_tasks(self):
+        return self.get_object().tasks.exists()
+
+    def post(self, request, *args, **kwargs):
+        if self.has_related_tasks():
+            messages.error(request, _('Unable to delete a status because it is being used'))
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
