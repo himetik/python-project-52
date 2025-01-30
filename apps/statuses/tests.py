@@ -28,3 +28,9 @@ class StatusViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.status.refresh_from_db()
         self.assertEqual(self.status.name, 'Updated Status')
+
+    def test_status_delete_view(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('statuses_delete', args=[self.status.pk]), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Status.objects.filter(pk=self.status.pk).exists())
