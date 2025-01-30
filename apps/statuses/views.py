@@ -1,19 +1,12 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
-from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from apps.statuses.models import Status
 from django.contrib.messages.views import SuccessMessageMixin
 from apps.statuses.forms import StatusForm
 from django.urls import reverse_lazy
-
-
-class CustomLoginRequiredMixin(LoginRequiredMixin):
-    def handle_no_permission(self):
-        messages.error(self.request, _('You are not logged in! Please sign in.'))
-        return redirect(reverse('login'))
+from apps.statuses.mixins import CustomLoginRequiredMixin
 
 
 class StatusIndexView(CustomLoginRequiredMixin, ListView):
