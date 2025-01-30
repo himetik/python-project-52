@@ -1,5 +1,3 @@
-from django.contrib import messages
-from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from apps.statuses.models import Status
@@ -28,14 +26,7 @@ class StatusDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView
     success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully deleted')
 
-    def has_related_tasks(self):
-        return self.get_object().tasks.exists()
-
     def post(self, request, *args, **kwargs):
-        if self.has_related_tasks():
-            messages.error(request, _('Unable to delete a status because it is being used'))
-            return redirect(self.success_url)
-
         return super().post(request, *args, **kwargs)
 
 
