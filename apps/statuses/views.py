@@ -4,7 +4,7 @@ from apps.statuses.models import Status
 from django.contrib.messages.views import SuccessMessageMixin
 from apps.statuses.forms import StatusForm
 from django.urls import reverse_lazy
-from apps.statuses.mixins import CustomLoginRequiredMixin
+from apps.main.mixins import CustomLoginRequiredMixin
 
 
 class StatusIndexView(CustomLoginRequiredMixin, ListView):
