@@ -5,7 +5,7 @@ from django.contrib.messages import get_messages
 from django.conf import settings
 from apps.users.forms import CustomUserCreationForm
 from django.utils.translation import gettext as _
-from apps.users.mixins import SetUpLoggedUserMixin
+from apps.main.mixins import SetUpLoggedUserMixin
 
 
 User = get_user_model()
