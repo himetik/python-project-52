@@ -5,6 +5,7 @@ from apps.labels.models import Label
 from django.contrib.messages import get_messages
 from apps.tasks.models import Task 
 from apps.statuses.models import Status
+from django.contrib.auth import get_user_model
 
 
 class LabelIndexViewTests(TestCase):
@@ -94,3 +95,40 @@ class LabelDeleteViewTests(TestCase):
         self.client.logout()
         response = self.client.post(reverse("labels_delete", kwargs={"pk": self.label.pk}))
         self.assertNotEqual(response.status_code, 200)
+
+
+class LabelUpdateViewTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.label = Label.objects.create(name="Old Label")
+        self.url = reverse('labels_update', kwargs={'pk': self.label.pk})
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(self.url)
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, '/login/')
+
+    def test_access_for_authenticated_user(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'apps/labels/update.html')
+
+    def test_update_label(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.post(self.url, {'name': 'New Label'})
+        self.label.refresh_from_db()
+        self.assertEqual(self.label.name, 'New Label')
+        self.assertRedirects(response, reverse('labels'))
+
+    def test_success_message(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.post(self.url, {'name': 'Updated Label'}, follow=True)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any(str(msg) == "The label has been successfully changed" for msg in messages))
+
+    def test_context_data(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.get(self.url)
+        self.assertEqual(response.context['page_title'], 'Edit Label')
