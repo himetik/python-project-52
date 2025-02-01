@@ -2,6 +2,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from apps.labels.models import Label
+from django.contrib.messages import get_messages
+from apps.tasks.models import Task 
+from apps.statuses.models import Status
 
 
 class LabelIndexViewTests(TestCase):
@@ -63,3 +66,31 @@ class LabelCreateViewTests(TestCase):
         self.assertTrue(form.errors, "Form contains no errors")
         self.assertIn("name", form.errors, "Field 'name' did not trigger an error")
         self.assertEqual(Label.objects.count(), 0)
+
+
+class LabelDeleteViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.label = Label.objects.create(name="Test Label")
+        self.client.login(username="testuser", password="password")
+
+    def test_delete_label_success(self):
+        response = self.client.post(reverse("labels_delete", kwargs={"pk": self.label.pk}))
+        self.assertRedirects(response, reverse("labels"))
+        self.assertFalse(Label.objects.filter(pk=self.label.pk).exists())
+
+    def test_delete_label_in_use_fails(self):
+        self.client.login(username="testuser", password="password")
+        status = Status.objects.create(name="New")
+        task = Task.objects.create(name="Test Task", creator=self.user, status=status)
+        task.labels.add(self.label)
+        response = self.client.post(reverse("labels_delete", kwargs={"pk": self.label.pk}))
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(Label.objects.filter(pk=self.label.pk).exists())
+        self.assertEqual(str(messages[0]), "Cannot delete the label because it is currently in use")
+        self.assertRedirects(response, reverse("labels"))
+
+    def test_delete_label_requires_login(self):
+        self.client.logout()
+        response = self.client.post(reverse("labels_delete", kwargs={"pk": self.label.pk}))
+        self.assertNotEqual(response.status_code, 200)
