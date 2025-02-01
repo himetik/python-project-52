@@ -23,6 +23,9 @@
             <td>{{ label }}</td>
             <td>{{ label.created_at }}</td>
         </tr>
+        <td>
+            <a href="{% url 'labels_delete' pk=label.pk %}">{% trans 'Delete' %}</a>
+        </td>
         </tbody>
         {% endfor %}
     </table>
