@@ -3,7 +3,7 @@ from django_filters.views import FilterView
 from apps.main.mixins import CustomLoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView
+from django.views.generic import CreateView, DeleteView, UpdateView
 from apps.tasks.forms import TaskForm
 from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
@@ -37,3 +37,11 @@ class TaskDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
         if obj.creator != self.request.user:
             raise PermissionDenied(_('Only the author of the task can delete it'))
         return obj
+
+
+class TaskUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'apps/tasks/update.html'
+    success_url = reverse_lazy('tasks')
+    success_message = _('The task has been successfully updated')
