@@ -136,3 +136,38 @@ class TaskCreateViewTests(TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Task.objects.exists())
+
+
+class TaskDeleteViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(
+            username='testuser', password='password123')
+        self.other_user = get_user_model().objects.create_user(
+            username='otheruser', password='password456')
+        self.status = Status.objects.create(name='New')
+        self.task = Task.objects.create(
+            name='Test Task',
+            description='Task description',
+            status=self.status,
+            creator=self.user
+        )
+        self.delete_url = reverse('tasks_delete', args=[self.task.id])
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(self.delete_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login'))
+
+    def test_delete_task_successfully(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.post(self.delete_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Task.objects.filter(id=self.task.id).exists())
+        self.assertContains(response, 'The task has been successfully deleted')
+
+    def test_delete_task_by_non_creator_fails(self):
+        self.client.login(username='otheruser', password='password456')
+        response = self.client.post(self.delete_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Task.objects.filter(id=self.task.id).exists())
