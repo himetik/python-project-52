@@ -6,6 +6,7 @@
     <h1 class="my-4">
         {% trans 'Labels' %}
     </h1>
+    <a class="btn btn-primary mb-3" href="{% url 'labels_create' %}">{% trans 'Create label' %}</a>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -15,6 +16,7 @@
             <th></th>
         </tr>
         </thead>
+        {% for label in labels %}
         <tbody>
         <tr>
             <td>{{ label.id }}</td>
@@ -22,6 +24,7 @@
             <td>{{ label.created_at }}</td>
         </tr>
         </tbody>
+        {% endfor %}
     </table>
 </div>
 {% endblock %}
