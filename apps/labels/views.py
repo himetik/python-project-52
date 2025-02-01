@@ -1,6 +1,6 @@
 from apps.labels.models import Label
 from apps.main.mixins import CustomLoginRequiredMixin
-from django.views.generic import ListView, CreateView, DeleteView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from apps.labels.forms import LabelForm
 from django.utils.translation import gettext as _
 from django.urls import reverse_lazy
@@ -34,3 +34,21 @@ class LabelDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView)
             messages.error(request, _('Cannot delete the label because it is currently in use'))
             return redirect(self.success_url)
         return super().post(request, *args, **kwargs)
+
+
+class LabelUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Label
+    form_class = LabelForm
+    template_name = 'apps/labels/update.html'
+    success_url = reverse_lazy('labels')
+    success_message = _('The label has been successfully changed')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, self.success_message)
+        return response
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = _('Edit Label')
+        return context
