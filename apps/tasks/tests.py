@@ -171,3 +171,38 @@ class TaskDeleteViewTests(TestCase):
         response = self.client.post(self.delete_url)
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Task.objects.filter(id=self.task.id).exists())
+
+
+class TaskUpdateViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(
+            username='testuser', password='password123')
+        self.other_user = get_user_model().objects.create_user(
+            username='otheruser', password='password456')
+        self.status = Status.objects.create(name='New')
+        self.task = Task.objects.create(
+            name='Test Task',
+            description='Task description',
+            status=self.status,
+            creator=self.user
+        )
+        self.update_url = reverse('tasks_update', args=[self.task.id])
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(self.update_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login'))
+
+    def test_update_task_successfully(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.post(self.update_url, {
+            'name': 'Updated Task',
+            'description': 'Updated description',
+            'status': self.status.id
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.name, 'Updated Task')
+        self.assertEqual(self.task.description, 'Updated description')
+        self.assertContains(response, 'The task has been successfully updated')
