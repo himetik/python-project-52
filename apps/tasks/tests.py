@@ -206,3 +206,41 @@ class TaskUpdateViewTests(TestCase):
         self.assertEqual(self.task.name, 'Updated Task')
         self.assertEqual(self.task.description, 'Updated description')
         self.assertContains(response, 'The task has been successfully updated')
+
+
+class TaskDetailViewTest(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
+        self.executor = get_user_model().objects.create_user(username="executor", password="password123")
+        self.status = Status.objects.create(name="In Progress")
+        self.task = Task.objects.create(
+            name="Test Task",
+            description="Test Description",
+            status=self.status,
+            creator=self.user,
+            executor=self.executor,
+            created_at=timezone.now()
+        )
+        self.url = reverse("tasks_instance", kwargs={"pk": self.task.pk})
+
+    def test_task_detail_view_status_code(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_task_detail_view_uses_correct_template(self):
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, "apps/tasks/task.html")
+
+    def test_task_detail_view_context(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.context["task"], self.task)
+        self.assertEqual(response.context["task"].name, "Test Task")
+        self.assertEqual(response.context["task"].description, "Test Description")
+        self.assertEqual(response.context["task"].status, self.status)
+        self.assertEqual(response.context["task"].creator, self.user)
+        self.assertEqual(response.context["task"].executor, self.executor)
+
+    def test_task_detail_view_nonexistent_task(self):
+        url = reverse("tasks_instance", kwargs={"pk": 99999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
