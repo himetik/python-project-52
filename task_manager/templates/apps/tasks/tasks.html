@@ -4,6 +4,7 @@
 {% block content %}
 <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% trans 'Tasks' %}</h1>
+    <a class="btn btn-primary mb-3" href="{% url 'tasks_create' %}" role="button">{% trans 'Create task' %}</a>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -16,6 +17,7 @@
             <th></th>
         </tr>
         </thead>
+        {% for task in tasks %}
         <tbody>
         <tr>
             <td>{{ task.id }}</td>
@@ -29,6 +31,7 @@
             </td>
         </tr>
         </tbody>
+        {% endfor %}
     </table>
 </div>
 {% endblock %}
