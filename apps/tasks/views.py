@@ -7,12 +7,17 @@ from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
 from apps.tasks.forms import TaskForm
 from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
+from apps.tasks.filters import TaskFilter
 
 
 class TaskIndexView(CustomLoginRequiredMixin, FilterView):
     template_name = 'apps/tasks/tasks.html'
     model = Task
     context_object_name = 'tasks'
+    filterset_class = TaskFilter
+
+    def get_filterset(self, filterset_class):
+        return filterset_class(self.request.GET, queryset=self.get_queryset(), request=self.request)
 
 
 class TaskCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
