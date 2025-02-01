@@ -5,6 +5,17 @@
 <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% trans 'Tasks' %}</h1>
     <a class="btn btn-primary mb-3" href="{% url 'tasks_create' %}" role="button">{% trans 'Create task' %}</a>
+    <div class="card mb-3">
+        <div class="card-body bg-light">
+            <form class="form-inline center" method="get">
+                {% bootstrap_field filter.form.status %}
+                {% bootstrap_field filter.form.executor %}
+                {% bootstrap_field filter.form.labels %}
+                {% bootstrap_field filter.form.my_tasks %}
+                <input class="btn btn-primary" type="submit" value="{% translate 'Show' %}">
+            </form>
+        </div>
+    </div>
     <table class="table table-striped">
         <thead>
         <tr>
