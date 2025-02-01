@@ -45,11 +45,13 @@ jobs:
 
       - name: Run build script
         run: |
+          python venv .venv
           source .venv/bin/activate
           ./build.sh
 
       - name: Run linters
         run: |
+          python venv .venv
           source .venv/bin/activate
           ruff check .
 
@@ -60,5 +62,6 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           DEBUG: true
         run: |
+          python venv .venv
           source .venv/bin/activate
           python manage.py test
