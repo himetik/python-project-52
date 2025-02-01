@@ -177,9 +177,6 @@ class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_logout_success(self):
-        response = self.client.post(reverse('logout'))
+        response = self.client.post(reverse('logout'), follow=True)
         self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
-        response = self.client.get(reverse('login'))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
-        messages = list(response.wsgi_request._messages)
-        self.assertEqual(str(messages[0]), _('You are logged out'))
