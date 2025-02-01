@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from apps.tasks.models import Task
 from apps.statuses.models import Status
+from django.urls import reverse
+
 
 class TaskIndexViewTests(TestCase):
     def setUp(self):
@@ -90,3 +92,47 @@ class TaskIndexViewTests(TestCase):
 
     def test_task_str_method(self):
         self.assertEqual(str(self.task1), 'Test Task 1')
+
+
+class TaskCreateViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='password123'
+        )
+        self.status = Status.objects.create(name='New')
+        self.create_url = reverse('tasks_create')
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(self.create_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login'))
+
+    def test_get_create_view_as_logged_in_user(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.get(self.create_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'apps/tasks/create.html')
+
+    def test_create_task_successfully(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.post(self.create_url, {
+            'name': 'New Task',
+            'description': 'Task description',
+            'status': self.status.id
+        }, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Task.objects.filter(name='New Task').exists())
+        task = Task.objects.get(name='New Task')
+        self.assertEqual(task.creator, self.user)
+        self.assertEqual(task.status, self.status)
+        self.assertContains(response, 'The task has been successfully created')
+
+    def test_create_task_invalid_form(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.post(self.create_url, {}, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Task.objects.exists())
