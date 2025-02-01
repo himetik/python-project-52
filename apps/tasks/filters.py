@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 
 
 class TaskFilter(FilterSet):
-    my_tasks = filters.BooleanFilter(
+    own_tasks = filters.BooleanFilter(
         field_name='creator',
         method='filter_own_tasks',
         label=_('Only your tasks'),
@@ -21,7 +21,7 @@ class TaskFilter(FilterSet):
     class Meta:
         model = Task
         fields = [
-            'my_tasks',
+            'own_tasks',
             'status',
             'executor',
             'labels'
