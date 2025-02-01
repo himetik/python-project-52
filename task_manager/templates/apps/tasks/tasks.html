@@ -28,7 +28,8 @@
             <td>{{ task.executor }}</td>
             <td>{{ task.created_at }}</td>
             <td>
-                <a href="{% url 'tasks_delete' pk=task.pk %}">{% trans 'Delete' %}</a>
+                <p><a href="{% url 'tasks_delete' pk=task.pk %}">{% trans 'Delete' %}</a></p>
+                <p><a href="{% url 'tasks_update' pk=task.pk %}">{% trans 'Update' %}</a></p>
             </td>
         </tr>
         </tbody>

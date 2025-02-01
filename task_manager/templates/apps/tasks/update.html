@@ -1,0 +1,12 @@
+{% extends "form.html" %}
+{% load django_bootstrap5 i18n %}
+
+{% block header %}
+{% trans 'Update task' %}
+{% endblock %}
+
+{% block form_action %}
+{% url 'tasks_update' pk=task.pk %}
+{% endblock %}
+
+{% block button_value %}{% trans 'Update' %}{% endblock %}
