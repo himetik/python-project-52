@@ -3,7 +3,7 @@ from django_filters.views import FilterView
 from apps.main.mixins import CustomLoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, UpdateView
+from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
 from apps.tasks.forms import TaskForm
 from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
@@ -45,3 +45,9 @@ class TaskUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = 'apps/tasks/update.html'
     success_url = reverse_lazy('tasks')
     success_message = _('The task has been successfully updated')
+
+
+class TaskDetailView(DetailView):
+    model = Task
+    template_name = 'apps/tasks/task.html'
+    context_object_name = 'task'
