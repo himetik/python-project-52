@@ -43,11 +43,6 @@ class LabelUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView)
     success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully changed')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, self.success_message)
-        return response
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = _('Edit Label')
