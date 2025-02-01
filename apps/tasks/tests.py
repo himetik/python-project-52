@@ -4,6 +4,10 @@ from django.utils import timezone
 from apps.tasks.models import Task
 from apps.statuses.models import Status
 from django.urls import reverse
+from apps.tasks.filters import TaskFilter
+from django.db.utils import IntegrityError
+from apps.tasks.views import TaskIndexView
+from django.test import RequestFactory
 
 
 class TaskIndexViewTests(TestCase):
@@ -60,7 +64,7 @@ class TaskIndexViewTests(TestCase):
         self.assertEqual(task2.status, self.status)
 
     def test_task_unique_name(self):
-        with self.assertRaises(Exception):
+        with self.assertRaises(IntegrityError):
             Task.objects.create(
                 name='Test Task 1',
                 description='Another description',
@@ -73,8 +77,11 @@ class TaskIndexViewTests(TestCase):
         new_status = Status.objects.create(name='Completed')
         Task.objects.create(
             name='Test Task 3',
+            description='Description for task 3',
             status=new_status,
-            creator=self.creator
+            creator=self.creator,
+            executor=None,
+            created_at=timezone.now()
         )
         response = self.client.get(f"{self.tasks_url}?status={self.status.id}")
         self.assertEqual(response.context['tasks'].count(), 2)
@@ -89,6 +96,16 @@ class TaskIndexViewTests(TestCase):
         response = self.client.get(f"{self.tasks_url}?executor=")
         tasks = response.context['tasks']
         self.assertTrue(any(task.executor is None for task in tasks))
+
+    def test_get_filterset_passes_request(self):
+        factory = RequestFactory()
+        request = factory.get(self.tasks_url, {'status': self.status.id})
+        request.user = self.creator
+        view = TaskIndexView()
+        view.request = request
+        view.object_list = Task.objects.all()
+        filterset = view.get_filterset(TaskFilter)
+        self.assertEqual(filterset.request, request)
 
     def test_task_str_method(self):
         self.assertEqual(str(self.task1), 'Test Task 1')
