@@ -1,0 +1,12 @@
+{% extends "form.html" %}
+{% load django_bootstrap5 i18n %}
+
+{% block header %}
+{% trans 'Create label' %}
+{% endblock %}
+
+{% block form_action %}
+{% url 'labels_create' %}
+{% endblock %}
+
+{% block button_value %}{% trans 'Create' %}{% endblock %}

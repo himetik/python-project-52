@@ -1,0 +1,12 @@
+{% extends "form.html" %}
+{% load django_bootstrap5 i18n %}
+
+{% block header %}
+{% trans 'Update label' %}
+{% endblock %}
+
+{% block form_action %}
+{% url 'labels_update' pk=label.pk %}
+{% endblock %}
+
+{% block button_value %}{% trans 'Update' %}{% endblock %}
