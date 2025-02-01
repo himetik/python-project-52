@@ -22,6 +22,7 @@
         <tr>
             <td>{{ task.id }}</td>
             <td>
+                <p></p><a href="{% url 'tasks_instance' pk=task.pk %}">{{ task }}</a></p>
             </td>
             <td>{{ task.status }}</td>
             <td>{{ task.creator }}</td>
