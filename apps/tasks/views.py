@@ -6,8 +6,9 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
 from apps.tasks.forms import TaskForm
 from django.utils.translation import gettext as _
-from django.core.exceptions import PermissionDenied
 from apps.tasks.filters import TaskFilter
+from django.shortcuts import redirect
+from django.contrib import messages
 
 
 class TaskIndexView(CustomLoginRequiredMixin, FilterView):
@@ -37,11 +38,25 @@ class TaskDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('tasks')
     success_message = _('The task has been successfully deleted')
 
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        if obj.creator != self.request.user:
-            raise PermissionDenied(_('Only the author of the task can delete it'))
-        return obj
+    def check_task_creator(self):
+        task = self.get_object()
+        if task.creator != self.request.user:
+            messages.error(
+                self.request,
+                _('Only the author of the task can delete it')
+            )
+            return False
+        return True
+
+    def get(self, request, *args, **kwargs):
+        if not self.check_task_creator():
+            return redirect('tasks')
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if not self.check_task_creator():
+            return redirect('tasks')
+        return super().post(request, *args, **kwargs)
 
 
 class TaskUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
