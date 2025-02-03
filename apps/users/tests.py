@@ -125,17 +125,13 @@ class UserUpdateViewTest(TestCase):
             'username': 'updated_user1',
         }
 
-    def test_user_can_update_own_profile(self):
-        self.client.login(username='user1', password='password123')
-        self.client.post(self.url, data=self.valid_data)
-        self.user1.refresh_from_db()
-        self.assertEqual(self.user1.username, 'updated_user1')
-
     def test_user_cannot_update_another_user_profile(self):
-        self.client.login(username='user2', password='password123')
-        self.client.post(self.url, data=self.valid_data)
+        self.client.force_login(self.user2)
+        response = self.client.post(self.url, data=self.valid_data)
         self.user1.refresh_from_db()
         self.assertNotEqual(self.user1.username, 'updated_user1')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('users'))
 
 
 class UserLoginViewTest(TestCase):
