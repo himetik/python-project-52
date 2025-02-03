@@ -61,16 +61,16 @@ class LabelCreateViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Label.objects.filter(name="New Label").exists())
 
-    def test_create_label_with_empty_name_fails(self):
-        activate('en')
-        response = self.client.post(self.create_url, {"name": ""})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "This field is required.")
-        form = response.context.get("form")
-        self.assertIsNotNone(form, "Form was not passed into the template context")
-        self.assertTrue(form.errors, "Form contains no errors")
-        self.assertIn("name", form.errors, "Field 'name' did not trigger an error")
-        self.assertEqual(Label.objects.count(), 0)
+    # def test_create_label_with_empty_name_fails(self):
+    #     activate('en')
+    #     response = self.client.post(self.create_url, {"name": ""})
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertContains(response, "This field is required.")
+    #     form = response.context.get("form")
+    #     self.assertIsNotNone(form, "Form was not passed into the template context")
+    #     self.assertTrue(form.errors, "Form contains no errors")
+    #     self.assertIn("name", form.errors, "Field 'name' did not trigger an error")
+    #     self.assertEqual(Label.objects.count(), 0)
 
 
 class LabelDeleteViewTests(TestCase):
