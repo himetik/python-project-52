@@ -240,85 +240,85 @@ msgstr "Войти"
 #~ msgid "created at"
 #~ msgstr "Дата создания"
 
-#~ msgid "The label has been successfully created"
-#~ msgstr "Метка успешно создана"
+msgid "The label has been successfully created"
+msgstr "Метка успешно создана"
 
-#~ msgid "The label has been successfully deleted"
-#~ msgstr "Метка успешно удалена"
+msgid "The label has been successfully deleted"
+msgstr "Метка успешно удалена"
 
-#~ msgid "Cannot delete the label because it is currently in use"
-#~ msgstr "Невозможно удалить статус, потому что он используется"
+msgid "Cannot delete the label because it is currently in use"
+msgstr "Невозможно удалить статус, потому что он используется"
 
-#~ msgid "The label has been successfully changed"
-#~ msgstr "Метка успешно изменена"
+msgid "The label has been successfully changed"
+msgstr "Метка успешно изменена"
 
-#~ msgid "Edit Label"
-#~ msgstr "Редактировать метку"
+msgid "Edit Label"
+msgstr "Редактировать метку"
 
-#~ msgid "You are not logged in! Please sign in."
-#~ msgstr "Вы не авторизованы. Пожалуйста, выполнитн вход."
+msgid "You are not logged in! Please sign in."
+msgstr "Вы не авторизованы. Пожалуйста, выполнитн вход."
 
-#~ msgid "The status has been successfully created"
-#~ msgstr "Статус успешно создан"
+msgid "The status has been successfully created"
+msgstr "Статус успешно создан"
 
-#~ msgid "The status has been successfully deleted"
-#~ msgstr "Статус успешно удален"
+msgid "The status has been successfully deleted"
+msgstr "Статус успешно удален"
 
-#~ msgid "The status has been successfully changed"
-#~ msgstr "Статус успешно изменен"
+msgid "The status has been successfully changed"
+msgstr "Статус успешно изменен"
 
-#~ msgid "Only your tasks"
-#~ msgstr "Только сови задачи"
+msgid "Only your tasks"
+msgstr "Только сови задачи"
 
-#~ msgid "Label"
-#~ msgstr "Метка"
+msgid "Label"
+msgstr "Метка"
 
 #, fuzzy
 #~| msgid "Registration"
 #~ msgid "description"
 #~ msgstr "Регистрация"
 
-#~ msgid "status"
-#~ msgstr "статус"
+msgid "status"
+msgstr "статус"
 
-#~ msgid "creator"
-#~ msgstr "создатель"
+msgid "creator"
+msgstr "создатель"
 
-#~ msgid "executor"
-#~ msgstr "исполнитель"
+msgid "executor"
+msgstr "исполнитель"
 
-#~ msgid "labels"
-#~ msgstr "Метки"
+msgid "labels"
+msgstr "Метки"
 
-#~ msgid "Task"
-#~ msgstr "Задача"
+msgid "Task"
+msgstr "Задача"
 
-#~ msgid "The task has been successfully created"
-#~ msgstr "Задача успешно создана"
+msgid "The task has been successfully created"
+msgstr "Задача успешно создана"
 
-#~ msgid "The task has been successfully deleted"
-#~ msgstr "Задача успешно удалена"
+msgid "The task has been successfully deleted"
+msgstr "Задача успешно удалена"
 
-#~ msgid "Only the author of the task can delete it"
-#~ msgstr "Задачу может удалить только ее автор"
+msgid "Only the author of the task can delete it"
+msgstr "Задачу может удалить только ее автор"
 
-#~ msgid "The task has been successfully updated"
-#~ msgstr "Задача успешно изменена"
+msgid "The task has been successfully updated"
+msgstr "Задача успешно изменена"
 
-#~ msgid "You are logged in"
-#~ msgstr "Вы залогинены"
+msgid "You are logged in"
+msgstr "Вы залогинены"
 
-#~ msgid "You are logged out"
-#~ msgstr "Вы разлогинены"
+msgid "You are logged out"
+msgstr "Вы разлогинены"
 
-#~ msgid "The user has been successfully registered"
-#~ msgstr "Пользователь успешно зарегистрирован"
+msgid "The user has been successfully registered"
+msgstr "Пользователь успешно зарегистрирован"
 
-#~ msgid "The user has been successfully deleted"
-#~ msgstr "Пользователь успешно удален"
+msgid "The user has been successfully deleted"
+msgstr "Пользователь успешно удален"
 
-#~ msgid "You are not authorized to modify another user."
-#~ msgstr "У вас нет прав для изменения другого пользователя."
+msgid "You are not authorized to modify another user."
+msgstr "У вас нет прав для изменения другого пользователя."
 
-#~ msgid "The user has been successfully updated"
-#~ msgstr "Пользователь успешно "
+msgid "The user has been successfully updated"
+msgstr "Пользователь успешно "
