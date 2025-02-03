@@ -10,6 +10,9 @@ from apps.tasks.views import TaskIndexView
 from django.test import RequestFactory
 
 
+User = get_user_model()
+
+
 class TaskIndexViewTests(TestCase):
     def setUp(self):
         self.creator = get_user_model().objects.create_user(
@@ -158,9 +161,9 @@ class TaskCreateViewTests(TestCase):
 class TaskDeleteViewTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = get_user_model().objects.create_user(
+        self.user = User.objects.create_user(
             username='testuser', password='password123')
-        self.other_user = get_user_model().objects.create_user(
+        self.other_user = User.objects.create_user(
             username='otheruser', password='password456')
         self.status = Status.objects.create(name='New')
         self.task = Task.objects.create(
@@ -185,9 +188,10 @@ class TaskDeleteViewTests(TestCase):
 
     def test_delete_task_by_non_creator_fails(self):
         self.client.login(username='otheruser', password='password456')
-        response = self.client.post(self.delete_url)
-        self.assertEqual(response.status_code, 403)
+        response = self.client.post(self.delete_url, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(Task.objects.filter(id=self.task.id).exists())
+        self.assertContains(response, 'Only the author of the task can delete it')
 
 
 class TaskUpdateViewTests(TestCase):
