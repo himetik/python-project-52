@@ -18,39 +18,39 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users' %}">{% trans 'Users' %}</a>
-                </li>
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users' %}">{% trans 'Users' %}</a>
+              </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'statuses' %}">{% trans 'Statuses' %}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'tasks' %}">{% trans 'Tasks' %}</a>
+                  <a class="nav-link" href="{% url 'labels' %}">{% trans 'Labels' %}</a>
                 </li>
-                <li>
-                    <a class="nav-link" href="{% url 'labels' %}">{% trans 'Labels' %}</a>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'tasks' %}">{% trans 'Tasks' %}</a>
                 </li>
                 {% endif %}
-            </ul>
             </ul>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
-                <form action="{% url 'logout' %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <input class="btn nav-link" type="submit" value="{% trans 'Logout' %}">
+                <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                  <input type="hidden" name="" value="">
+                  <input class="btn nav-link" type="submit" value="{% trans 'Logout' %}">
                 </form>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">{% trans 'Login' %}</a>
+                  <a class="nav-link" href="{% url 'login' %}">{% trans 'Login' %}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users_create' %}">{% trans 'Registration' %}</a>
+                  <a class="nav-link" href="{% url 'users_create' %}">{% trans 'Registration' %}</a>
                 </li>
                 {% endif %}
             </ul>
-        </div>
+          </div>
     </nav>
 </header>
 
