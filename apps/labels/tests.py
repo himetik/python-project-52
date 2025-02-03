@@ -6,10 +6,12 @@ from django.contrib.messages import get_messages
 from apps.tasks.models import Task 
 from apps.statuses.models import Status
 from django.contrib.auth import get_user_model
+from django.utils.translation import activate
 
 
 class LabelIndexViewTests(TestCase):
     def setUp(self):
+        activate('en')
         self.user = User.objects.create_user(username="testuser", password="password")
         self.label1 = Label.objects.create(name="Label 1")
         self.label2 = Label.objects.create(name="Label 2")
@@ -35,6 +37,7 @@ class LabelIndexViewTests(TestCase):
 
 class LabelCreateViewTests(TestCase):
     def setUp(self):
+        activate('en')
         self.user = User.objects.create_user(username="testuser", password="password")
         self.client.login(username="testuser", password="password")
         self.create_url = reverse("labels_create")
@@ -71,6 +74,7 @@ class LabelCreateViewTests(TestCase):
 
 class LabelDeleteViewTests(TestCase):
     def setUp(self):
+        activate('en')
         self.user = User.objects.create_user(username="testuser", password="password")
         self.label = Label.objects.create(name="Test Label")
         self.client.login(username="testuser", password="password")
@@ -99,6 +103,7 @@ class LabelDeleteViewTests(TestCase):
 
 class LabelUpdateViewTests(TestCase):
     def setUp(self):
+        activate('en')
         User = get_user_model()
         self.user = User.objects.create_user(username="testuser", password="password123")
         self.label = Label.objects.create(name="Old Label")
