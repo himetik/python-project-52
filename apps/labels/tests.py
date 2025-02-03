@@ -17,16 +17,19 @@ class LabelIndexViewTests(TestCase):
         self.label2 = Label.objects.create(name="Label 2")
 
     def test_view_url_accessible_by_logged_in_user(self):
+        activate('en')
         self.client.login(username="testuser", password="password")
         response = self.client.get(reverse("labels"))
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
+        activate('en')
         self.client.login(username="testuser", password="password")
         response = self.client.get(reverse("labels"))
         self.assertTemplateUsed(response, "apps/labels/labels.html")
 
     def test_context_contains_labels(self):
+        activate('en')
         self.client.login(username="testuser", password="password")
         response = self.client.get(reverse("labels"))
         labels = response.context["labels"]
@@ -43,20 +46,24 @@ class LabelCreateViewTests(TestCase):
         self.create_url = reverse("labels_create")
 
     def test_create_view_accessible_by_logged_in_user(self):
+        activate('en')
         response = self.client.get(self.create_url)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view_redirects_if_not_logged_in(self):
+        activate('en')
         self.client.logout()
         response = self.client.get(self.create_url)
         expected_url = reverse("login")
         self.assertTrue(response.url.startswith(expected_url), f"Unexpected redirect URL: {response.url}")
 
     def test_create_view_uses_correct_template(self):
+        activate('en')
         response = self.client.get(self.create_url)
         self.assertTemplateUsed(response, "apps/labels/create.html")
 
     def test_create_label_successfully(self):
+        activate('en')
         response = self.client.post(self.create_url, {"name": "New Label"}, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Label.objects.filter(name="New Label").exists())
@@ -81,11 +88,13 @@ class LabelDeleteViewTests(TestCase):
         self.client.login(username="testuser", password="password")
 
     def test_delete_label_success(self):
+        activate('en')
         response = self.client.post(reverse("labels_delete", kwargs={"pk": self.label.pk}))
         self.assertRedirects(response, reverse("labels"))
         self.assertFalse(Label.objects.filter(pk=self.label.pk).exists())
 
     def test_delete_label_in_use_fails(self):
+        activate('en')
         self.client.login(username="testuser", password="password")
         status = Status.objects.create(name="New")
         task = Task.objects.create(name="Test Task", creator=self.user, status=status)
@@ -97,6 +106,7 @@ class LabelDeleteViewTests(TestCase):
         self.assertRedirects(response, reverse("labels"))
 
     def test_delete_label_requires_login(self):
+        activate('en')
         self.client.logout()
         response = self.client.post(reverse("labels_delete", kwargs={"pk": self.label.pk}))
         self.assertNotEqual(response.status_code, 200)
@@ -111,17 +121,20 @@ class LabelUpdateViewTests(TestCase):
         self.url = reverse('labels_update', kwargs={'pk': self.label.pk})
 
     def test_redirect_if_not_logged_in(self):
+        activate('en')
         response = self.client.get(self.url)
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, '/login/')
 
     def test_access_for_authenticated_user(self):
+        activate('en')
         self.client.login(username='testuser', password='password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'apps/labels/update.html')
 
     def test_update_label(self):
+        activate('en')
         self.client.login(username='testuser', password='password123')
         response = self.client.post(self.url, {'name': 'New Label'})
         self.label.refresh_from_db()
@@ -129,12 +142,14 @@ class LabelUpdateViewTests(TestCase):
         self.assertRedirects(response, reverse('labels'))
 
     def test_success_message(self):
+        activate('en')
         self.client.login(username='testuser', password='password123')
         response = self.client.post(self.url, {'name': 'Updated Label'}, follow=True)
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(any(str(msg) == "The label has been successfully changed" for msg in messages))
 
     def test_context_data(self):
+        activate('en')
         self.client.login(username='testuser', password='password123')
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_title'], 'Edit Label')
