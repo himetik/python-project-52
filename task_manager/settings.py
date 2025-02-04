@@ -33,7 +33,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'fallback_secret_key')
 DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS", "localhost,127.0.0.1,webserver,webserver:9000"
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,webserver,webserver:9000,python-project-52-ywus.onrender.com"
 ).split(",")
 
 # Application definition
