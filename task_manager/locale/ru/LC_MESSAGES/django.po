@@ -147,7 +147,7 @@ msgstr "Пользователь успешно удален"
 
 #: apps/users/views.py:47 apps/users/views.py:63
 msgid "You are not authorized to modify another user."
-msgstr "Вы не авторизованы! Пожалуйста, выполните вход."
+msgstr "У вас нет прав для изменения другого пользователя."
 
 #: apps/users/views.py:56
 msgid "The user has been successfully updated"
@@ -249,7 +249,7 @@ msgstr "Нет доступных статусов"
 
 #: task_manager/templates/apps/statuses/update.html:5
 msgid "Update status"
-msgstr " Изменение статуса "
+msgstr "Изменение статуса "
 
 #: task_manager/templates/apps/tasks/create.html:5
 #: task_manager/templates/apps/tasks/tasks.html:7
