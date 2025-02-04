@@ -21,14 +21,10 @@ msgstr ""
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: apps/labels/models.py:7 apps/statuses/models.py:7 apps/tasks/models.py:10
-#, fuzzy
-#| msgid "Username"
 msgid "name"
 msgstr "Имя пользователя"
 
 #: apps/labels/models.py:8 apps/statuses/models.py:8 apps/tasks/models.py:40
-#, fuzzy
-#| msgid "Created date"
 msgid "created at"
 msgstr "Дата создания"
 
@@ -85,44 +81,30 @@ msgid "Executor"
 msgstr "Исполнитель"
 
 #: apps/tasks/filters.py:19
-#, fuzzy
-#| msgid "Labels"
 msgid "Label"
 msgstr "Метки"
 
 #: apps/tasks/models.py:11
-#, fuzzy
-#| msgid "Registration"
 msgid "description"
-msgstr "Регистрация"
+msgstr "описание"
 
 #: apps/tasks/models.py:16
-#, fuzzy
-#| msgid "Status"
 msgid "status"
-msgstr "Статус"
+msgstr "статус"
 
 #: apps/tasks/models.py:21
-#, fuzzy
-#| msgid "Create"
 msgid "creator"
-msgstr "Создать"
+msgstr "создать"
 
 #: apps/tasks/models.py:29
-#, fuzzy
-#| msgid "Executor"
 msgid "executor"
-msgstr "Исполнитель"
+msgstr "исполнитель"
 
 #: apps/tasks/models.py:35
-#, fuzzy
-#| msgid "Labels"
 msgid "labels"
-msgstr "Метки"
+msgstr "метки"
 
 #: apps/tasks/models.py:47
-#, fuzzy
-#| msgid "Tasks"
 msgid "Task"
 msgstr "Задачи"
 
