@@ -51,5 +51,5 @@ jobs:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           SECRET_KEY: open
         with:
-          coverageCommand: poetry run coverage run --source='.' manage.py test && poetry run coverage xml
+          coverageCommand: python -m coverage run --source='.' manage.py test && python -m coverage xml
           debug: true
