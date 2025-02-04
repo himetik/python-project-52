@@ -52,7 +52,4 @@ jobs:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           SECRET_KEY: open
         with:
-          coverageCommand: |
-            pip install coverage
-            coverage run --source='.' manage.py test
-            coverage xml
+          coverageCommand: make coverage
