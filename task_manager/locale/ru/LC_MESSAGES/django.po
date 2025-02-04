@@ -22,7 +22,7 @@ msgstr ""
 
 #: apps/labels/models.py:7 apps/statuses/models.py:7 apps/tasks/models.py:10
 msgid "name"
-msgstr "Имя пользователя"
+msgstr "Имя"
 
 #: apps/labels/models.py:8 apps/statuses/models.py:8 apps/tasks/models.py:40
 msgid "created at"
