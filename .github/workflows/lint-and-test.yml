@@ -1,16 +1,13 @@
 name: test and linter check
-
 on:
   - push
   - pull_request
-
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.11]
-
     services:
       postgres:
         image: postgres
@@ -25,15 +22,12 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
       - name: Install dependencies and run linter
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -45,19 +39,18 @@ jobs:
           uv pip install ruff
           uv pip install coverage
           ruff check .
-
       - name: Run tests with coverage
         run: |
           source .venv/bin/activate
           make coverage
-
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         if: github.ref_name == 'pp'
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          SECRET_KEY: not_so_secret
         with:
           coverageCommand: |
             source .venv/bin/activate && make coverage
+          debug: true
