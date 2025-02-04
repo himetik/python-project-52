@@ -1,66 +1,72 @@
 name: Lint and Test
 
 on:
-  push:
-    branches:
-      - trunk
-  pull_request:
-    branches:
-      - trunk
+  - push
+  - pull_request
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.11]
+        python-version: [ 3.11 ]
 
     services:
       postgres:
         image: postgres
         env:
-          POSTGRES_DB: postgres
+          POSTGRES_DB: database
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: unsecret
         options: >-
           --health-cmd pg_isready
-          --health-interval 6s
-          --health-timeout 6s
-          --health-retries 3
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           - 5432:5432
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Make build.sh executable
-        run: chmod +x build.sh
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.local/bin:$PATH"
+          uv self update
 
-      - name: Run build script
+      - name: Install dependencies
         run: |
           python -m venv .venv
-          source .venv/bin/activate
-          ./build.sh
+          echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
+          .venv/bin/pip install --upgrade pip
+          uv pip install .
 
-      - name: Run linters
+      - name: Run linter
         run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          ruff check .
+          .venv/bin/ruff check .
 
-      - name: Run tests
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres && \
+            PGPASSWORD=unsecret psql -h localhost -U postgres -d database -c "SELECT 1" > /dev/null 2>&1; do
+              echo "Waiting for PostgreSQL...";
+              sleep 2;
+          done 
+
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v3.2.0
+        if: github.ref_name == 'trunk'
         env:
-          DJANGO_SETTINGS_MODULE: task_manager.settings
-          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          DEBUG: true
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          python manage.py test
+          DATABASE_URL: 'postgresql://postgres:011235!@localhost:5432/database'
+          SECRET_KEY: open
+        with:
+          coverageCommand: sh -c ".venv/bin/coverage run --source='.' manage.py test; .venv/bin/coverage xml"
+          debug: true
