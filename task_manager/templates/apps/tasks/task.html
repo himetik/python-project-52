@@ -30,8 +30,19 @@
                 </div>
                 <div class="row p-1">
                     <div class="col">
-                        <p><a href="{% url 'tasks_update' pk=task.pk %}" class="btn btn-primary btn-sm">{% trans 'Update' %}</a></p>
-                        <p><a href="{% url 'tasks_delete' pk=task.pk %}" class="btn btn-danger btn-sm">{% trans 'Delete' %}</a></p>
+                        <h6>{% trans 'Labels' %}:</h6>
+                        {% for label in task.labels.all %}
+                        <ul>
+                            <li>{{ label }}</li>
+                        </ul>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row p-1">
+                    <div class="col">
+                        <a href="{% url 'tasks_update' pk=task.pk %}" class="btn btn-primary btn-sm">{% trans 'Update' %}</a>
+                        <br>
+                        <a href="{% url 'tasks_delete' pk=task.pk %}" class="btn btn-danger btn-sm">{% trans 'Delete' %}</a>
                     </div>
                 </div>
             </div>
