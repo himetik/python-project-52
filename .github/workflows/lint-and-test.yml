@@ -45,7 +45,7 @@ jobs:
 
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
-        if: github.ref_name == 'trunk'
+        if: github.ref_name == 'pp'
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
