@@ -14,7 +14,7 @@ jobs:
         env:
           POSTGRES_DB: postgres
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: 011235!
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -48,7 +48,7 @@ jobs:
         if: github.ref_name == 'pp'
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
+          DATABASE_URL: 'postgresql://postgres:011235!@127.0.0.1:5432/postgres'
           SECRET_KEY: not_so_secret
         with:
           coverageCommand: |
