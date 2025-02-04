@@ -66,6 +66,10 @@ msgstr "Статус успешно удален"
 msgid "The status has been successfully changed"
 msgstr "Статус успешно изменен"
 
+#: apps/statuses/views.py:44
+msgid "Unable to delete a status because it is being used"
+msgstr "Невозможно удалить статус, потому что он используется"
+
 #: apps/tasks/filters.py:14
 msgid "Only your tasks"
 msgstr "Только свои задачи"
