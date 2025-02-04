@@ -93,7 +93,9 @@ class TaskIndexViewTests(TestCase):
 
     def test_filter_by_executor(self):
         self.client.login(username='creator', password='creator123')
-        response = self.client.get(f"{self.tasks_url}?executor={self.executor.id}")
+        response = self.client.get(
+            f"{self.tasks_url}?executor={self.executor.id}"
+        )
         self.assertEqual(response.context['tasks'].count(), 1)
         self.assertEqual(response.context['tasks'].first(), self.task1)
         response = self.client.get(f"{self.tasks_url}?executor=")
@@ -191,7 +193,9 @@ class TaskDeleteViewTests(TestCase):
         response = self.client.post(self.delete_url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Task.objects.filter(id=self.task.id).exists())
-        self.assertContains(response, 'Only the author of the task can delete it')
+        self.assertContains(
+            response, 'Only the author of the task can delete it'
+        )
 
 
 class TaskUpdateViewTests(TestCase):
@@ -231,8 +235,12 @@ class TaskUpdateViewTests(TestCase):
 
 class TaskDetailViewTest(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
-        self.executor = get_user_model().objects.create_user(username="executor", password="password123")
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.executor = get_user_model().objects.create_user(
+            username="executor", password="password123"
+        )
         self.status = Status.objects.create(name="In Progress")
         self.task = Task.objects.create(
             name="Test Task",
@@ -256,10 +264,12 @@ class TaskDetailViewTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.context["task"], self.task)
         self.assertEqual(response.context["task"].name, "Test Task")
-        self.assertEqual(response.context["task"].description, "Test Description")
         self.assertEqual(response.context["task"].status, self.status)
         self.assertEqual(response.context["task"].creator, self.user)
         self.assertEqual(response.context["task"].executor, self.executor)
+        self.assertEqual(
+            response.context["task"].description, "Test Description"
+        )
 
     def test_task_detail_view_nonexistent_task(self):
         url = reverse("tasks_instance", kwargs={"pk": 99999})

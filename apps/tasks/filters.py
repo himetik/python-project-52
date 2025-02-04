@@ -14,9 +14,15 @@ class TaskFilter(FilterSet):
         label=_('Only your tasks'),
         widget=CheckboxInput()
     )
-    status = filters.ModelChoiceFilter(queryset=Status.objects.all(), label=_('Status'))
-    executor = filters.ModelChoiceFilter(queryset=get_user_model().objects.all(), label=_('Executor'))
-    labels = filters.ModelChoiceFilter(queryset=Label.objects.all(), label=_('Label'))
+    status = filters.ModelChoiceFilter(
+        queryset=Status.objects.all(), label=_('Status')
+    )
+    executor = filters.ModelChoiceFilter(
+        queryset=get_user_model().objects.all(), label=_('Executor')
+    )
+    labels = filters.ModelChoiceFilter(
+        queryset=Label.objects.all(), label=_('Label')
+    )
 
     class Meta:
         model = Task

@@ -18,7 +18,9 @@ class TaskIndexView(CustomLoginRequiredMixin, FilterView):
     filterset_class = TaskFilter
 
     def get_filterset(self, filterset_class):
-        return filterset_class(self.request.GET, queryset=self.get_queryset(), request=self.request)
+        return filterset_class(
+            self.request.GET, queryset=self.get_queryset(), request=self.request
+        )
 
 
 class TaskCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
