@@ -27,4 +27,4 @@ include-package-data = true
 include = ["apps*", "task_manager*"]
 
 [tool.ruff]
-line-length = 120
+line-length = 80
