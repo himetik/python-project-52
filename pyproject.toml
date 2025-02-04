@@ -25,3 +25,6 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 include = ["apps*", "task_manager*"]
+
+[tool.ruff]
+line-length = 120
