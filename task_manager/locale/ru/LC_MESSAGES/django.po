@@ -82,7 +82,7 @@ msgstr "Исполнитель"
 
 #: apps/tasks/filters.py:19
 msgid "Label"
-msgstr "Метки"
+msgstr "Метка"
 
 #: apps/tasks/models.py:11
 msgid "description"
