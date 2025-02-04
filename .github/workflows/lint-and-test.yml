@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.11 ]
+        python-version: [3.11]
 
     services:
       postgres:
@@ -38,11 +38,17 @@ jobs:
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="$HOME/.local/bin:$PATH"
-          python -m venv .venv && source .venv/bin/activate
+          python -m venv .venv
+          source .venv/bin/activate
           uv pip install .
           uv pip install ruff
           uv pip install coverage
           ruff check .
+
+      - name: Run tests with coverage
+        run: |
+          source .venv/bin/activate
+          make coverage
 
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
@@ -52,4 +58,5 @@ jobs:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           SECRET_KEY: open
         with:
-          coverageCommand: make coverage
+          coverageCommand: |
+            source .venv/bin/activate && make coverage
