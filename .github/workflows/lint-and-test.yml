@@ -41,6 +41,7 @@ jobs:
           python -m venv .venv && source .venv/bin/activate
           uv pip install .
           uv pip install ruff
+          uv pip install coverage
           ruff check .
 
       - name: Test & publish code coverage
