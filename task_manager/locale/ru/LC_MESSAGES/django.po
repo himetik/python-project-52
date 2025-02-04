@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-03 21:28+0300\n"
+"POT-Creation-Date: 2025-02-04 10:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +19,6 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
-
 #: settings.py:140
 msgid "English"
 msgstr "Английский"
@@ -28,28 +28,22 @@ msgid "Russian"
 msgstr "Русский"
 
 #: templates/apps/labels/create.html:5 templates/apps/labels/labels.html:9
-#, fuzzy
-#| msgid "Created date"
 msgid "Create label"
-msgstr "Дата создания"
+msgstr "Создать метку"
 
 #: templates/apps/labels/create.html:12 templates/apps/statuses/create.html:12
 #: templates/apps/tasks/create.html:12
-#, fuzzy
-#| msgid "Created date"
 msgid "Create"
-msgstr "Дата создания"
+msgstr "Создать"
 
 #: templates/apps/labels/delete.html:5
-#, fuzzy
-#| msgid "Delete"
 msgid "Deleting a label"
-msgstr "Удалить"
+msgstr "Удаление заметки"
 
 #: templates/apps/labels/delete.html:13 templates/apps/statuses/delete.html:13
 #: templates/apps/tasks/delete.html:13 templates/apps/users/delete.html:13
 msgid "Are you sure you want to delete"
-msgstr "Уверены, что хотите удалить"
+msgstr "Вы уверены, что хотите удалить?"
 
 #: templates/apps/labels/delete.html:20 templates/apps/statuses/delete.html:20
 #: templates/apps/tasks/delete.html:20 templates/apps/users/delete.html:20
@@ -63,12 +57,12 @@ msgstr "Метки"
 #: templates/apps/labels/labels.html:14
 #: templates/apps/statuses/statuses.html:12 templates/apps/tasks/tasks.html:23
 msgid "Name"
-msgstr "Название"
+msgstr "Имя"
 
 #: templates/apps/labels/labels.html:15
 #: templates/apps/statuses/statuses.html:13 templates/apps/tasks/task.html:28
 msgid "Date and time of creation"
-msgstr "Дата и время создания"
+msgstr "Дата создания"
 
 #: templates/apps/labels/labels.html:27
 #: templates/apps/statuses/statuses.html:28 templates/apps/tasks/task.html:34
@@ -82,55 +76,43 @@ msgstr "Удалить"
 #: templates/apps/tasks/tasks.html:44 templates/apps/tasks/update.html:12
 #: templates/apps/users/update.html:12 templates/apps/users/users.html:26
 msgid "Update"
-msgstr "Обновить"
+msgstr "Изменить"
 
 #: templates/apps/labels/update.html:5
-#, fuzzy
-#| msgid "Update"
 msgid "Update label"
-msgstr "Обновить"
+msgstr "Изменение метки"
 
 #: templates/apps/statuses/create.html:5
-#, fuzzy
-#| msgid "Created date"
 msgid "Create status"
-msgstr "Дата создания"
+msgstr "Создать статус"
 
 #: templates/apps/statuses/delete.html:5
-#, fuzzy
-#| msgid "Delete"
 msgid "Deleting a status"
-msgstr "Удалить"
+msgstr "Удаление статуса"
 
 #: templates/apps/statuses/statuses.html:14
 msgid "Actions"
-msgstr "Действия"
+msgstr ""
 
 #: templates/apps/statuses/statuses.html:34
 msgid "No statuses available"
 msgstr "Нет доступных статусов"
 
 #: templates/apps/statuses/update.html:5
-#, fuzzy
-#| msgid "Update"
 msgid "Update status"
-msgstr "Обновить"
+msgstr " Изменение статуса "
 
 #: templates/apps/tasks/create.html:5 templates/apps/tasks/tasks.html:7
-#, fuzzy
-#| msgid "Created date"
 msgid "Create task"
-msgstr "Дата создания"
+msgstr "Создать задачу"
 
 #: templates/apps/tasks/delete.html:5
-#, fuzzy
-#| msgid "Delete"
 msgid "Delete task"
-msgstr "Удалить"
+msgstr "Удаление задачи"
 
 #: templates/apps/tasks/task.html:6
 msgid "View a task"
-msgstr "Посмотреть задачу"
+msgstr "Просмотр задачи"
 
 #: templates/apps/tasks/task.html:16 templates/apps/tasks/tasks.html:25
 msgid "Author"
@@ -157,10 +139,8 @@ msgid "Created date"
 msgstr "Дата создания"
 
 #: templates/apps/tasks/update.html:5
-#, fuzzy
-#| msgid "Update"
 msgid "Update task"
-msgstr "Обновить"
+msgstr "Изменение задачи"
 
 #: templates/apps/users/create.html:4 templates/base.html:49
 msgid "Registration"
@@ -168,19 +148,15 @@ msgstr "Регистрация"
 
 #: templates/apps/users/create.html:11
 msgid "Register"
-msgstr "Регистрация"
+msgstr "Зарегистрировать"
 
 #: templates/apps/users/delete.html:5
-#, fuzzy
-#| msgid "Delete"
 msgid "Deleting user"
 msgstr "Удалить"
 
 #: templates/apps/users/update.html:5
-#, fuzzy
-#| msgid "Update"
 msgid "Update user"
-msgstr "Обновить"
+msgstr "Изменение пользователя"
 
 #: templates/apps/users/users.html:6 templates/base.html:23
 msgid "Users"
@@ -196,11 +172,11 @@ msgstr "Полное имя"
 
 #: templates/base.html:9
 msgid "Task manager"
-msgstr "Менеджер Задач"
+msgstr "Менеджер задач"
 
 #: templates/base.html:16
 msgid "Task Manager"
-msgstr "Менеджер Задач"
+msgstr "Менеджер задач"
 
 #: templates/base.html:27
 msgid "Statuses"
@@ -220,7 +196,7 @@ msgstr "Добро пожаловать!"
 
 #: templates/index.html:10
 msgid "Task Manager Web App"
-msgstr "Веб Приложение Менеджер Задач"
+msgstr "Менеджер задач"
 
 #: templates/index.html:12
 msgid "Source Code"
@@ -229,96 +205,3 @@ msgstr "Исходный код"
 #: templates/login.html:12
 msgid "Sign in"
 msgstr "Войти"
-
-#, fuzzy
-#~| msgid "Username"
-#~ msgid "name"
-#~ msgstr "Имя пользователя"
-
-#, fuzzy
-#~| msgid "Created date"
-#~ msgid "created at"
-#~ msgstr "Дата создания"
-
-msgid "The label has been successfully created"
-msgstr "Метка успешно создана"
-
-msgid "The label has been successfully deleted"
-msgstr "Метка успешно удалена"
-
-msgid "Cannot delete the label because it is currently in use"
-msgstr "Невозможно удалить статус, потому что он используется"
-
-msgid "The label has been successfully changed"
-msgstr "Метка успешно изменена"
-
-msgid "Edit Label"
-msgstr "Редактировать метку"
-
-msgid "You are not logged in! Please sign in."
-msgstr "Вы не авторизованы. Пожалуйста, выполнитн вход."
-
-msgid "The status has been successfully created"
-msgstr "Статус успешно создан"
-
-msgid "The status has been successfully deleted"
-msgstr "Статус успешно удален"
-
-msgid "The status has been successfully changed"
-msgstr "Статус успешно изменен"
-
-msgid "Only your tasks"
-msgstr "Только сови задачи"
-
-msgid "Label"
-msgstr "Метка"
-
-#, fuzzy
-#~| msgid "Registration"
-#~ msgid "description"
-#~ msgstr "Регистрация"
-
-msgid "status"
-msgstr "статус"
-
-msgid "creator"
-msgstr "создатель"
-
-msgid "executor"
-msgstr "исполнитель"
-
-msgid "labels"
-msgstr "Метки"
-
-msgid "Task"
-msgstr "Задача"
-
-msgid "The task has been successfully created"
-msgstr "Задача успешно создана"
-
-msgid "The task has been successfully deleted"
-msgstr "Задача успешно удалена"
-
-msgid "Only the author of the task can delete it"
-msgstr "Задачу может удалить только ее автор"
-
-msgid "The task has been successfully updated"
-msgstr "Задача успешно изменена"
-
-msgid "You are logged in"
-msgstr "Вы залогинены"
-
-msgid "You are logged out"
-msgstr "Вы разлогинены"
-
-msgid "The user has been successfully registered"
-msgstr "Пользователь успешно зарегистрирован"
-
-msgid "The user has been successfully deleted"
-msgstr "Пользователь успешно удален"
-
-msgid "You are not authorized to modify another user."
-msgstr "У вас нет прав для изменения другого пользователя."
-
-msgid "The user has been successfully updated"
-msgstr "Пользователь успешно "
