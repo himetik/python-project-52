@@ -1,4 +1,4 @@
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from apps.statuses.models import Status
 from django.contrib.messages.views import SuccessMessageMixin

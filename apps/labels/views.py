@@ -2,7 +2,7 @@ from apps.labels.models import Label
 from apps.main.mixins import CustomLoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from apps.labels.forms import LabelForm
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages

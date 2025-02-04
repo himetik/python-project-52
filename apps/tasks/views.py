@@ -5,7 +5,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
 from apps.tasks.forms import TaskForm
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from apps.tasks.filters import TaskFilter
 from django.shortcuts import redirect
 from django.contrib import messages
