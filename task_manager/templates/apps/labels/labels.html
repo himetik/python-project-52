@@ -22,11 +22,12 @@
             <td>{{ label.id }}</td>
             <td>{{ label }}</td>
             <td>{{ label.created_at }}</td>
+            <td>
+                <a href="{% url 'labels_delete' pk=label.pk %}">{% trans 'Delete' %}</a>
+                <br>
+                <a href="{% url 'labels_update' pk=label.pk %}">{% trans 'Update' %}</a>
+            </td>
         </tr>
-        <td>
-            <p><a href="{% url 'labels_delete' pk=label.pk %}">{% trans 'Delete' %}</a></p>
-            <p><a href="{% url 'labels_update' pk=label.pk %}">{% trans 'Update' %}</a></p>
-        </td>
         </tbody>
         {% endfor %}
     </table>
