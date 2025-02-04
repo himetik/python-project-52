@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-04 08:27+0000\n"
+"POT-Creation-Date: 2025-02-04 08:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -147,27 +147,27 @@ msgstr "Задачу может удалить только ее автор"
 msgid "The task has been successfully updated"
 msgstr "Задача успешно изменена"
 
-#: apps/users/tests.py:157 apps/users/views.py:19
+#: apps/users/tests.py:157 apps/users/views.py:18
 msgid "You are logged in"
 msgstr "Вы залогинены"
 
-#: apps/users/views.py:26
+#: apps/users/views.py:25
 msgid "You are logged out"
 msgstr "Вы разлогинены"
 
-#: apps/users/views.py:34
+#: apps/users/views.py:33
 msgid "The user has been successfully registered"
 msgstr "Пользователь успешно зарегистрирован"
 
-#: apps/users/views.py:41
+#: apps/users/views.py:40
 msgid "The user has been successfully deleted"
 msgstr "Пользователь успешно удален"
 
-#: apps/users/views.py:48 apps/users/views.py:64
+#: apps/users/views.py:47 apps/users/views.py:63
 msgid "You are not authorized to modify another user."
 msgstr "Вы не авторизованы! Пожалуйста, выполните вход."
 
-#: apps/users/views.py:57
+#: apps/users/views.py:56
 msgid "The user has been successfully updated"
 msgstr "Пользователь успешно изменен"
 
