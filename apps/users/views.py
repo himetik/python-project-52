@@ -3,13 +3,14 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from apps.users.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.conf import settings
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
+
 
 class UserLoginView(SuccessMessageMixin, LoginView):
     template_name = 'login.html'
@@ -44,7 +45,9 @@ class UserDeleteView(SuccessMessageMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == user
 
     def handle_no_permission(self):
-        messages.error(self.request, _('You are not authorized to modify another user.'))
+        messages.error(
+            self.request, _('You are not authorized to modify another user.')
+        )
         return redirect('users')
 
 
@@ -60,7 +63,9 @@ class UserUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == user
 
     def handle_no_permission(self):
-        messages.error(self.request, _('You are not authorized to modify another user.'))
+        messages.error(
+            self.request, _('You are not authorized to modify another user.')
+        )
         return redirect('users')
 
 

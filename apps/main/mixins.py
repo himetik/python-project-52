@@ -23,5 +23,7 @@ class SetUpLoggedUserMixin:
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
     def handle_no_permission(self):
-        messages.error(self.request, _('You are not logged in! Please sign in.'))
+        messages.error(
+            self.request, _('You are not logged in! Please sign in.')
+        )
         return redirect(reverse('login'))

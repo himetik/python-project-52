@@ -3,8 +3,8 @@
 
 {% block content %}
 <div class="container wrapper flex-grow-1">
-    <h1 class="my-4">Statuses</h1>
-    <a class="btn btn-primary mb-3" href="{% url 'statuses_create' %}">Create status</a>
+    <h1 class="my-4">{% trans 'Statuses' %}</h1>
+    <a class="btn btn-primary mb-3" href="{% url 'statuses_create' %}">{% trans 'Create status' %}</a>
     <table class="table table-striped">
         <thead>
             <tr>

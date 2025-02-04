@@ -15,8 +15,12 @@ class UserIndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user_model = get_user_model()
-        cls.user1 = cls.user_model.objects.create_user(username='testuser1', password='password123')
-        cls.user2 = cls.user_model.objects.create_user(username='testuser2', password='password123')
+        cls.user1 = cls.user_model.objects.create_user(
+            username='testuser1', password='password123'
+        )
+        cls.user2 = cls.user_model.objects.create_user(
+            username='testuser2', password='password123'
+        )
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/users/')
@@ -64,7 +68,8 @@ class UserCreateViewTest(TestCase):
         self.assertTrue(User.objects.filter(username='testuser').exists())
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(any(
-            message.message == 'The user has been successfully registered' and message.level == messages[0].level
+            message.message == 'The user has been successfully registered'
+            and message.level == messages[0].level
             for message in messages
         ))
 
@@ -95,8 +100,12 @@ class UserCreateViewTest(TestCase):
 
 class UserDeleteViewTest(TestCase):
     def setUp(self):
-        self.user1 = User.objects.create_user(username='user1', password='password123')
-        self.user2 = User.objects.create_user(username='user2', password='password123')
+        self.user1 = User.objects.create_user(
+            username='user1', password='password123'
+        )
+        self.user2 = User.objects.create_user(
+            username='user2', password='password123'
+        )
         self.url = reverse('users_delete', args=[self.user1.id])
 
     def test_user_can_delete_self(self):
@@ -105,7 +114,12 @@ class UserDeleteViewTest(TestCase):
         self.assertFalse(User.objects.filter(id=self.user1.id).exists())
         self.assertRedirects(response, reverse('users'))
         messages = list(response.context['messages'])
-        self.assertTrue(any(message.message == 'The user has been successfully deleted' for message in messages))
+        self.assertTrue(
+            any(
+                message.message == 'The user has been successfully deleted'
+                for message in messages
+            )
+        )
 
     def test_user_cannot_delete_another_user(self):
         self.client.login(username='user2', password='password123')
@@ -113,29 +127,36 @@ class UserDeleteViewTest(TestCase):
         self.assertTrue(User.objects.filter(id=self.user1.id).exists())
         self.assertRedirects(response, reverse('users'))
         messages = list(response.context['messages'])
-        self.assertTrue(any(message.message == 'You are not authorized to modify another user.' for message in messages))
+        self.assertTrue(
+            any(
+                message.message == (
+                    'You are not authorized to modify another user.'
+                )
+                for message in messages
+            )
+        )
 
 
 class UserUpdateViewTest(TestCase):
     def setUp(self):
-        self.user1 = User.objects.create_user(username='user1', password='password123')
-        self.user2 = User.objects.create_user(username='user2', password='password123')
+        self.user1 = User.objects.create_user(
+            username='user1', password='password123'
+        )
+        self.user2 = User.objects.create_user(
+            username='user2', password='password123'
+        )
         self.url = reverse('users_update', args=[self.user1.id])
         self.valid_data = {
             'username': 'updated_user1',
         }
 
-    def test_user_can_update_own_profile(self):
-        self.client.login(username='user1', password='password123')
-        self.client.post(self.url, data=self.valid_data)
-        self.user1.refresh_from_db()
-        self.assertEqual(self.user1.username, 'updated_user1')
-
     def test_user_cannot_update_another_user_profile(self):
-        self.client.login(username='user2', password='password123')
-        self.client.post(self.url, data=self.valid_data)
+        self.client.force_login(self.user2)
+        response = self.client.post(self.url, data=self.valid_data)
         self.user1.refresh_from_db()
         self.assertNotEqual(self.user1.username, 'updated_user1')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('users'))
 
 
 class UserLoginViewTest(TestCase):

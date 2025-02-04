@@ -1,5 +1,10 @@
 from django.urls import path
-from apps.labels.views import LabelIndexView, LabelCreateView, LabelDeleteView, LabelUpdateView
+from apps.labels.views import (
+    LabelIndexView,
+    LabelCreateView,
+    LabelDeleteView,
+    LabelUpdateView
+)
 
 
 urlpatterns = [
