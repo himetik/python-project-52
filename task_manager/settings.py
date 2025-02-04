@@ -34,7 +34,7 @@ DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,webserver,webserver:9000,python-project-52-ywus.onrender.com"
+    "localhost,127.0.0.1,webserver,webserver:9000"
 ).split(",")
 
 # Application definition
