@@ -1,63 +1,55 @@
-name: Lint and Test
+name: test and linter check
 
 on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+  - push
+  - pull_request
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.11]
+        python-version: [ 3.11 ]
 
     services:
       postgres:
         image: postgres
         env:
-          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
-          --health-interval 6s
-          --health-timeout 6s
-          --health-retries 3
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           - 5432:5432
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Make build.sh executable
-        run: chmod +x build.sh
-
-      - name: Run build script
+      - name: Install dependencies
         run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          ./build.sh
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv pip install .
 
-      - name: Run linters
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          ruff check .
+      - name: Run linter
+        run: ruff check .
 
-      - name: Run tests
+      - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
+        if: github.ref_name == 'trunk'
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           SECRET_KEY: open
         with:
-          coverageCommand: python -m coverage run --source='.' manage.py test && python -m coverage xml
+          coverageCommand: poetry run coverage run --source='.' manage.py test && poetry run coverage xml
           debug: true
