@@ -60,7 +60,6 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: task_manager.settings
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/postgres'
           SECRET_KEY: open
         with:
