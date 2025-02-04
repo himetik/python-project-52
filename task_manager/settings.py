@@ -32,7 +32,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'fallback_secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,webserver,webserver:9000").split(",")
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS", "localhost,127.0.0.1,webserver,webserver:9000"
+).split(",")
 
 # Application definition
 

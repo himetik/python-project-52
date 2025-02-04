@@ -15,14 +15,22 @@ class StatusIndexView(CustomLoginRequiredMixin, ListView):
     context_object_name = 'statuses'
 
 
-class StatusCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
+class StatusCreateView(
+    CustomLoginRequiredMixin,
+    SuccessMessageMixin,
+    CreateView
+):
     template_name = 'apps/statuses/create.html'
     form_class = StatusForm
     success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully created')
 
 
-class StatusDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class StatusDeleteView(
+    CustomLoginRequiredMixin,
+    SuccessMessageMixin,
+    DeleteView
+):
     model = Status
     template_name = 'apps/statuses/delete.html'
     success_url = reverse_lazy('statuses')
@@ -37,7 +45,11 @@ class StatusDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView
         return super().post(request, *args, **kwargs)
 
 
-class StatusUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class StatusUpdateView(
+    CustomLoginRequiredMixin,
+    SuccessMessageMixin,
+    UpdateView
+):
     model = Status
     form_class = StatusForm
     template_name = 'apps/statuses/update.html'
