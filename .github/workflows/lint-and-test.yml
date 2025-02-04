@@ -55,12 +55,16 @@ jobs:
           ruff check .
 
       - name: Run tests
+        uses: paambaati/codeclimate-action@v3.2.0
+        if: github.ref_name == 'trunk'
         env:
           DJANGO_SETTINGS_MODULE: task_manager.settings
-          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          DEBUG: true
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          python manage.py test
+          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
+          SECRET_KEY: not_so_secret
+        with:
+          coverageCommand: | 
+            python -m venv .venv
+            source .venv/bin/activate
+            python manage.py test
+          debug: true
