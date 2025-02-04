@@ -41,7 +41,6 @@ jobs:
           ruff check .
       - name: Run tests with coverage
         run: |
-          source .venv/bin/activate
           make coverage
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
@@ -51,6 +50,5 @@ jobs:
           DATABASE_URL: 'postgresql://postgres:011235!@127.0.0.1:5432/postgres'
           SECRET_KEY: not_so_secret
         with:
-          coverageCommand: |
-            source .venv/bin/activate && make coverage
+          coverageCommand: make coverage
           debug: true
