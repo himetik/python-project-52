@@ -56,7 +56,7 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
-          SECRET_KEY: open
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         with:
           coverageCommand: |
             source .venv/bin/activate && make coverage
