@@ -85,9 +85,13 @@ class LabelCreateViewTests(TestCase):
     #     self.assertEqual(response.status_code, 200)
     #     self.assertContains(response, "This field is required.")
     #     form = response.context.get("form")
-    #     self.assertIsNotNone(form, "Form was not passed into the template context")
+    #     self.assertIsNotNone(
+    #         form, "Form was not passed into the template context"
+    #     )
     #     self.assertTrue(form.errors, "Form contains no errors")
-    #     self.assertIn("name", form.errors, "Field 'name' did not trigger an error")
+    #     self.assertIn(
+    #         "name", form.errors, "Field 'name' did not trigger an error"
+    #     )
     #     self.assertEqual(Label.objects.count(), 0)
 
 
