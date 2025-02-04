@@ -56,15 +56,10 @@ jobs:
 
       - name: Run tests
         uses: paambaati/codeclimate-action@v3.2.0
-        if: github.ref_name == '*'
         env:
-          DJANGO_SETTINGS_MODULE: task_manager.settings
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/postgres'
+          DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
           SECRET_KEY: open
         with:
-          coverageCommand: | 
-            python -m venv .venv
-            source .venv/bin/activate
-            python manage.py test
+          coverageCommand: python -m coverage run --source='.' manage.py test && python -m coverage xml
           debug: true
