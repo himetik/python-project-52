@@ -25,8 +25,8 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
     path('users/', include('apps.users.urls')),
-    path('statuses/', include ('apps.statuses.urls')),
-    path('tasks/', include ('apps.tasks.urls')),
-    path('labels/', include ('apps.labels.urls')),
+    path('statuses/', include('apps.statuses.urls')),
+    path('tasks/', include('apps.tasks.urls')),
+    path('labels/', include('apps.labels.urls')),
     path('admin/', admin.site.urls),
 ]
