@@ -40,6 +40,7 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           uv venv
           uv pip install .
+          uv pip install ruff
           ruff check .
 
       - name: Test & publish code coverage
