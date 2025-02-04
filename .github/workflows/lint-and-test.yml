@@ -38,25 +38,25 @@ jobs:
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.local/bin:$PATH"
 
       - name: Install dependencies
         run: |
           python -m venv .venv
-          . .venv/bin/activate
-          pip install --upgrade pip
-          uv pip install .
-          echo "source .venv/bin/activate" >> $GITHUB_ENV
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/uv pip install .
 
       - name: Run linter
         run: |
-          ruff check .
+          .venv/bin/ruff check .
 
       - name: Wait for PostgreSQL
         run: |
-          until pg_isready -h localhost -p 5432 -U postgres; do
-            echo "Waiting for PostgreSQL...";
-            sleep 2;
-          done
+          until pg_isready -h localhost -p 5432 -U postgres && \
+            PGPASSWORD=011235! psql -h localhost -U postgres -d database -c "SELECT 1" > /dev/null 2>&1; do
+              echo "Waiting for PostgreSQL...";
+              sleep 2;
+          done 
 
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
@@ -67,6 +67,6 @@ jobs:
           SECRET_KEY: not_so_secret
         with:
           coverageCommand: |
-            coverage run --source='.' manage.py test
-            coverage xml
+            .venv/bin/coverage run --source='.' manage.py test
+            .venv/bin/coverage xml
           debug: true
