@@ -45,7 +45,7 @@ jobs:
           . .venv/bin/activate
           pip install --upgrade pip
           uv pip install .
-          echo ". .venv/bin/activate" >> $GITHUB_ENV
+          echo "source .venv/bin/activate" >> $GITHUB_ENV
 
       - name: Run linter
         run: |
