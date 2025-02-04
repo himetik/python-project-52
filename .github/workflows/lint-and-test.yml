@@ -66,7 +66,7 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           DATABASE_URL: 'postgresql://postgres:011235!@localhost:5432/database'
-          SECRET_KEY: not_so_secret
+          SECRET_KEY: open
         with:
           coverageCommand: sh -c ".venv/bin/coverage run --source='.' manage.py test; .venv/bin/coverage xml"
           debug: true
