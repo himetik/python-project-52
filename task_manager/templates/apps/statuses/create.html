@@ -1,12 +1,9 @@
 {% extends "form.html" %}
 {% load django_bootstrap5 i18n %}
-
 {% block header %}
 {% trans 'Create status' %}
 {% endblock %}
-
 {% block form_action %}
 {% url 'statuses_create' %}
 {% endblock %}
-
 {% block button_value %}{% trans 'Create' %}{% endblock %}
