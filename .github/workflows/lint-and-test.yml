@@ -42,9 +42,10 @@ jobs:
           uv pip install .
 
       - name: Run linter
-             curl -LsSf https://astral.sh/uv/install.sh | sh
-             export PATH="$HOME/.local/bin:$PATH"
-        run: ruff check .
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          ruff check .
 
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
