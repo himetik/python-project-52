@@ -107,3 +107,13 @@ class StatusDeleteViewTest(BaseStatusTestCase):
         )
         self.assertRedirects(response, reverse('statuses'))
         self.assertTrue(Status.objects.filter(id=self.status.id).exists())
+
+    def test_delete_nonexistent_status(self):
+        response = self.get_response(
+            'statuses_delete',
+            args=[99999],
+            method='post',
+            follow=True
+        )
+
+        self.assertEqual(response.status_code, 404)
