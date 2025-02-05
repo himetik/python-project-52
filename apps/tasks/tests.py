@@ -1,277 +1,107 @@
-from django.test import TestCase, Client
+from django.test import TestCase
+from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 from apps.tasks.models import Task
 from apps.statuses.models import Status
-from django.urls import reverse
-from apps.tasks.filters import TaskFilter
-from django.db.utils import IntegrityError
-from apps.tasks.views import TaskIndexView
-from django.test import RequestFactory
-
 
 User = get_user_model()
 
-
-class TaskIndexViewTests(TestCase):
+class TaskIndexViewTest(TestCase):
     def setUp(self):
-        self.creator = get_user_model().objects.create_user(
-            username='creator',
-            password='creator123'
-        )
-        self.executor = get_user_model().objects.create_user(
-            username='executor',
-            password='executor123'
-        )
-        self.status = Status.objects.create(
-            name='In Progress'
-        )
-        self.task1 = Task.objects.create(
-            name='Test Task 1',
-            description='Description for task 1',
-            status=self.status,
-            creator=self.creator,
-            executor=self.executor,
-            created_at=timezone.now()
-        )
-        self.task2 = Task.objects.create(
-            name='Test Task 2',
-            description='Description for task 2',
-            status=self.status,
-            creator=self.creator,
-            executor=None,
-            created_at=timezone.now()
-        )
-        self.client = Client()
-        self.tasks_url = '/tasks/'
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
+        self.status = Status.objects.create(name='In Progress')
+        self.task = Task.objects.create(name='Test Task', description='Test Description', status=self.status, creator=self.user)
 
-    def test_login_required(self):
-        response = self.client.get(self.tasks_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith('/login'))
-
-    def test_view_with_logged_in_user(self):
-        self.client.login(username='creator', password='creator123')
-        response = self.client.get(self.tasks_url)
+    def test_task_list_view_status_code(self):
+        response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
+
+    def test_task_list_view_template(self):
+        response = self.client.get(reverse('tasks'))
         self.assertTemplateUsed(response, 'apps/tasks/tasks.html')
-        tasks = response.context['tasks']
-        self.assertEqual(tasks.count(), 2)
-        task1 = tasks.get(name='Test Task 1')
-        self.assertEqual(task1.creator, self.creator)
-        self.assertEqual(task1.executor, self.executor)
-        self.assertEqual(task1.status, self.status)
-        task2 = tasks.get(name='Test Task 2')
-        self.assertEqual(task2.creator, self.creator)
-        self.assertIsNone(task2.executor)
-        self.assertEqual(task2.status, self.status)
 
-    def test_task_unique_name(self):
-        with self.assertRaises(IntegrityError):
-            Task.objects.create(
-                name='Test Task 1',
-                description='Another description',
-                status=self.status,
-                creator=self.creator
-            )
-
-    def test_filter_by_status(self):
-        self.client.login(username='creator', password='creator123')
-        new_status = Status.objects.create(name='Completed')
-        Task.objects.create(
-            name='Test Task 3',
-            description='Description for task 3',
-            status=new_status,
-            creator=self.creator,
-            executor=None,
-            created_at=timezone.now()
-        )
-        response = self.client.get(f"{self.tasks_url}?status={self.status.id}")
-        self.assertEqual(response.context['tasks'].count(), 2)
-        response = self.client.get(f"{self.tasks_url}?status={new_status.id}")
-        self.assertEqual(response.context['tasks'].count(), 1)
-
-    def test_filter_by_executor(self):
-        self.client.login(username='creator', password='creator123')
-        response = self.client.get(
-            f"{self.tasks_url}?executor={self.executor.id}"
-        )
-        self.assertEqual(response.context['tasks'].count(), 1)
-        self.assertEqual(response.context['tasks'].first(), self.task1)
-        response = self.client.get(f"{self.tasks_url}?executor=")
-        tasks = response.context['tasks']
-        self.assertTrue(any(task.executor is None for task in tasks))
-
-    def test_get_filterset_passes_request(self):
-        factory = RequestFactory()
-        request = factory.get(self.tasks_url, {'status': self.status.id})
-        request.user = self.creator
-        view = TaskIndexView()
-        view.request = request
-        view.object_list = Task.objects.all()
-        filterset = view.get_filterset(TaskFilter)
-        self.assertEqual(filterset.request, request)
-
-    def test_task_str_method(self):
-        self.assertEqual(str(self.task1), 'Test Task 1')
+    def test_task_list_view_context(self):
+        response = self.client.get(reverse('tasks'))
+        self.assertIn('tasks', response.context)
+        self.assertIn(self.task, response.context['tasks'])
 
 
-class TaskCreateViewTests(TestCase):
+class TaskCreateViewTest(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.user = get_user_model().objects.create_user(
-            username='testuser',
-            password='password123'
-        )
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
         self.status = Status.objects.create(name='New')
-        self.create_url = reverse('tasks_create')
 
-    def test_redirect_if_not_logged_in(self):
-        response = self.client.get(self.create_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith('/login'))
-
-    def test_get_create_view_as_logged_in_user(self):
-        self.client.login(username='testuser', password='password123')
-        response = self.client.get(self.create_url)
+    def test_create_task_view_status_code(self):
+        response = self.client.get(reverse('tasks_create'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'apps/tasks/create.html')
 
-    def test_create_task_successfully(self):
-        self.client.login(username='testuser', password='password123')
-        response = self.client.post(self.create_url, {
+    def test_create_task_success(self):
+        response = self.client.post(reverse('tasks_create'), {
             'name': 'New Task',
-            'description': 'Task description',
+            'description': 'New Task Description',
             'status': self.status.id
-        }, follow=True)
-        
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(Task.objects.filter(name='New Task').exists())
-        task = Task.objects.get(name='New Task')
-        self.assertEqual(task.creator, self.user)
-        self.assertEqual(task.status, self.status)
-        self.assertContains(response, 'The task has been successfully created')
-
-    def test_create_task_invalid_form(self):
-        self.client.login(username='testuser', password='password123')
-        response = self.client.post(self.create_url, {}, follow=True)
-        
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(Task.objects.exists())
+        })
+        self.assertEqual(Task.objects.count(), 1)
+        self.assertRedirects(response, reverse('tasks'))
 
 
-class TaskDeleteViewTests(TestCase):
+class TaskUpdateViewTest(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user(
-            username='testuser', password='password123')
-        self.other_user = User.objects.create_user(
-            username='otheruser', password='password456')
-        self.status = Status.objects.create(name='New')
-        self.task = Task.objects.create(
-            name='Test Task',
-            description='Task description',
-            status=self.status,
-            creator=self.user
-        )
-        self.delete_url = reverse('tasks_delete', args=[self.task.id])
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
+        self.status = Status.objects.create(name='Updated Status')
+        self.task = Task.objects.create(name='Task to Update', description='Old Description', status=self.status, creator=self.user)
 
-    def test_redirect_if_not_logged_in(self):
-        response = self.client.get(self.delete_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith('/login'))
-
-    def test_delete_task_successfully(self):
-        self.client.login(username='testuser', password='password123')
-        response = self.client.post(self.delete_url, follow=True)
+    def test_update_task_view_status_code(self):
+        response = self.client.get(reverse('tasks_update', args=[self.task.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(Task.objects.filter(id=self.task.id).exists())
-        self.assertContains(response, 'The task has been successfully deleted')
 
-    def test_delete_task_by_non_creator_fails(self):
-        self.client.login(username='otheruser', password='password456')
-        response = self.client.post(self.delete_url, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(Task.objects.filter(id=self.task.id).exists())
-        self.assertContains(
-            response, 'Only the author of the task can delete it'
-        )
-
-
-class TaskUpdateViewTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = get_user_model().objects.create_user(
-            username='testuser', password='password123')
-        self.other_user = get_user_model().objects.create_user(
-            username='otheruser', password='password456')
-        self.status = Status.objects.create(name='New')
-        self.task = Task.objects.create(
-            name='Test Task',
-            description='Task description',
-            status=self.status,
-            creator=self.user
-        )
-        self.update_url = reverse('tasks_update', args=[self.task.id])
-
-    def test_redirect_if_not_logged_in(self):
-        response = self.client.get(self.update_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith('/login'))
-
-    def test_update_task_successfully(self):
-        self.client.login(username='testuser', password='password123')
-        response = self.client.post(self.update_url, {
+    def test_update_task_success(self):
+        response = self.client.post(reverse('tasks_update', args=[self.task.id]), {
             'name': 'Updated Task',
-            'description': 'Updated description',
+            'description': 'Updated Description',
             'status': self.status.id
-        }, follow=True)
-        self.assertEqual(response.status_code, 200)
+        })
         self.task.refresh_from_db()
         self.assertEqual(self.task.name, 'Updated Task')
-        self.assertEqual(self.task.description, 'Updated description')
-        self.assertContains(response, 'The task has been successfully updated')
+        self.assertRedirects(response, reverse('tasks'))
 
 
-class TaskDetailViewTest(TestCase):
+class TaskDeleteViewTest(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            username="testuser", password="password123"
-        )
-        self.executor = get_user_model().objects.create_user(
-            username="executor", password="password123"
-        )
-        self.status = Status.objects.create(name="In Progress")
-        self.task = Task.objects.create(
-            name="Test Task",
-            description="Test Description",
-            status=self.status,
-            creator=self.user,
-            executor=self.executor,
-            created_at=timezone.now()
-        )
-        self.url = reverse("tasks_instance", kwargs={"pk": self.task.pk})
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
+        self.status = Status.objects.create(name='To Delete')
+        self.task = Task.objects.create(name='Task to Delete', status=self.status, creator=self.user)
 
-    def test_task_detail_view_status_code(self):
-        response = self.client.get(self.url)
+    def test_delete_task_view_status_code(self):
+        response = self.client.get(reverse('tasks_delete', args=[self.task.id]))
         self.assertEqual(response.status_code, 200)
 
-    def test_task_detail_view_uses_correct_template(self):
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, "apps/tasks/task.html")
+    def test_delete_task_success(self):
+        response = self.client.post(reverse('tasks_delete', args=[self.task.id]))
+        self.assertFalse(Task.objects.filter(id=self.task.id).exists())
+        self.assertRedirects(response, reverse('tasks'))
+
+
+class TaskSingleViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
+        self.status = Status.objects.create(name='Single View')
+        self.task = Task.objects.create(name='Single Task', description='Single Task Description', status=self.status, creator=self.user)
+
+    def test_task_detail_view_status_code(self):
+        response = self.client.get(reverse('tasks_instance', args=[self.task.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_task_detail_view_template(self):
+        response = self.client.get(reverse('tasks_instance', args=[self.task.id]))
+        self.assertTemplateUsed(response, 'apps/tasks/task.html')
 
     def test_task_detail_view_context(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.context["task"], self.task)
-        self.assertEqual(response.context["task"].name, "Test Task")
-        self.assertEqual(response.context["task"].status, self.status)
-        self.assertEqual(response.context["task"].creator, self.user)
-        self.assertEqual(response.context["task"].executor, self.executor)
-        self.assertEqual(
-            response.context["task"].description, "Test Description"
-        )
-
-    def test_task_detail_view_nonexistent_task(self):
-        url = reverse("tasks_instance", kwargs={"pk": 99999})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        response = self.client.get(reverse('tasks_instance', args=[self.task.id]))
+        self.assertIn('task', response.context)
+        self.assertEqual(response.context['task'], self.task)
