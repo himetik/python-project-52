@@ -42,6 +42,11 @@ class UserListViewTest(BaseUserTestCase):
         self.assertIn(self.user1, response.context['users'])
         self.assertIn(self.user2, response.context['users'])
 
+    def test_user_list_view_empty(self):
+        User.objects.all().delete()
+        response = self.client.get(self.url)
+        self.assertEqual(len(response.context['users']), 0)
+
 
 @override_settings(LANGUAGE_CODE="en")
 class UserCreateViewTest(BaseUserTestCase):
@@ -59,12 +64,36 @@ class UserCreateViewTest(BaseUserTestCase):
 
     def test_create_user_form(self):
         response = self.client.get(self.url)
-        self.assertIsInstance(response.context['form'], CustomUserCreationForm)
+        self.assertIsInstance(
+            response.context['form'], CustomUserCreationForm
+        )
 
     def test_create_user_success(self):
         response = self.client.post(self.url, data=self.valid_data)
         self.assertRedirects(response, settings.LOGIN_URL)
         self.assertTrue(User.objects.filter(username='testuser').exists())
+
+    def test_create_user_password_mismatch(self):
+        invalid_data = self.valid_data.copy()
+        invalid_data['password2'] = 'WrongPassword123!'
+        response = self.client.post(self.url, data=invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username='testuser').exists())
+        self.assertFormError(
+            response,
+            'form', 'password2', "The two password fields didn't match."
+        )
+
+    def test_create_user_duplicate_username(self):
+        User.objects.create(username='testuser')
+        response = self.client.post(self.url, data=self.valid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response,
+            'form',
+            'username',
+            "A user with that username already exists."
+        )
 
 
 @override_settings(LANGUAGE_CODE="en")
