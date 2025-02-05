@@ -6,11 +6,13 @@ from django.conf import settings
 from apps.users.forms import CustomUserCreationForm
 from django.utils.translation import gettext as _
 from apps.main.mixins import SetUpLoggedUserMixin
+from django.test.utils import override_settings
 
 
 User = get_user_model()
 
 
+@override_settings(LANGUAGE_CODE="en")
 class UserIndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -42,6 +44,7 @@ class UserIndexViewTest(TestCase):
         self.assertEqual(len(response.context['users']), 2)
 
 
+@override_settings(LANGUAGE_CODE="en")
 class UserCreateViewTest(TestCase):
     def setUp(self):
         self.url = reverse('users_create')
@@ -98,6 +101,7 @@ class UserCreateViewTest(TestCase):
         ))
 
 
+@override_settings(LANGUAGE_CODE="en")
 class UserDeleteViewTest(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
@@ -137,6 +141,7 @@ class UserDeleteViewTest(TestCase):
         )
 
 
+@override_settings(LANGUAGE_CODE="en")
 class UserUpdateViewTest(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
@@ -159,6 +164,7 @@ class UserUpdateViewTest(TestCase):
         self.assertEqual(response.url, reverse('users'))
 
 
+@override_settings(LANGUAGE_CODE="en")
 class UserLoginViewTest(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
@@ -192,6 +198,7 @@ class UserLoginViewTest(TestCase):
         self.assertFalse(response.context['user'].is_authenticated)
 
 
+@override_settings(LANGUAGE_CODE="en")
 class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
     def test_logout_view_status_code(self):
         response = self.client.post(reverse('logout'))
