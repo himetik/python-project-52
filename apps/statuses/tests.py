@@ -47,7 +47,7 @@ class StatusIndexViewTest(BaseStatusTestCase):
 
 
 class StatusCreateViewTest(BaseStatusTestCase):
-    def test_create_status(self):
+    def test_create_status_success(self):
         response = self.get_response(
             'statuses_create',
             method='post',
@@ -56,6 +56,35 @@ class StatusCreateViewTest(BaseStatusTestCase):
         )
         self.assertRedirects(response, reverse('statuses'))
         self.assertTrue(Status.objects.filter(name='New Status').exists())
+
+    def test_create_status_empty_name(self):
+        response = self.get_response(
+            'statuses_create',
+            method='post',
+            data={'name': ''},
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Status.objects.filter(name='').exists())
+        
+    def test_create_duplicate_status(self):
+        Status.objects.create(name='Existing Status')
+
+        response = self.get_response(
+            'statuses_create',
+            method='post',
+            data={'name': 'Existing Status'},
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Status.objects.filter(name='Existing Status').count(), 1
+        )
+
+    def test_get_create_status_page(self):
+        response = self.get_response('statuses_create')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'apps/statuses/create.html')
 
 
 class StatusUpdateViewTest(BaseStatusTestCase):

@@ -79,20 +79,23 @@ class UserCreateViewTest(BaseUserTestCase):
         response = self.client.post(self.url, data=invalid_data)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username='testuser').exists())
-        self.assertFormError(
-            response,
-            'form', 'password2', "The two password fields didn't match."
+        form = response.context['form']
+        self.assertEqual(
+            form.errors['password2'][0],
+            "The two password fields didn’t match."
         )
 
     def test_create_user_duplicate_username(self):
-        User.objects.create(username='testuser')
+        User.objects.create_user(
+            username='testuser',
+            password='SomeOtherPwd123!'
+        )
         response = self.client.post(self.url, data=self.valid_data)
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(
-            response,
-            'form',
-            'username',
-            "A user with that username already exists."
+        form = response.context['form']
+        self.assertIn(
+            "A user with that username already exists.",
+            form.errors['username']
         )
 
 
