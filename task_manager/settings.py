@@ -119,3 +119,6 @@ LOGOUT_REDIRECT_URL = reverse_lazy('index')
 
 # Default Primary Key Field Type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 404 Custom Handler
+HANDLER404 = 'core.views.get_404'
