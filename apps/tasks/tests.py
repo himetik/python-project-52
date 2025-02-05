@@ -4,9 +4,11 @@ from django.contrib.auth import get_user_model
 from apps.tasks.models import Task
 from apps.statuses.models import Status
 
+
 User = get_user_model()
 
-class BaseTaskTestCase(TestCase):
+
+class TaskIndexViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username='testuser', password='testpass'

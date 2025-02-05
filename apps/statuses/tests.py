@@ -1,51 +1,101 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.test.utils import override_settings
 from apps.statuses.models import Status
+from apps.tasks.models import Task
 
 
-class StatusViewTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user(
-            username='testuser', password='testpassword'
+User = get_user_model()
+
+
+@override_settings(LANGUAGE_CODE="en")
+class BaseStatusTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username='testuser', password='testpass'
         )
-        self.status = Status.objects.create(name='Test Status')
 
-    def test_status_index_view_authenticated(self):
-        self.client.force_login(self.user)
+    def setUp(self):
+        self.client.login(username='testuser', password='testpass')
+
+
+@override_settings(LANGUAGE_CODE="en")
+class StatusIndexViewTest(BaseStatusTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.status = Status.objects.create(name='Test Status')
+
+    def test_status_list_view_status_code(self):
         response = self.client.get(reverse('statuses'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Status')
 
-    def test_status_create_view(self):
-        self.client.force_login(self.user)
+    def test_status_list_view_template(self):
+        response = self.client.get(reverse('statuses'))
+        self.assertTemplateUsed(response, 'apps/statuses/statuses.html')
+
+    def test_status_list_view_context(self):
+        response = self.client.get(reverse('statuses'))
+        self.assertIn('statuses', response.context)
+        self.assertIn(self.status, response.context['statuses'])
+
+
+@override_settings(LANGUAGE_CODE="en")
+class StatusCreateViewTest(BaseStatusTestCase):
+    def test_create_status_view_status_code(self):
+        response = self.client.get(reverse('statuses_create'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_status_success(self):
         response = self.client.post(
             reverse('statuses_create'), {'name': 'New Status'}, follow=True
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('statuses'))
         self.assertTrue(Status.objects.filter(name='New Status').exists())
 
-    def test_status_update_view(self):
-        self.client.force_login(self.user)
+
+@override_settings(LANGUAGE_CODE="en")
+class StatusUpdateViewTest(BaseStatusTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.status = Status.objects.create(name='Old Status')
+
+    def test_update_status_success(self):
         response = self.client.post(
             reverse(
                 'statuses_update',
-                args=[self.status.pk]),
+                args=[self.status.id]),
                 {'name': 'Updated Status'},
                 follow=True
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('statuses'))
         self.status.refresh_from_db()
         self.assertEqual(self.status.name, 'Updated Status')
 
-    def test_status_delete_view(self):
-        self.client.force_login(self.user)
+
+@override_settings(LANGUAGE_CODE="en")
+class StatusDeleteViewTest(BaseStatusTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.status = Status.objects.create(name='Delete Status')
+
+    def test_delete_status_success(self):
         response = self.client.post(
-            reverse(
-                'statuses_delete',
-                args=[self.status.pk]), 
-                follow=True
+            reverse('statuses_delete', args=[self.status.id]), follow=True
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(Status.objects.filter(pk=self.status.pk).exists())
+        self.assertRedirects(response, reverse('statuses'))
+        self.assertFalse(Status.objects.filter(id=self.status.id).exists())
+
+    def test_delete_status_with_tasks(self):
+        Task.objects.create(
+            name='Test Task', status=self.status, creator=self.user
+        )
+        response = self.client.post(
+            reverse('statuses_delete', args=[self.status.id]), follow=True
+        )
+        self.assertRedirects(response, reverse('statuses'))
+        self.assertTrue(Status.objects.filter(id=self.status.id).exists())
