@@ -6,13 +6,14 @@ from apps.statuses.models import Status
 
 User = get_user_model()
 
-class TaskIndexViewTest(TestCase):
+class BaseTaskTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client.login(username='testuser', password='testpass')
-        self.status = Status.objects.create(name='In Progress')
-        self.task = Task.objects.create(name='Test Task', description='Test Description', status=self.status, creator=self.user)
+        self.status = Status.objects.create(name='Default Status')
+        self.task = Task.objects.create(name='Default Task', description='Default Description', status=self.status, creator=self.user)
 
+class TaskIndexViewTest(BaseTaskTestCase):
     def test_task_list_view_status_code(self):
         response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
@@ -27,12 +28,7 @@ class TaskIndexViewTest(TestCase):
         self.assertIn(self.task, response.context['tasks'])
 
 
-class TaskCreateViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.login(username='testuser', password='testpass')
-        self.status = Status.objects.create(name='New')
-
+class TaskCreateViewTest(BaseTaskTestCase):
     def test_create_task_view_status_code(self):
         response = self.client.get(reverse('tasks_create'))
         self.assertEqual(response.status_code, 200)
@@ -43,17 +39,11 @@ class TaskCreateViewTest(TestCase):
             'description': 'New Task Description',
             'status': self.status.id
         })
-        self.assertEqual(Task.objects.count(), 1)
+        self.assertEqual(Task.objects.count(), 2)
         self.assertRedirects(response, reverse('tasks'))
 
 
-class TaskUpdateViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.login(username='testuser', password='testpass')
-        self.status = Status.objects.create(name='Updated Status')
-        self.task = Task.objects.create(name='Task to Update', description='Old Description', status=self.status, creator=self.user)
-
+class TaskUpdateViewTest(BaseTaskTestCase):
     def test_update_task_view_status_code(self):
         response = self.client.get(reverse('tasks_update', args=[self.task.id]))
         self.assertEqual(response.status_code, 200)
@@ -69,13 +59,7 @@ class TaskUpdateViewTest(TestCase):
         self.assertRedirects(response, reverse('tasks'))
 
 
-class TaskDeleteViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.login(username='testuser', password='testpass')
-        self.status = Status.objects.create(name='To Delete')
-        self.task = Task.objects.create(name='Task to Delete', status=self.status, creator=self.user)
-
+class TaskDeleteViewTest(BaseTaskTestCase):
     def test_delete_task_view_status_code(self):
         response = self.client.get(reverse('tasks_delete', args=[self.task.id]))
         self.assertEqual(response.status_code, 200)
@@ -86,13 +70,7 @@ class TaskDeleteViewTest(TestCase):
         self.assertRedirects(response, reverse('tasks'))
 
 
-class TaskSingleViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.login(username='testuser', password='testpass')
-        self.status = Status.objects.create(name='Single View')
-        self.task = Task.objects.create(name='Single Task', description='Single Task Description', status=self.status, creator=self.user)
-
+class TaskSingleViewTest(BaseTaskTestCase):
     def test_task_detail_view_status_code(self):
         response = self.client.get(reverse('tasks_instance', args=[self.task.id]))
         self.assertEqual(response.status_code, 200)
