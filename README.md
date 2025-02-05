@@ -5,6 +5,8 @@
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/91aa91b43780aea51d35/test_coverage)](https://codeclimate.com/github/himetik/python-project-52/test_coverage)
 
+[![Lint and Test](https://github.com/himetik/python-project-52/actions/workflows/lint-and-test.yml/badge.svg)](https://github.com/himetik/python-project-52/actions)
+
 https://python-project-52-ywus.onrender.com/
 
 # Local installation for Debian/Ubuntu
