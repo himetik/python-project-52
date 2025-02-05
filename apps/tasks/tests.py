@@ -22,6 +22,7 @@ class BaseTaskTestCase(TestCase):
             creator=self.user
         )
 
+
 class TaskIndexViewTest(BaseTaskTestCase):
     def test_task_list_view_status_code(self):
         response = self.client.get(reverse('tasks'))
