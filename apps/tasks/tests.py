@@ -4,7 +4,9 @@ from django.contrib.auth import get_user_model
 from apps.tasks.models import Task
 from apps.statuses.models import Status
 
+
 User = get_user_model()
+
 
 class TaskIndexViewTest(TestCase):
     def setUp(self):
