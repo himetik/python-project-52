@@ -1,20 +1,15 @@
 {% extends "form.html" %}
 {% load django_bootstrap5 i18n %}
-
 {% block header %}
 {% trans 'Delete task' %}
 {% endblock %}
-
 {% block form_action %}
 {% url 'tasks_delete' pk=task.pk %}
 {% endblock %}
-
 {%block text %}
 {% trans 'Are you sure you want to delete' %} {{ task }}?
 {% endblock %}
-
 {% block button_class %}
 btn-danger
 {% endblock %}
-
 {% block button_value %}{% trans 'Yes, delete' %}{% endblock %}

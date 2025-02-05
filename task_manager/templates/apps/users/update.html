@@ -1,12 +1,9 @@
 {% extends "form.html" %}
 {% load django_bootstrap5 i18n %}
-
 {% block header %}
 {% trans 'Update user' %}
 {% endblock %}
-
 {% block form_action %}
 {% url 'users_update' pk=user.pk %}
 {% endblock %}
-
 {% block button_value %}{% trans 'Update' %}{% endblock %}
