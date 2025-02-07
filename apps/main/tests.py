@@ -3,18 +3,32 @@ from django.urls import reverse
 
 
 class IndexViewTest(TestCase):
-    def test_index_success_response_code(self):
-        response = self.client.get(reverse('index'))
-        self.assertEqual(response.status_code, 200)
+    def setUp(self):
+        self.url = reverse('index')
+        self.response = self.client.get(self.url)
 
-    def test_index_405_response_code(self):
-        DISALLOWERD_METHODS = ['post', 'put', 'delete', 'patch']
+    def test_index_success_response_code(self):
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_index_correct_template_usage(self):
+        self.assertTemplateUsed(self.response, 'index.html')
+
+    def test_disallowed_methods(self):
+        DISALLOWED_METHODS = ['post', 'put', 'delete', 'patch']
         url = reverse('index')
-        for method in DISALLOWERD_METHODS:
+        for method in DISALLOWED_METHODS:
             with self.subTest(method=method):
                 response = getattr(self.client, method)(url)
                 self.assertEqual(response.status_code, 405)
 
-    def test_index_correct_template_usage(self):
-        response = self.client.get(reverse('index'))
-        self.assertTemplateUsed(response, 'index.html')
+
+class ErrorsPagesTest(TestCase):
+    def setUp(self):
+        self.url = '/unreachable/'
+        self.response = self.client.get(self.url)
+    
+    def test_get_404(self):
+        self.assertEqual(self.response.status_code, 404)
+    
+    def test_get_404_template_usage(self):
+        self.assertTemplateUsed(self.response, '404.html')
