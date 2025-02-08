@@ -125,6 +125,14 @@ class UserLoginViewTest(TestCase):
             )
         )
 
+    def test_login_page_loads_successfully(self):
+        response = self.client.get(self.login_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_login_page_uses_correct_template(self):
+        response = self.client.get(self.login_url)
+        self.assertTemplateUsed(response, 'login.html')
+
 
 class UserLogoutViewTest(TestCase):
     pass
