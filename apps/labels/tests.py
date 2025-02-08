@@ -72,3 +72,16 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertIn(
             _("Label с таким Имя уже существует."), form.errors["name"]
         )
+
+    def test_create_label_with_empty_name_fails(self):
+        initial_label_count = Label.objects.count()
+        data = {"name": ""}
+        response = self.client.post(reverse("labels_create"), data)
+        self.assertEqual(Label.objects.count(), initial_label_count)
+        form = response.context.get("form")
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn("name", form.errors)
+        self.assertIn(
+            _("Обязательное поле."), form.errors["name"]
+        )
