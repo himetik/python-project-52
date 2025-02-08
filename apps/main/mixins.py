@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
+from apps.labels.models import Label
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
@@ -23,3 +24,10 @@ class SetUpLoggedUserMixin:
     def setUp(self):
         super().setUp()
         self.client.login(**self.user_data)
+
+
+class SetUpLoggedUserWithLabelMixin(SetUpLoggedUserMixin):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.label = Label.object.create(name='The Label')
