@@ -229,6 +229,23 @@ class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
             _("Обязательное поле."), form.errors["name"]
         )
 
-    # def test_update_label_with_empty_name_fails(self):
+    def test_update_label_with_whitespace_name(self):
+        Label.objects.create(name="Duplicate Label")
+        data = {"name": "  Duplicate Label  "}
+        response = self.client.post(
+            reverse("labels_update", kwargs={"pk": self.label.id}),
+            data,
+        )
+        self.label.refresh_from_db()
+        self.assertNotEqual(self.label.name, "Duplicate Label")
+        form = response.context.get("form")
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn("name", form.errors)
+        self.assertIn(
+            _("Label с таким Имя уже существует."), form.errors["name"]
+        )
+
+
     # def test_update_label_with_whitespace_name(self):
     # def test_update_label_exceeding_max_length_fails(self):
