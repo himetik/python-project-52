@@ -21,6 +21,13 @@ class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
                 response = getattr(self.client, method)(url)
                 self.assertEqual(response.status_code, 405)
 
+    def test_status_list_view_empty_context(self):
+        Status.objects.all().delete()
+        response = self.client.get(reverse('statuses'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('statuses', response.context)
+        self.assertEqual(len(response.context['statuses']), 0)
+
 
 class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_create_view(self):
