@@ -2,6 +2,7 @@ from apps.main.mixins import SetUpLoggedUserMixin
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from task_manager import settings
 
 
 class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
@@ -45,7 +46,7 @@ class UserCreateViewTest(SetUpLoggedUserMixin, TestCase):
             'password2': '23977sdv',
         }
         response = self.client.post(reverse('users_create'), data)
-        self.assertRedirects(response, reverse('login'))
+        self.assertRedirects(response, settings.LOGIN_URL)
         self.assertTrue(User.objects.filter(username='test_user').exists())
         user = User.objects.get(username='test_user')
         self.assertEqual(user.first_name, 'Firstname')
