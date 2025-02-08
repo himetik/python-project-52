@@ -21,3 +21,9 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertEqual(label_from_context.id, self.label.id)
         self.assertEqual(str(label_from_context), str(self.label))
         self.assertTrue(hasattr(label_from_context, 'created_at'))
+
+    def test_view_empty_context(self):
+        self.label.delete()
+        response = self.client.get(reverse('labels'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['labels']), 0)
