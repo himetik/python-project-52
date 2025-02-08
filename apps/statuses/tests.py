@@ -32,7 +32,7 @@ class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
         response = self.client.get(reverse('statuses'))
         self.assertIn('statuses', response.context)
         self.assertGreaterEqual(len(response.context['statuses']), 2)
-        self.assertTrue(any(status.name == "Test Status" for status in response.context['statuses']))
+        self.assertTrue(any(status.name == "The Status" for status in response.context['statuses']))
         self.assertTrue(any(status.name == "Another Status" for status in response.context['statuses']))
 
 
