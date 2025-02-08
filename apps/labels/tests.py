@@ -27,3 +27,7 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         response = self.client.get(reverse('labels'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['labels']), 0)
+
+    def test_label_with_label(self):
+        response = self.client.get(reverse('labels'))
+        self.assertContains(response, "The Label")
