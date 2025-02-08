@@ -14,9 +14,9 @@ class IndexViewTest(TestCase):
         self.assertTemplateUsed(self.response, 'index.html')
 
     def test_disallowed_methods(self):
-        DISALLOWED_METHODS = ['post', 'put', 'delete', 'patch']
+        disallowed_methods = ['post', 'put', 'delete', 'patch']
         url = reverse('index')
-        for method in DISALLOWED_METHODS:
+        for method in disallowed_methods:
             with self.subTest(method=method):
                 response = getattr(self.client, method)(url)
                 self.assertEqual(response.status_code, 405)
