@@ -179,13 +179,22 @@ class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(
             any(
-                str(msg) == _('The label has been successfully updated')
+                str(msg) == _('The label has been successfully changed')
                 for msg in messages
             )
         )
         self.assertRedirects(response, reverse('labels'))
 
     # def test_update_label_with_non_existing_id_fails(self):
+    #     non_existing_id = self.label.id + 919
+    #     response = self.client.post(
+    #         reverse('labels_update', kwargs={'pk': non_existing_id}),
+    #         {'name': 'New Name'},
+    #         follow=True
+    #     )
+    #     self.assertEqual(response.status_code, 404)
+
+
     # def test_update_label_with_existing_name_fails(self):
     # def test_update_label_with_empty_name_fails(self):
     # def test_update_label_with_whitespace_name(self):
