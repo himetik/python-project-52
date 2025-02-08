@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
 from apps.labels.models import Label
+from apps.statuses.models import Status
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
@@ -31,3 +32,10 @@ class SetUpLoggedUserWithLabelMixin(SetUpLoggedUserMixin):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.label = Label.object.create(name='The Label')
+
+
+class SetUpLoggedUserWithStatusMixin(SetUpLoggedUserMixin):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.status = Status.objects.create(name='The Status')
