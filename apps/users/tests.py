@@ -78,3 +78,18 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertEqual(user.username, 'new_test_user')
         self.assertEqual(user.first_name, 'NewFirstname')
         self.assertEqual(user.last_name, 'NewLastName')
+
+
+class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
+    def test_delete_user_view_returns_200(self):
+        response = self.client.get(reverse('users_delete', args=(self.user.pk,)))
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_user_view_uses_correct_template(self):
+        response = self.client.get(reverse('users_delete', args=(self.user.pk,)))
+        self.assertTemplateUsed(response, 'apps/users/delete.html')
+
+    def test_delete_user_view_deletes_user(self):
+        response = self.client.post(reverse('users_delete', args=(self.user.pk,)))
+        self.assertRedirects(response, reverse('users'))
+        self.assertFalse(get_user_model().objects.filter(pk=self.user.pk).exists())
