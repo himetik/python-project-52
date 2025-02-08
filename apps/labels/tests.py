@@ -85,3 +85,29 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertIn(
             _("Обязательное поле."), form.errors["name"]
         )
+
+    def test_create_label_with_whitespace_name(self):
+        Label.objects.create(name="Same Label")
+        data = {"name": "  Same Label  "}
+        response = self.client.post(reverse("labels_create"), data)
+        self.assertEqual(Label.objects.filter(name="Same Label").count(), 1)
+        form = response.context.get("form")
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn("name", form.errors)
+        self.assertIn(
+            _("Label с таким Имя уже существует."), form.errors["name"]
+        )
+
+    def test_create_label_exceeding_max_length_fails(self):
+        max_length = Label._meta.get_field("name").max_length
+        too_long_name = "L" * (max_length + 1)
+        data = {"name": too_long_name}
+        response = self.client.post(reverse("labels_create"), data)
+        form = response.context.get("form")
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn("name", form.errors)
+        self.assertIn(
+            _("Убедитесь, что это значение содержит не более {} символов (сейчас {}).".format(max_length, max_length + 1)), form.errors["name"]
+        )
