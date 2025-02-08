@@ -12,3 +12,11 @@ class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_index_view_template(self):
         response = self.client.get(reverse('statuses'))
         self.assertTemplateUsed(response, 'apps/statuses/statuses.html')
+
+    def test_index_page_disallows_non_get_requests(self):
+        disallowed_methods = ['post', 'put', 'delete', 'patch']
+        url = reverse('statuses')
+        for method in disallowed_methods:
+            with self.subTest(method=method):
+                response = getattr(self.client, method)(url)
+                self.assertEqual(response.status_code, 405)
