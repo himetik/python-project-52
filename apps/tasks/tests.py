@@ -51,3 +51,29 @@ class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.assertTrue(
             Task.objects.filter(name='Task 1').exists()
         )
+
+
+class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
+    def test_task_update_view(self):
+        response = self.client.get(
+            reverse('tasks_update', args=[self.task.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_task_update_view_template(self):
+        response = self.client.get(
+            reverse('tasks_update', args=[self.task.pk])
+        )
+        self.assertTemplateUsed(response, 'apps/tasks/update.html')
+
+    def test_update_task_success(self):
+        data = {
+            'name': 'Brend new Task Name',
+            'status': self.status.id,
+        }
+        response = self.client.post(
+            reverse('tasks_update', kwargs={'pk': self.task.pk}), data
+        )
+        self.assertRedirects(response, reverse('tasks'))
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.name, 'Brend new Task Name')
