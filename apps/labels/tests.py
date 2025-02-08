@@ -145,7 +145,13 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertRedirects(response, reverse('labels'))
 
     # def test_delete_label_success(self):
-    # def test_delete_label_with_non_existing_id_fails(self):
+
+    def test_delete_label_with_non_existing_id_fails(self):
+        non_existing_id = self.label.id + 999
+        response = self.client.post(
+            reverse('labels_delete', kwargs={'pk': non_existing_id}), follow=True
+        )
+        self.assertEqual(response.status_code, 404)
 
 
 class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
