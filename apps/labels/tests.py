@@ -111,3 +111,25 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertIn(
             _("Убедитесь, что это значение содержит не более {} символов (сейчас {}).".format(max_length, max_length + 1)), form.errors["name"]
         )
+
+
+class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
+    def test_delete_label_page_is_accessible(self):
+        response = self.client.get(reverse('labels_delete', kwargs={'pk': self.label.id}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_label_page_uses_correct_template(self):
+        response = self.client.get(reverse('labels_delete', kwargs={'pk': self.label.id}))
+        self.assertTemplateUsed(response, 'apps/labels/delete.html')
+
+    def test_delete_label_success(self):
+        response = self.client.post(reverse('labels_delete', kwargs={'pk': self.label.id}), follow=True)
+        self.assertFalse(Label.objects.filter(id=self.label.id).exists())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any(
+                str(msg) == _('The label has been successfully deleted')
+                for msg in messages
+            )
+        )
+        self.assertRedirects(response, reverse('labels'))
