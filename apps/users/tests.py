@@ -111,6 +111,20 @@ class UserLoginViewTest(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(any(str(m) == 'Вы залогинены' for m in messages))
 
+    def test_login_failure(self):
+        response = self.client.post(self.login_url, {
+            'username': 'testuser',
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            (
+                "Пожалуйста, введите правильные имя пользователя и пароль."
+                " Оба поля могут быть чувствительны к регистру."
+            )
+        )
+
 
 class UserLogoutViewTest(TestCase):
     pass
