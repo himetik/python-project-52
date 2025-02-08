@@ -67,11 +67,15 @@ class UserCreateViewTest(SetUpLoggedUserMixin, TestCase):
 
 class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
     def test_update_user_view_returns_200(self):
-        response = self.client.get(reverse('users_update', args=(self.user.pk,)))
+        response = self.client.get(
+            reverse('users_update', args=(self.user.pk,))
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_update_user_view_uses_correct_template(self):
-        response = self.client.get(reverse('users_update', args=(self.user.pk,)))
+        response = self.client.get(
+            reverse('users_update', args=(self.user.pk,))
+        )
         self.assertTemplateUsed(response, 'apps/users/update.html')
 
     def test_update_user_view_updates_user(self):
@@ -83,7 +87,9 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
             'password1': '23977sdv',
             'password2': '23977sdv',
         }
-        response = self.client.post(reverse('users_update', args=(self.user.pk,)), data)
+        response = self.client.post(
+            reverse('users_update', args=(self.user.pk,)), data
+        )
         self.assertRedirects(response, reverse('users'))
         user = User.objects.get(pk=self.user.pk)
         self.assertEqual(user.username, 'new_test_user')
@@ -93,17 +99,25 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
 
 class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
     def test_delete_user_view_returns_200(self):
-        response = self.client.get(reverse('users_delete', args=(self.user.pk,)))
+        response = self.client.get(
+            reverse('users_delete', args=(self.user.pk,))
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_delete_user_view_uses_correct_template(self):
-        response = self.client.get(reverse('users_delete', args=(self.user.pk,)))
+        response = self.client.get(
+            reverse('users_delete', args=(self.user.pk,))
+        )
         self.assertTemplateUsed(response, 'apps/users/delete.html')
 
     def test_delete_user_view_deletes_user(self):
-        response = self.client.post(reverse('users_delete', args=(self.user.pk,)))
+        response = self.client.post(
+            reverse('users_delete', args=(self.user.pk,))
+        )
         self.assertRedirects(response, reverse('users'))
-        self.assertFalse(get_user_model().objects.filter(pk=self.user.pk).exists())
+        self.assertFalse(
+            get_user_model().objects.filter(pk=self.user.pk).exists()
+        )
 
 
 class UserLoginViewTest(BaseAuthTestCase, TestCase):
