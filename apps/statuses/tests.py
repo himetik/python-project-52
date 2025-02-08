@@ -20,3 +20,13 @@ class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
             with self.subTest(method=method):
                 response = getattr(self.client, method)(url)
                 self.assertEqual(response.status_code, 405)
+
+
+class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
+    def test_status_create_view(self):
+        response = self.client.get(reverse('statuses_create'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_status_create_view_template(self):
+        response = self.client.get(reverse('statuses_create'))
+        self.assertTemplateUsed(response, 'apps/statuses/create.html')
