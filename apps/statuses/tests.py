@@ -40,3 +40,13 @@ class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_update_view_template(self):
         response = self.client.get(reverse('statuses_update', args=[self.status.id]))
         self.assertTemplateUsed(response, 'apps/statuses/update.html')
+
+
+class StatusDeleteViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
+    def test_status_delete_view(self):
+        response = self.client.get(reverse('statuses_delete', args=[self.status.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_status_delete_view_template(self):
+        response = self.client.get(reverse('statuses_delete', args=[self.status.id]))
+        self.assertTemplateUsed(response, 'apps/statuses/delete.html')
