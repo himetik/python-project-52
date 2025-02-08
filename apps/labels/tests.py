@@ -149,7 +149,9 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_delete_label_with_non_existing_id_fails(self):
         non_existing_id = self.label.id + 999
         response = self.client.post(
-            reverse('labels_delete', kwargs={'pk': non_existing_id}), follow=True
+            reverse(
+                'labels_delete',
+                kwargs={'pk': non_existing_id}), follow=True
         )
         self.assertEqual(response.status_code, 404)
 
@@ -194,7 +196,23 @@ class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    # def test_update_label_with_existing_name_fails(self):
+    def test_update_label_with_existing_name_fails(self):
+        existing_label = Label.objects.create(name="Duplicate Label")
+        data = {"name": existing_label.name}
+        response = self.client.post(
+            reverse("labels_update", kwargs={"pk": self.label.id}),
+            data,
+        )
+        self.label.refresh_from_db()
+        self.assertNotEqual(self.label.name, existing_label.name)
+        form = response.context.get("form")
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn("name", form.errors)
+        self.assertIn(
+            _("Label с таким Имя уже существует."), form.errors["name"]
+        )
+
     # def test_update_label_with_empty_name_fails(self):
     # def test_update_label_with_whitespace_name(self):
     # def test_update_label_exceeding_max_length_fails(self):
