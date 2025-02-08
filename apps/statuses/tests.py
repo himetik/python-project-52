@@ -1,5 +1,5 @@
 from django.test import TestCase
-from apps.statuses.models import Status # noqa
+from apps.statuses.models import Status
 from apps.main.mixins import SetUpLoggedUserWithStatusMixin
 from django.urls import reverse
 
@@ -44,6 +44,12 @@ class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_create_view_template(self):
         response = self.client.get(reverse('statuses_create'))
         self.assertTemplateUsed(response, 'apps/statuses/create.html')
+
+    def test_create_status_success(self):
+        data = {'name': 'Status 1'}
+        response = self.client.post(reverse('statuses_create'), data)
+        self.assertRedirects(response, reverse('statuses'))
+        self.assertTrue(Status.objects.filter(name='Status 1').exists())
 
 
 class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
