@@ -109,21 +109,31 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertTrue(form.errors)
         self.assertIn("name", form.errors)
         self.assertIn(
-            _("Убедитесь, что это значение содержит не более {} символов (сейчас {}).".format(max_length, max_length + 1)), form.errors["name"]
+            _(
+                "Убедитесь, что это значение содержит не более {} символов "
+                "(сейчас {}).".format(max_length, max_length + 1)
+            ),
+            form.errors["name"],
         )
 
 
 class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_delete_label_page_is_accessible(self):
-        response = self.client.get(reverse('labels_delete', kwargs={'pk': self.label.id}))
+        response = self.client.get(
+            reverse('labels_delete', kwargs={'pk': self.label.id})
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_delete_label_page_uses_correct_template(self):
-        response = self.client.get(reverse('labels_delete', kwargs={'pk': self.label.id}))
+        response = self.client.get(
+            reverse('labels_delete', kwargs={'pk': self.label.id})
+        )
         self.assertTemplateUsed(response, 'apps/labels/delete.html')
 
     def test_delete_label_success(self):
-        response = self.client.post(reverse('labels_delete', kwargs={'pk': self.label.id}), follow=True)
+        response = self.client.post(
+            reverse('labels_delete', kwargs={'pk': self.label.id}), follow=True
+        )
         self.assertFalse(Label.objects.filter(id=self.label.id).exists())
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(
@@ -134,22 +144,26 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         )
         self.assertRedirects(response, reverse('labels'))
 
-    # def test_delete_label_success(self): is needed to be implemented
-    # def test_delete_label_with_non_existing_id_fails(self): is needed to be implemented
+    # def test_delete_label_success(self):
+    # def test_delete_label_with_non_existing_id_fails(self):
 
 
 class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_update_label_page_is_accessible(self):
-        response = self.client.get(reverse('labels_update', kwargs={'pk': self.label.id}))
+        response = self.client.get(
+            reverse('labels_update', kwargs={'pk': self.label.id})
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_update_label_page_uses_correct_template(self):
-        response = self.client.get(reverse('labels_update', kwargs={'pk': self.label.id}))
+        response = self.client.get(
+            reverse('labels_update', kwargs={'pk': self.label.id})
+        )
         self.assertTemplateUsed(response, 'apps/labels/update.html')
 
-    # def test_update_label_success(self): is needed to be implemented
-    # def test_update_label_with_non_existing_id_fails(self): is needed to be implemented
-    # def test_update_label_with_existing_name_fails(self): is needed to be implemented
-    # def test_update_label_with_empty_name_fails(self): is needed to be implemented
-    # def test_update_label_with_whitespace_name(self): is needed to be implemented
-    # def test_update_label_exceeding_max_length_fails(self): is needed to be implemented
+    # def test_update_label_success(self):
+    # def test_update_label_with_non_existing_id_fails(self):
+    # def test_update_label_with_existing_name_fails(self):
+    # def test_update_label_with_empty_name_fails(self):
+    # def test_update_label_with_whitespace_name(self):
+    # def test_update_label_exceeding_max_length_fails(self):
