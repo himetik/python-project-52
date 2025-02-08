@@ -29,3 +29,25 @@ class TaskIndexViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
                 for task in response.context['tasks']
             )
         )
+
+
+class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
+    def test_task_create_view(self):
+        response = self.client.get(reverse('tasks_create'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_task_create_view_template(self):
+        response = self.client.get(reverse('tasks_create'))
+        self.assertTemplateUsed(response, 'apps/tasks/create.html')
+
+    def test_create_task_success(self):
+        data = {
+            'name': 'Task 1',
+            'status': self.status.id,
+            'description': 'Description 1',
+        }
+        response = self.client.post(reverse('tasks_create'), data)
+        self.assertRedirects(response, reverse('tasks'))
+        self.assertTrue(
+            Task.objects.filter(name='Task 1').exists()
+        )
