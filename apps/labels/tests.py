@@ -62,9 +62,13 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         existing_label = Label.objects.create(name="Duplicate Label")
         data = {"name": existing_label.name}
         response = self.client.post(reverse("labels_create"), data)
-        self.assertEqual(Label.objects.filter(name="Duplicate Label").count(), 1)
+        self.assertEqual(
+            Label.objects.filter(name="Duplicate Label").count(), 1
+        )
         form = response.context.get("form")
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
         self.assertIn("name", form.errors)
-        self.assertIn(_("Label с таким Имя уже существует."), form.errors["name"])
+        self.assertIn(
+            _("Label с таким Имя уже существует."), form.errors["name"]
+        )
