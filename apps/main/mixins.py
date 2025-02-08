@@ -6,6 +6,7 @@ from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
 from apps.labels.models import Label
 from apps.statuses.models import Status
+from apps.tasks.models import Task
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
@@ -39,3 +40,13 @@ class SetUpLoggedUserWithStatusMixin(SetUpLoggedUserMixin):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.status = Status.objects.create(name='The Status')
+
+
+class SetUpLoggedUserWithTaskMixin(SetUpLoggedUserMixin):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.status = Status.objects.create(name='The Status')
+        cls.task = Task.objects.create(
+            name='The Task', status=cls.status, creator=cls.user
+        )
