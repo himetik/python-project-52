@@ -31,3 +31,13 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_labels_page_displays_specific_label_name(self):
         response = self.client.get(reverse('labels'))
         self.assertContains(response, "The Label")
+
+
+class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
+    def test_create_label_page_is_accessible(self):
+        response = self.client.get(reverse('labels_create'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_label_page_uses_correct_template(self):
+        response = self.client.get(reverse('labels_create'))
+        self.assertTemplateUsed(response, 'apps/labels/create.html')
