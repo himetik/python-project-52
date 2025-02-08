@@ -99,3 +99,11 @@ class StatusDeleteViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
             reverse('statuses_delete', args=[self.status.id])
         )
         self.assertTemplateUsed(response, 'apps/statuses/delete.html')
+
+    def test_status_delete_success(self):
+        response = self.client.post(
+            reverse('statuses_delete', args=[self.status.id]), 
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Status.objects.filter(id=self.status.id).exists()) 
