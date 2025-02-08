@@ -75,6 +75,17 @@ class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
         )
         self.assertTemplateUsed(response, 'apps/statuses/update.html')
 
+    def test_status_update_success(self):
+        updated_name = "Updated Status Name"
+        response = self.client.post(
+            reverse('statuses_update', args=[self.status.id]),
+            {'name': updated_name},
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.status.refresh_from_db()
+        self.assertEqual(self.status.name, updated_name)
+
 
 class StatusDeleteViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_delete_view(self):
