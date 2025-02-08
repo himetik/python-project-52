@@ -50,5 +50,10 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         response = self.client.post(reverse('labels_create'), data, follow=True)
         self.assertTrue(Label.objects.filter(name='Unique Label').exists())
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(any(str(msg) == _('The label has been successfully created') for msg in messages))
+        self.assertTrue(
+            any(
+                str(msg) == _('The label has been successfully created')
+                for msg in messages
+            )
+        )
         self.assertRedirects(response, reverse('labels'))
