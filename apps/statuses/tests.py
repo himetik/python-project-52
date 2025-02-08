@@ -30,3 +30,13 @@ class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_create_view_template(self):
         response = self.client.get(reverse('statuses_create'))
         self.assertTemplateUsed(response, 'apps/statuses/create.html')
+
+
+class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
+    def test_status_update_view(self):
+        response = self.client.get(reverse('statuses_update', args=[self.status.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_status_update_view_template(self):
+        response = self.client.get(reverse('statuses_update', args=[self.status.id]))
+        self.assertTemplateUsed(response, 'apps/statuses/update.html')
