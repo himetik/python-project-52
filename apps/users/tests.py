@@ -6,6 +6,16 @@ from task_manager import settings
 from django.contrib.messages import get_messages
 
 
+class BaseAuthTestCase(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='testpassword'
+        )
+        self.login_url = reverse('login')
+
+
 class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
     def test_users_view_returns_200(self):
         response = self.client.get(reverse('users'))
@@ -96,10 +106,9 @@ class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertFalse(get_user_model().objects.filter(pk=self.user.pk).exists())
 
 
-class UserLoginViewTest(TestCase):
+class UserLoginViewTest(BaseAuthTestCase, TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username='testuser', password='testpassword')
-        self.login_url = reverse('login')
+        super().setUp()
 
     def test_login_success(self):
         response = self.client.post(self.login_url, {
@@ -134,5 +143,23 @@ class UserLoginViewTest(TestCase):
         self.assertTemplateUsed(response, 'login.html')
 
 
-class UserLogoutViewTest(TestCase):
-    pass
+    class UserLogoutViewTest(BaseAuthTestCase, SetUpLoggedUserMixin, TestCase):
+        def setUp(self):
+            super().setUp()
+
+        def test_logout_view_status_code(self):
+            response = self.client.get(reverse('logout'))
+            self.assertEqual(response.status_code, 302)
+
+        def test_logout_success(self):
+            response = self.client.post(reverse('logout'))
+            self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
+            response = self.client.get(reverse('login'))
+            self.assertFalse(response.wsgi_request.user.is_authenticated)
+            messages = list(response.wsgi_request._messages)
+            self.assertEqual(str(messages[0]), 'Вы разлогинены')
+
+        def test_logout_anonymous_user(self):
+            self.client.logout()
+            response = self.client.post(reverse('logout'))
+            self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
