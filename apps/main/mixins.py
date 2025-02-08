@@ -32,7 +32,7 @@ class SetUpLoggedUserWithLabelMixin(SetUpLoggedUserMixin):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.label = Label.object.create(name='The Label')
+        cls.label = Label.objects.create(name='The Label')
 
 
 class SetUpLoggedUserWithStatusMixin(SetUpLoggedUserMixin):
