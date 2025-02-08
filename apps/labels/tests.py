@@ -146,3 +146,10 @@ class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_update_label_page_uses_correct_template(self):
         response = self.client.get(reverse('labels_update', kwargs={'pk': self.label.id}))
         self.assertTemplateUsed(response, 'apps/labels/update.html')
+
+    # def test_update_label_success(self): is needed to be implemented
+    # def test_update_label_with_non_existing_id_fails(self): is needed to be implemented
+    # def test_update_label_with_existing_name_fails(self): is needed to be implemented
+    # def test_update_label_with_empty_name_fails(self): is needed to be implemented
+    # def test_update_label_with_whitespace_name(self): is needed to be implemented
+    # def test_update_label_exceeding_max_length_fails(self): is needed to be implemented
