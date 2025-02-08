@@ -1,6 +1,9 @@
 from apps.main.mixins import SetUpLoggedUserWithLabelMixin
 from django.test import TestCase
 from django.urls import reverse
+from apps.labels.models import Label
+from django.contrib.messages import get_messages
+from django.utils.translation import gettext as _
 
 
 class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
@@ -41,3 +44,12 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_create_label_page_uses_correct_template(self):
         response = self.client.get(reverse('labels_create'))
         self.assertTemplateUsed(response, 'apps/labels/create.html')
+
+    def test_create_label_success(self):
+        data = {'name': 'Unique Label'}
+        response = self.client.post(reverse('labels_create'), data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Label.objects.filter(name='Unique Label').exists())
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any(str(msg) == _('The label has been successfully created') for msg in messages))
+        self.assertRedirects(response, reverse('labels'))
