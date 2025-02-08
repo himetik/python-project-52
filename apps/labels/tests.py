@@ -133,3 +133,16 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
             )
         )
         self.assertRedirects(response, reverse('labels'))
+
+    # def test_delete_label_success(self): is needed to be implemented
+    # def test_delete_label_with_non_existing_id_fails(self): is needed to be implemented
+
+
+class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
+    def test_update_label_page_is_accessible(self):
+        response = self.client.get(reverse('labels_update', kwargs={'pk': self.label.id}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_label_page_uses_correct_template(self):
+        response = self.client.get(reverse('labels_update', kwargs={'pk': self.label.id}))
+        self.assertTemplateUsed(response, 'apps/labels/update.html')
