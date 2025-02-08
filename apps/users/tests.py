@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from task_manager import settings
+from django.contrib.messages import get_messages
 
 
 class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
@@ -93,3 +94,23 @@ class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
         response = self.client.post(reverse('users_delete', args=(self.user.pk,)))
         self.assertRedirects(response, reverse('users'))
         self.assertFalse(get_user_model().objects.filter(pk=self.user.pk).exists())
+
+
+class UserLoginViewTest(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='testuser', password='testpassword')
+        self.login_url = reverse('login')
+
+    def test_login_success(self):
+        response = self.client.post(self.login_url, {
+            'username': 'testuser',
+            'password': 'testpassword',
+        })
+        self.assertRedirects(response, settings.LOGIN_REDIRECT_URL)
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any(str(m) == 'Вы залогинены' for m in messages))
+
+
+class UserLogoutViewTest(TestCase):
+    pass
