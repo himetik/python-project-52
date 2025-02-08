@@ -144,7 +144,7 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         )
         self.assertRedirects(response, reverse('labels'))
 
-    # def test_delete_label_success(self):
+    # def test_cannot_delete_label_in_use(self):
 
     def test_delete_label_with_non_existing_id_fails(self):
         non_existing_id = self.label.id + 999
@@ -167,7 +167,24 @@ class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         )
         self.assertTemplateUsed(response, 'apps/labels/update.html')
 
-    # def test_update_label_success(self):
+    def test_update_label_success(self):
+        updated_data = {'name': 'Updated Label'}
+        response = self.client.post(
+            reverse('labels_update', kwargs={'pk': self.label.id}),
+            updated_data,
+            follow=True
+        )
+        self.label.refresh_from_db()
+        self.assertEqual(self.label.name, 'Updated Label')
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any(
+                str(msg) == _('The label has been successfully updated')
+                for msg in messages
+            )
+        )
+        self.assertRedirects(response, reverse('labels'))
+
     # def test_update_label_with_non_existing_id_fails(self):
     # def test_update_label_with_existing_name_fails(self):
     # def test_update_label_with_empty_name_fails(self):
