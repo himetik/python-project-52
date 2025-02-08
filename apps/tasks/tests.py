@@ -77,3 +77,18 @@ class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.assertRedirects(response, reverse('tasks'))
         self.task.refresh_from_db()
         self.assertEqual(self.task.name, 'Brend new Task Name')
+
+
+class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
+    def test_task_delete_view(self):
+        response = self.client.get(
+            reverse('tasks_delete', args=[self.task.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_task_success(self):
+        response = self.client.post(
+            reverse('tasks_delete', args=[self.task.pk])
+        )
+        self.assertRedirects(response, reverse('tasks'))
+        self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())
