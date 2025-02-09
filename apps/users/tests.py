@@ -110,7 +110,9 @@ class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
         url = reverse("users_delete", args=[self.user.pk])
         response = self.client.post(url)
         self.assertRedirects(response, reverse("users"))
-        self.assertFalse(get_user_model().objects.filter(pk=self.user.pk).exists())
+        self.assertFalse(
+            get_user_model().objects.filter(pk=self.user.pk).exists()
+        )
 
 
 class UserLoginViewTest(TestCase):
