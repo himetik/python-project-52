@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from task_manager import settings
 from django.contrib.messages import get_messages
+from django.utils.translation import gettext as _
 
 
 class BaseAuthTestCase(TestCase):
@@ -171,4 +172,4 @@ class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
         self.assertFalse(response.wsgi_request.user.is_authenticated)
         messages = list(response.context['messages'])
-        self.assertEqual(str(messages[0]), 'Вы разлогинены')
+        self.assertEqual(str(messages[0]), _('You are logged out'))
