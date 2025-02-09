@@ -19,7 +19,9 @@ class TaskIndexView(CustomLoginRequiredMixin, FilterView):
 
     def get_filterset(self, filterset_class):
         return filterset_class(
-            self.request.GET, queryset=self.get_queryset(), request=self.request
+            data=self.request.GET,
+            queryset=self.get_queryset(),
+            request=self.request,
         )
 
 
@@ -40,25 +42,27 @@ class TaskDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('tasks')
     success_message = _('The task has been successfully deleted')
 
-    def check_task_creator(self):
+    def check_task_creator(self) -> bool:
         task = self.get_object()
-        if task.creator != self.request.user:
+        user = self.request.user
+
+        if task.creator != user:
             messages.error(
-                self.request,
-                _('Only the author of the task can delete it')
+                self.request, _('Only the author of the task can delete it')
             )
             return False
+
         return True
 
     def get(self, request, *args, **kwargs):
-        if not self.check_task_creator():
-            return redirect('tasks')
-        return super().get(request, *args, **kwargs)
+        if self.check_task_creator():
+            return super().get(request, *args, **kwargs)
+        return redirect("tasks")
 
     def post(self, request, *args, **kwargs):
-        if not self.check_task_creator():
-            return redirect('tasks')
-        return super().post(request, *args, **kwargs)
+        if self.check_task_creator():
+            return super().post(request, *args, **kwargs)
+        return redirect("tasks")
 
 
 class TaskUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
