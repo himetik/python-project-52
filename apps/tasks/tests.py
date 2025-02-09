@@ -50,6 +50,29 @@ class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.assertRedirects(response, reverse("tasks"))
         self.assertTrue(Task.objects.filter(name="Task 1").exists())
 
+    def test_create_task_max_length_exceeded(self):
+        url = reverse("tasks_create")
+        long_name = "A" * (self.task._meta.get_field("name").max_length + 1)
+        data = {
+            "name": long_name,
+            "status": self.status.id,
+            "description": "Description 1",
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.assertFalse(Task.objects.filter(name=long_name).exists())
+
+    def test_create_task_empty_name(self):
+        url = reverse("tasks_create")
+        data = {
+            "name": "",
+            "status": self.status.id,
+            "description": "Test description",
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.assertFalse(Task.objects.filter(name="").exists())
+
 
 class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_update_view(self):
@@ -73,12 +96,40 @@ class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.task.refresh_from_db()
         self.assertEqual(self.task.name, "Brand new Task Name")
 
+    def test_task_name_max_length_exceeded(self):
+        url = reverse("tasks_update", kwargs={"pk": self.task.pk})
+        long_name = "A" * (self.task._meta.get_field("name").max_length + 1) 
+        data = {
+            "name": long_name,
+            "status": self.status.id,
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.task.refresh_from_db()
+        self.assertNotEqual(self.task.name, long_name)
+
+    def test_update_task_empty_name(self):
+        url = reverse("tasks_update", kwargs={"pk": self.task.pk})
+        data = {
+            "name": "",
+            "status": self.status.id,
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.task.refresh_from_db()
+        self.assertNotEqual(self.task.name, "")
+
 
 class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_delete_view(self):
         url = reverse("tasks_delete", args=[self.task.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_task_delete_used_correct_tamplate(self):
+        url = reverse("tasks_delete", args=[self.task.pk])
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/tasks/delete.html")
 
     def test_delete_task_success(self):
         url = reverse("tasks_delete", args=[self.task.pk])
