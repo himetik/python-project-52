@@ -41,7 +41,7 @@ class LabelDeleteView(
         if self.object.tasks.exists():
             messages.error(
                 request,
-                _('Cannot delete the label because it is currently in use'))
+                _('Unable to delete a label because it is being used'))
             return redirect(self.success_url)
         return super().post(request, *args, **kwargs)
 

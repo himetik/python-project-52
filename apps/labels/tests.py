@@ -164,7 +164,7 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         messages = list(response.wsgi_request._messages)
         self.assertEqual(
             str(messages[0]),
-            _('Невозможно удалить метку, потому что она используется')
+            _('Unable to delete a label because it is being used')
         )
 
     def test_delete_label_with_non_existing_id_fails(self):

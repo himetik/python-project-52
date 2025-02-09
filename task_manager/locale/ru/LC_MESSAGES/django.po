@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-05 11:47+0000\n"
+"POT-Creation-Date: 2025-02-09 08:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: apps/labels/forms.py:14
+msgid "Label name cannot be empty."
+msgstr "Название метки не может быть пустым."
 
 #: apps/labels/models.py:7 apps/statuses/models.py:7 apps/tasks/models.py:10
 #: build/lib/apps/labels/models.py:7 build/lib/apps/statuses/models.py:7
@@ -32,19 +36,37 @@ msgstr "Имя"
 msgid "created at"
 msgstr "Дата создания"
 
-#: apps/labels/views.py:26 build/lib/apps/labels/views.py:26
+#: apps/labels/tests.py:56 apps/labels/views.py:26
+#: build/lib/apps/labels/views.py:26
 msgid "The label has been successfully created"
 msgstr "Метка успешно создана"
 
-#: apps/labels/views.py:37 build/lib/apps/labels/views.py:37
+#: apps/labels/tests.py:74 apps/labels/tests.py:100 apps/labels/tests.py:234
+#: apps/labels/tests.py:267
+msgid "Label с таким Имя уже существует."
+msgstr ""
+
+#: apps/labels/tests.py:87 apps/labels/tests.py:250
+msgid "Обязательное поле."
+msgstr ""
+
+#: apps/labels/tests.py:114 apps/labels/tests.py:286
+msgid "Убедитесь, что это значение содержит не более {} символов (сейчас {})."
+msgstr ""
+
+#: apps/labels/tests.py:142 apps/labels/views.py:37
+#: build/lib/apps/labels/views.py:37
 msgid "The label has been successfully deleted"
 msgstr "Метка успешно удалена"
 
-#: apps/labels/views.py:44 build/lib/apps/labels/views.py:44
-msgid "Cannot delete the label because it is currently in use"
-msgstr "Невозможно удалить метку, потому что она используется"
+#: apps/labels/tests.py:167 apps/labels/views.py:44
+#, fuzzy
+#| msgid "Unable to delete a status because it is being used"
+msgid "Unable to delete a label because it is being used"
+msgstr "Невозможно удалить статус, потому что он используется"
 
-#: apps/labels/views.py:58 build/lib/apps/labels/views.py:58
+#: apps/labels/tests.py:205 apps/labels/views.py:58
+#: build/lib/apps/labels/views.py:58
 msgid "The label has been successfully changed"
 msgstr "Метка успешно изменена"
 
@@ -54,9 +76,14 @@ msgstr "Метка успешно изменена"
 msgid "Edit Label"
 msgstr "Изменение метки"
 
-#: apps/main/mixins.py:27 build/lib/apps/main/mixins.py:27
+#: apps/main/mixins.py:15 build/lib/apps/main/mixins.py:27
 msgid "You are not logged in! Please sign in."
 msgstr "Вы не авторизованы! Пожалуйста, выполните вход."
+
+#: apps/statuses/tests.py:132 apps/statuses/views.py:43
+#: build/lib/apps/statuses/views.py:43
+msgid "Unable to delete a status because it is being used"
+msgstr "Невозможно удалить статус, потому что он используется"
 
 #: apps/statuses/views.py:26 build/lib/apps/statuses/views.py:26
 msgid "The status has been successfully created"
@@ -65,10 +92,6 @@ msgstr "Статус успешно создан"
 #: apps/statuses/views.py:37 build/lib/apps/statuses/views.py:37
 msgid "The status has been successfully deleted"
 msgstr "Статус успешно удален"
-
-#: apps/statuses/views.py:43 build/lib/apps/statuses/views.py:43
-msgid "Unable to delete a status because it is being used"
-msgstr "Невозможно удалить статус, потому что он используется"
 
 #: apps/statuses/views.py:57 build/lib/apps/statuses/views.py:57
 msgid "The status has been successfully changed"
@@ -140,8 +163,8 @@ msgstr "Задачу может удалить только ее автор"
 msgid "The task has been successfully updated"
 msgstr "Задача успешно изменена"
 
-#: apps/users/tests.py:182 apps/users/views.py:19
-#: build/lib/apps/users/tests.py:182 build/lib/apps/users/views.py:19
+#: apps/users/views.py:19 build/lib/apps/users/tests.py:150
+#: build/lib/apps/users/views.py:19
 msgid "You are logged in"
 msgstr "Вы залогинены"
 
@@ -166,25 +189,29 @@ msgstr "У вас нет прав для изменения другого по�
 msgid "The user has been successfully updated"
 msgstr "Пользователь успешно изменен"
 
-#: build/lib/task_manager/settings.py:143
+#: build/lib/apps/labels/views.py:44
+msgid "Cannot delete the label because it is currently in use"
+msgstr "Невозможно удалить метку, потому что она используется"
+
+#: build/lib/task_manager/settings.py:105 task_manager/settings.py:94
 msgid "English"
 msgstr "Английский"
 
-#: build/lib/task_manager/settings.py:144
+#: build/lib/task_manager/settings.py:106 task_manager/settings.py:95
 msgid "Russian"
 msgstr "Русский"
 
-#: build/lib/task_manager/templates/index.html:9
+#: build/lib/task_manager/templates/index.html:7
 #: task_manager/templates/index.html:7
 msgid "Welcome"
 msgstr "Добро пожаловать!"
 
-#: build/lib/task_manager/templates/index.html:10
+#: build/lib/task_manager/templates/index.html:8
 #: task_manager/templates/index.html:8
 msgid "Task Manager Web App"
 msgstr "Менеджер задач"
 
-#: build/lib/task_manager/templates/index.html:12
+#: build/lib/task_manager/templates/index.html:10
 #: task_manager/templates/index.html:10
 msgid "Source Code"
 msgstr "Исходный код"
