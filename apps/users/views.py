@@ -58,15 +58,14 @@ class UserUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy('users')
     success_message = _('The user has been successfully updated')
 
-    def test_func(self):
-        user = self.get_object()
-        return self.request.user == user
+    def test_func(self) -> bool:
+        return self.request.user == self.get_object()
 
     def handle_no_permission(self):
         messages.error(
-            self.request, _('You are not authorized to modify another user.')
+            self.request, _("You are not authorized to modify another user.")
         )
-        return redirect('users')
+        return redirect("users")
 
 
 class UserIndexView(ListView):
