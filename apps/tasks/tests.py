@@ -126,6 +126,11 @@ class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_task_delete_used_correct_tamplate(self):
+        url = reverse("tasks_delete", args=[self.task.pk])
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/tasks/delete.html")
+
     def test_delete_task_success(self):
         url = reverse("tasks_delete", args=[self.task.pk])
         response = self.client.post(url)
