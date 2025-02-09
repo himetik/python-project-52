@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-09 08:36+0000\n"
+"POT-Creation-Date: 2025-02-09 08:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,34 +41,25 @@ msgstr "Дата создания"
 msgid "The label has been successfully created"
 msgstr "Метка успешно создана"
 
-#: apps/labels/tests.py:74 apps/labels/tests.py:100 apps/labels/tests.py:234
-#: apps/labels/tests.py:267
-msgid "Label с таким Имя уже существует."
-msgstr ""
-
-#: apps/labels/tests.py:87 apps/labels/tests.py:250
-msgid "Обязательное поле."
-msgstr ""
-
-#: apps/labels/tests.py:114 apps/labels/tests.py:286
-msgid "Убедитесь, что это значение содержит не более {} символов (сейчас {})."
-msgstr ""
-
-#: apps/labels/tests.py:142 apps/labels/views.py:37
+#: apps/labels/tests.py:130 apps/labels/views.py:37
 #: build/lib/apps/labels/views.py:37
 msgid "The label has been successfully deleted"
 msgstr "Метка успешно удалена"
 
-#: apps/labels/tests.py:167 apps/labels/views.py:44
+#: apps/labels/tests.py:155 apps/labels/views.py:44
 #, fuzzy
 #| msgid "Unable to delete a status because it is being used"
 msgid "Unable to delete a label because it is being used"
 msgstr "Невозможно удалить статус, потому что он используется"
 
-#: apps/labels/tests.py:205 apps/labels/views.py:58
+#: apps/labels/tests.py:193 apps/labels/views.py:58
 #: build/lib/apps/labels/views.py:58
 msgid "The label has been successfully changed"
 msgstr "Метка успешно изменена"
+
+#: apps/labels/tests.py:236
+msgid "This field is required."
+msgstr ""
 
 #: apps/labels/views.py:62 build/lib/apps/labels/views.py:62
 #, fuzzy
@@ -401,3 +392,13 @@ msgstr "Вход"
 #: task_manager/templates/login.html:9
 msgid "Sign in"
 msgstr "Войти"
+
+#~ msgid "Обязательное поле."
+#~ msgstr "This field is required."
+
+#~ msgid "Label с таким Имя уже существует."
+#~ msgstr "A label with this name already exists."
+
+#~ msgid ""
+#~ "Убедитесь, что это значение содержит не более {} символов (сейчас {})."
+#~ msgstr "Ensure this value has at most {} characters (it currently has {})."
