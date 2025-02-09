@@ -47,8 +47,6 @@ msgid "The label has been successfully deleted"
 msgstr "Метка успешно удалена"
 
 #: apps/labels/tests.py:155 apps/labels/views.py:44
-#, fuzzy
-#| msgid "Unable to delete a status because it is being used"
 msgid "Unable to delete a label because it is being used"
 msgstr "Невозможно удалить метку"
 
