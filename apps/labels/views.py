@@ -24,7 +24,7 @@ class LabelCreateView(
 
 
 class LabelDeleteView(
-    CustomLoginRequiredMixin, SuccessMessageMixin,DeleteView):
+    CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Label
     template_name = 'apps/labels/delete.html'
     success_url = reverse_lazy('labels')
@@ -43,7 +43,7 @@ class LabelDeleteView(
 
 
 class LabelUpdateView(
-    CustomLoginRequiredMixin,SuccessMessageMixin,UpdateView):
+    CustomLoginRequiredMixin,SuccessMessageMixin, UpdateView):
     model = Label
     form_class = LabelForm
     template_name = 'apps/labels/update.html'
