@@ -120,9 +120,14 @@ class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
         )
 
 
-class UserLoginViewTest(BaseAuthTestCase, TestCase):
+class UserLoginViewTest(TestCase):
     def setUp(self):
         super().setUp()
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='testpassword'
+        )
+        self.login_url = reverse('login')
 
     def test_login_success(self):
         response = self.client.post(self.login_url, {
@@ -130,7 +135,6 @@ class UserLoginViewTest(BaseAuthTestCase, TestCase):
             'password': 'testpassword',
         })
         self.assertRedirects(response, settings.LOGIN_REDIRECT_URL)
-
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(any(str(m) == 'Вы залогинены' for m in messages))
 
@@ -157,23 +161,14 @@ class UserLoginViewTest(BaseAuthTestCase, TestCase):
         self.assertTemplateUsed(response, 'login.html')
 
 
-    class UserLogoutViewTest(BaseAuthTestCase, SetUpLoggedUserMixin, TestCase):
-        def setUp(self):
-            super().setUp()
+class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
+    def test_logout_view_status_code(self):
+        response = self.client.post(reverse('logout'))
+        self.assertEqual(response.status_code, 302)
 
-        def test_logout_view_status_code(self):
-            response = self.client.get(reverse('logout'))
-            self.assertEqual(response.status_code, 302)
-
-        def test_logout_success(self):
-            response = self.client.post(reverse('logout'))
-            self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
-            response = self.client.get(reverse('login'))
-            self.assertFalse(response.wsgi_request.user.is_authenticated)
-            messages = list(response.wsgi_request._messages)
-            self.assertEqual(str(messages[0]), 'Вы разлогинены')
-
-        def test_logout_anonymous_user(self):
-            self.client.logout()
-            response = self.client.post(reverse('logout'))
-            self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
+    def test_logout_success(self):
+        response = self.client.post(reverse('logout'), follow=True)
+        self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+        messages = list(response.context['messages'])
+        self.assertEqual(str(messages[0]), 'Вы разлогинены')
