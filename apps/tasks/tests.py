@@ -62,6 +62,17 @@ class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.assertTrue("name" in response.context["form"].errors)
         self.assertFalse(Task.objects.filter(name=long_name).exists())
 
+    def test_create_task_empty_name(self):
+        url = reverse("tasks_create")
+        data = {
+            "name": "",
+            "status": self.status.id,
+            "description": "Test description",
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.assertFalse(Task.objects.filter(name="").exists())
+
 
 class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_update_view(self):
@@ -96,6 +107,17 @@ class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.assertTrue("name" in response.context["form"].errors)
         self.task.refresh_from_db()
         self.assertNotEqual(self.task.name, long_name)
+
+    def test_update_task_empty_name(self):
+        url = reverse("tasks_update", kwargs={"pk": self.task.pk})
+        data = {
+            "name": "",
+            "status": self.status.id,
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.task.refresh_from_db()
+        self.assertNotEqual(self.task.name, "")
 
 
 class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
