@@ -43,7 +43,7 @@ class LabelDeleteView(
 
 
 class LabelUpdateView(
-    CustomLoginRequiredMixin,SuccessMessageMixin, UpdateView):
+    CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Label
     form_class = LabelForm
     template_name = 'apps/labels/update.html'
