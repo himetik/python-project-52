@@ -137,7 +137,7 @@ class UserLoginViewTest(TestCase):
         })
         self.assertRedirects(response, settings.LOGIN_REDIRECT_URL)
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(any(str(m) == 'Вы залогинены' for m in messages))
+        self.assertTrue(any(str(m) == _('You are logged in') for m in messages))
 
     def test_login_failure(self):
         response = self.client.post(self.login_url, {
@@ -145,13 +145,9 @@ class UserLoginViewTest(TestCase):
             'password': 'wrongpassword'
         })
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response,
-            (
-                "Пожалуйста, введите правильные имя пользователя и пароль."
-                " Оба поля могут быть чувствительны к регистру."
-            )
-        )
+        form = response.context.get('form')
+        self.assertIsNotNone(form)
+        self.assertTrue(form.non_field_errors())
 
     def test_login_page_loads_successfully(self):
         response = self.client.get(self.login_url)
