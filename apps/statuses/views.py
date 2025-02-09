@@ -16,10 +16,7 @@ class StatusIndexView(CustomLoginRequiredMixin, ListView):
 
 
 class StatusCreateView(
-    CustomLoginRequiredMixin,
-    SuccessMessageMixin,
-    CreateView
-):
+    CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'apps/statuses/create.html'
     form_class = StatusForm
     success_url = reverse_lazy('statuses')
@@ -27,29 +24,26 @@ class StatusCreateView(
 
 
 class StatusDeleteView(
-    CustomLoginRequiredMixin,
-    SuccessMessageMixin,
-    DeleteView
-):
+    CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Status
     template_name = 'apps/statuses/delete.html'
     success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully deleted')
 
     def post(self, request, *args, **kwargs):
-        if self.get_object().tasks.exists():
+        status = self.get_object()
+
+        if status.tasks.exists():
             messages.error(
-                self.request,
-                _('Unable to delete a status because it is being used'))
+                request, _('Unable to delete a status because it is being used')
+            )
             return redirect('statuses')
+
         return super().post(request, *args, **kwargs)
 
 
 class StatusUpdateView(
-    CustomLoginRequiredMixin,
-    SuccessMessageMixin,
-    UpdateView
-):
+    CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Status
     form_class = StatusForm
     template_name = 'apps/statuses/update.html'

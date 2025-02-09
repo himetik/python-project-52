@@ -31,21 +31,14 @@ class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
 
     def test_status_list_view_context(self):
         Status.objects.create(name="Another Status")
-        response = self.client.get(reverse('statuses'))
-        self.assertIn('statuses', response.context)
-        self.assertGreaterEqual(len(response.context['statuses']), 2)
-        self.assertTrue(
-            any(
-                status.name == "The Status"
-                for status in response.context['statuses']
-            )
-        )
-        self.assertTrue(
-            any(
-                status.name == "Another Status"
-                for status in response.context['statuses']
-            )
-        )
+        url = reverse("statuses")
+        response = self.client.get(url)
+        self.assertIn("statuses", response.context)
+        statuses = response.context["statuses"]
+        self.assertGreaterEqual(len(statuses), 2)
+        expected_statuses = {"The Status", "Another Status"}
+        actual_statuses = {status.name for status in statuses}
+        self.assertTrue(expected_statuses.issubset(actual_statuses))
 
 
 class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
@@ -66,24 +59,19 @@ class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
 
 class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_update_view(self):
-        response = self.client.get(
-            reverse('statuses_update', args=[self.status.pk])
-        )
+        url = reverse("statuses_update", args=[self.status.pk])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_status_update_view_template(self):
-        response = self.client.get(
-            reverse('statuses_update', args=[self.status.pk])
-        )
-        self.assertTemplateUsed(response, 'apps/statuses/update.html')
+        url = reverse("statuses_update", args=[self.status.pk])
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/statuses/update.html")
 
     def test_status_update_success(self):
+        url = reverse("statuses_update", args=[self.status.pk])
         updated_name = "Updated Status Name"
-        response = self.client.post(
-            reverse('statuses_update', args=[self.status.pk]),
-            {'name': updated_name},
-            follow=True
-        )
+        response = self.client.post(url, {"name": updated_name}, follow=True)
         self.assertEqual(response.status_code, 200)
         self.status.refresh_from_db()
         self.assertEqual(self.status.name, updated_name)
@@ -91,43 +79,34 @@ class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
 
 class StatusDeleteViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_delete_view(self):
-        response = self.client.get(
-            reverse('statuses_delete', args=[self.status.pk])
-        )
+        url = reverse("statuses_delete", args=[self.status.pk])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_status_delete_view_template(self):
-        response = self.client.get(
-            reverse('statuses_delete', args=[self.status.pk])
-        )
-        self.assertTemplateUsed(response, 'apps/statuses/delete.html')
+        url = reverse("statuses_delete", args=[self.status.pk])
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/statuses/delete.html")
 
     def test_status_delete_success(self):
-        response = self.client.post(
-            reverse('statuses_delete', args=[self.status.pk]), 
-            follow=True
-        )
+        url = reverse("statuses_delete", args=[self.status.pk])
+        response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(Status.objects.filter(pk=self.status.pk).exists()) 
+        self.assertFalse(Status.objects.filter(pk=self.status.pk).exists())
 
     def test_delete_status_with_tasks(self):
-        self.task = Task.objects.create(
-            name='Test Task',
+        Task.objects.create(
+            name="Test Task",
             status=self.status,
             creator=self.user,
-            executor=self.user
+            executor=self.user,
         )
-        response = self.client.post(
-            reverse('statuses_delete', kwargs={'pk': self.status.pk})
-        )
-        self.assertRedirects(
-            response, reverse('statuses')
-        )
-        self.assertTrue(
-            Status.objects.filter(pk=self.status.pk).exists()
-        )
+        url = reverse("statuses_delete", kwargs={"pk": self.status.pk})
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("statuses"))
+        self.assertTrue(Status.objects.filter(pk=self.status.pk).exists())
         messages = list(response.wsgi_request._messages)
-        self.assertEqual(
-            str(messages[0]),
-            _('Unable to delete a status because it is being used')
+        expected_message = _(
+            "Unable to delete a status because it is being used"
         )
+        self.assertEqual(str(messages[0]), expected_message)

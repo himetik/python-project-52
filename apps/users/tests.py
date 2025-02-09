@@ -11,10 +11,10 @@ class BaseAuthTestCase(TestCase):
     def setUp(self):
         super().setUp()
         self.user = get_user_model().objects.create_user(
-            username='testuser',
-            password='testpassword'
+            username="testuser",
+            password="testpassword",
         )
-        self.login_url = reverse('login')
+        self.login_url = reverse("login")
 
 
 class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
@@ -68,54 +68,48 @@ class UserCreateViewTest(SetUpLoggedUserMixin, TestCase):
 
 class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
     def test_update_user_view_returns_200(self):
-        response = self.client.get(
-            reverse('users_update', args=(self.user.pk,))
-        )
+        url = reverse("users_update", args=[self.user.pk])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_update_user_view_uses_correct_template(self):
-        response = self.client.get(
-            reverse('users_update', args=(self.user.pk,))
-        )
-        self.assertTemplateUsed(response, 'apps/users/update.html')
+        url = reverse("users_update", args=[self.user.pk])
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/users/update.html")
 
     def test_update_user_view_updates_user(self):
         User = get_user_model()
+        url = reverse("users_update", args=[self.user.pk])
         data = {
-            'username': 'new_test_user',
-            'first_name': 'NewFirstname',
-            'last_name': 'NewLastName',
-            'password1': '23977sdv',
-            'password2': '23977sdv',
+            "username": "new_test_user",
+            "first_name": "NewFirstname",
+            "last_name": "NewLastName",
+            "password1": "23977sdv",
+            "password2": "23977sdv",
         }
-        response = self.client.post(
-            reverse('users_update', args=(self.user.pk,)), data
-        )
-        self.assertRedirects(response, reverse('users'))
+        response = self.client.post(url, data)
+        self.assertRedirects(response, reverse("users"))
         user = User.objects.get(pk=self.user.pk)
-        self.assertEqual(user.username, 'new_test_user')
-        self.assertEqual(user.first_name, 'NewFirstname')
-        self.assertEqual(user.last_name, 'NewLastName')
+        self.assertEqual(user.username, "new_test_user")
+        self.assertEqual(user.first_name, "NewFirstname")
+        self.assertEqual(user.last_name, "NewLastName")
 
 
 class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
     def test_delete_user_view_returns_200(self):
-        response = self.client.get(
-            reverse('users_delete', args=(self.user.pk,))
-        )
+        url = reverse("users_delete", args=[self.user.pk])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_user_view_uses_correct_template(self):
-        response = self.client.get(
-            reverse('users_delete', args=(self.user.pk,))
-        )
-        self.assertTemplateUsed(response, 'apps/users/delete.html')
+        url = reverse("users_delete", args=[self.user.pk])
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/users/delete.html")
 
     def test_delete_user_view_deletes_user(self):
-        response = self.client.post(
-            reverse('users_delete', args=(self.user.pk,))
-        )
-        self.assertRedirects(response, reverse('users'))
+        url = reverse("users_delete", args=[self.user.pk])
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("users"))
         self.assertFalse(
             get_user_model().objects.filter(pk=self.user.pk).exists()
         )

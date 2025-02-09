@@ -47,22 +47,20 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertTemplateUsed(response, 'apps/labels/create.html')
 
     def test_create_label_success(self):
-        data = {'name': 'Unique Label'}
-        response = self.client.post(reverse('labels_create'), data, follow=True)
-        self.assertTrue(Label.objects.filter(name='Unique Label').exists())
+        url = reverse("labels_create")
+        data = {"name": "Unique Label"}
+        response = self.client.post(url, data, follow=True)
+        self.assertTrue(Label.objects.filter(name="Unique Label").exists())
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(
-            any(
-                str(msg) == _('The label has been successfully created')
-                for msg in messages
-            )
-        )
-        self.assertRedirects(response, reverse('labels'))
+        success_message = _("The label has been successfully created")
+        self.assertTrue(any(str(msg) == success_message for msg in messages))
+        self.assertRedirects(response, reverse("labels"))
 
     def test_create_label_with_existing_name_fails(self):
         existing_label = Label.objects.create(name="Duplicate Label")
-        data = {"name": existing_label.name}
-        response = self.client.post(reverse("labels_create"), data)
+        response = self.client.post(
+            reverse("labels_create"), {"name": existing_label.name}
+        )
         self.assertEqual(
             Label.objects.filter(name="Duplicate Label").count(), 1
         )
@@ -70,7 +68,7 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
         self.assertIn("name", form.errors)
-        self.assertTrue(len(form.errors["name"]) > 0)
+        self.assertGreater(len(form.errors["name"]), 0)
 
     def test_create_label_with_empty_name_fails(self):
         initial_label_count = Label.objects.count()
@@ -108,161 +106,122 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
 
 class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_delete_label_page_is_accessible(self):
-        response = self.client.get(
-            reverse('labels_delete', kwargs={'pk': self.label.id})
-        )
+        url = reverse("labels_delete", kwargs={"pk": self.label.id})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_label_page_uses_correct_template(self):
-        response = self.client.get(
-            reverse('labels_delete', kwargs={'pk': self.label.id})
-        )
-        self.assertTemplateUsed(response, 'apps/labels/delete.html')
+        url = reverse("labels_delete", kwargs={"pk": self.label.id})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/labels/delete.html")
 
     def test_delete_label_success(self):
-        response = self.client.post(
-            reverse('labels_delete', kwargs={'pk': self.label.id}), follow=True
-        )
+        url = reverse("labels_delete", kwargs={"pk": self.label.id})
+        response = self.client.post(url, follow=True)
         self.assertFalse(Label.objects.filter(id=self.label.id).exists())
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(
-            any(
-                str(msg) == _('The label has been successfully deleted')
-                for msg in messages
-            )
-        )
-        self.assertRedirects(response, reverse('labels'))
+        success_message = _("The label has been successfully deleted")
+        self.assertTrue(any(str(msg) == success_message for msg in messages))
+        self.assertRedirects(response, reverse("labels"))
 
     def test_delete_label_with_tasks(self):
-        self.status = Status.objects.create(name='Test Status')
-        self.task = Task.objects.create(
-            name='Test Task',
-            status=self.status, 
-            creator=self.user, 
+        status = Status.objects.create(name="Test Status")
+        task = Task.objects.create(
+            name="Test Task",
+            status=status,
+            creator=self.user,
             executor=self.user,
         )
-        self.task.labels.add(self.label)
-
-        response = self.client.post(
-            reverse('labels_delete', kwargs={'pk': self.label.pk})
-        )
-        self.assertRedirects(response, reverse('labels'))
+        task.labels.add(self.label)
+        url = reverse("labels_delete", kwargs={"pk": self.label.pk})
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("labels"))
         self.assertTrue(Label.objects.filter(pk=self.label.pk).exists())
-
         messages = list(response.wsgi_request._messages)
-        self.assertEqual(
-            str(messages[0]),
-            _('Unable to delete a label because it is being used')
+        expected_message = _(
+            "Unable to delete a label because it is being used"
         )
+        self.assertEqual(str(messages[0]), expected_message)
 
     def test_delete_label_with_non_existing_id_fails(self):
         non_existing_id = self.label.id + 999
-        response = self.client.post(
-            reverse(
-                'labels_delete',
-                kwargs={'pk': non_existing_id}), follow=True
-        )
+        url = reverse("labels_delete", kwargs={"pk": non_existing_id})
+        response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 404)
 
 
 class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_update_label_page_is_accessible(self):
-        response = self.client.get(
-            reverse('labels_update', kwargs={'pk': self.label.id})
-        )
+        url = reverse("labels_update", kwargs={"pk": self.label.id})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_update_label_page_uses_correct_template(self):
-        response = self.client.get(
-            reverse('labels_update', kwargs={'pk': self.label.id})
-        )
-        self.assertTemplateUsed(response, 'apps/labels/update.html')
+        url = reverse("labels_update", kwargs={"pk": self.label.id})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/labels/update.html")
 
     def test_update_label_success(self):
-        updated_data = {'name': 'Updated Label'}
-        response = self.client.post(
-            reverse('labels_update', kwargs={'pk': self.label.id}),
-            updated_data,
-            follow=True
-        )
+        updated_data = {"name": "Updated Label"}
+        url = reverse("labels_update", kwargs={"pk": self.label.id})
+        response = self.client.post(url, updated_data, follow=True)
         self.label.refresh_from_db()
-        self.assertEqual(self.label.name, 'Updated Label')
+        self.assertEqual(self.label.name, "Updated Label")
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(
-            any(
-                str(msg) == _('The label has been successfully changed')
-                for msg in messages
-            )
-        )
-        self.assertRedirects(response, reverse('labels'))
+        success_message = _("The label has been successfully changed")
+        self.assertTrue(any(str(msg) == success_message for msg in messages))
+        self.assertRedirects(response, reverse("labels"))
 
     def test_update_label_with_non_existing_id_fails(self):
         non_existing_id = self.label.id + 919
-        response = self.client.post(
-            reverse('labels_update', kwargs={'pk': non_existing_id}),
-            {'name': 'New Name'},
-            follow=True
-        )
+        url = reverse("labels_update", kwargs={"pk": non_existing_id})
+        response = self.client.post(url, {"name": "New Name"}, follow=True)
         self.assertEqual(response.status_code, 404)
 
     def test_update_label_with_existing_name_fails(self):
         existing_label = Label.objects.create(name="Duplicate Label")
-        data = {"name": existing_label.name}
-        response = self.client.post(
-            reverse("labels_update", kwargs={"pk": self.label.id}),
-            data,
-        )
+        url = reverse("labels_update", kwargs={"pk": self.label.id})
+        response = self.client.post(url, {"name": existing_label.name})
         self.label.refresh_from_db()
         self.assertNotEqual(self.label.name, existing_label.name)
         form = response.context.get("form")
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
         self.assertIn("name", form.errors)
-        self.assertTrue(len(form.errors["name"]) > 0)
+        self.assertGreater(len(form.errors["name"]), 0)
 
     def test_update_label_with_empty_name_fails(self):
-        data = {"name": ""}
-        response = self.client.post(
-            reverse("labels_update", kwargs={"pk": self.label.id}),
-            data,
-        )
+        url = reverse("labels_update", kwargs={"pk": self.label.id})
+        response = self.client.post(url, {"name": ""})
         self.label.refresh_from_db()
         self.assertNotEqual(self.label.name, "")
         form = response.context.get("form")
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
         self.assertIn("name", form.errors)
-        self.assertIn(
-            _("This field is required."), form.errors["name"]
-        )
+        self.assertIn(_("This field is required."), form.errors["name"])
 
     def test_update_label_with_whitespace_name(self):
         Label.objects.create(name="Duplicate Label")
-        data = {"name": "  Duplicate Label  "}
-        response = self.client.post(
-            reverse("labels_update", kwargs={"pk": self.label.id}),
-            data,
-        )
+        url = reverse("labels_update", kwargs={"pk": self.label.id})
+        response = self.client.post(url, {"name": "  Duplicate Label  "})
         self.label.refresh_from_db()
         self.assertNotEqual(self.label.name, "Duplicate Label")
         form = response.context.get("form")
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
         self.assertIn("name", form.errors)
-        self.assertTrue(len(form.errors["name"]) > 0)
+        self.assertGreater(len(form.errors["name"]), 0)
 
     def test_update_label_exceeding_max_length_fails(self):
         max_length = Label._meta.get_field("name").max_length
         too_long_name = "L" * (max_length + 1)
-        data = {"name": too_long_name}
-        response = self.client.post(
-            reverse("labels_update", kwargs={"pk": self.label.id}),
-            data,
-        )
+        url = reverse("labels_update", kwargs={"pk": self.label.id})
+        response = self.client.post(url, {"name": too_long_name})
         self.label.refresh_from_db()
         self.assertNotEqual(self.label.name, too_long_name)
         form = response.context.get("form")
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
         self.assertIn("name", form.errors)
-        self.assertTrue(len(form.errors["name"]) > 0)
+        self.assertGreater(len(form.errors["name"]), 0)

@@ -16,10 +16,7 @@ class LabelIndexView(CustomLoginRequiredMixin, ListView):
 
 
 class LabelCreateView(
-    CustomLoginRequiredMixin,
-    SuccessMessageMixin,
-    CreateView
-):
+    CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'apps/labels/create.html'
     form_class = LabelForm
     success_url = reverse_lazy('labels')
@@ -27,30 +24,26 @@ class LabelCreateView(
 
 
 class LabelDeleteView(
-    CustomLoginRequiredMixin,
-    SuccessMessageMixin,
-    DeleteView
-):
+    CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Label
     template_name = 'apps/labels/delete.html'
     success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully deleted')
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.tasks.exists():
+        label = self.get_object()
+
+        if label.tasks.exists():
             messages.error(
-                request,
-                _('Unable to delete a label because it is being used'))
+                request, _('Unable to delete a label because it is being used')
+            )
             return redirect(self.success_url)
+
         return super().post(request, *args, **kwargs)
 
 
 class LabelUpdateView(
-    CustomLoginRequiredMixin,
-    SuccessMessageMixin,
-    UpdateView
-):
+    CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Label
     form_class = LabelForm
     template_name = 'apps/labels/update.html'

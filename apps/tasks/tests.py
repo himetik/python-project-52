@@ -20,75 +20,68 @@ class TaskIndexViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.assertEqual(len(response.context['tasks']), 0)
 
     def test_task_list_view_context(self):
-        response = self.client.get(reverse('tasks'))
-        self.assertIn('tasks', response.context)
-        self.assertGreaterEqual(len(response.context['tasks']), 1)
-        self.assertTrue(
-            any(
-                task.name == "The Task"
-                for task in response.context['tasks']
-            )
-        )
+        url = reverse("tasks")
+        response = self.client.get(url)
+        self.assertIn("tasks", response.context)
+        tasks = response.context["tasks"]
+        self.assertGreaterEqual(len(tasks), 1)
+        self.assertTrue(any(task.name == "The Task" for task in tasks))
 
 
 class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_create_view(self):
-        response = self.client.get(reverse('tasks_create'))
+        url = reverse("tasks_create")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_task_create_view_template(self):
-        response = self.client.get(reverse('tasks_create'))
-        self.assertTemplateUsed(response, 'apps/tasks/create.html')
+        url = reverse("tasks_create")
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/tasks/create.html")
 
     def test_create_task_success(self):
+        url = reverse("tasks_create")
         data = {
-            'name': 'Task 1',
-            'status': self.status.id,
-            'description': 'Description 1',
+            "name": "Task 1",
+            "status": self.status.id,
+            "description": "Description 1",
         }
-        response = self.client.post(reverse('tasks_create'), data)
-        self.assertRedirects(response, reverse('tasks'))
-        self.assertTrue(
-            Task.objects.filter(name='Task 1').exists()
-        )
+        response = self.client.post(url, data)
+        self.assertRedirects(response, reverse("tasks"))
+        self.assertTrue(Task.objects.filter(name="Task 1").exists())
 
 
 class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_update_view(self):
-        response = self.client.get(
-            reverse('tasks_update', args=[self.task.pk])
-        )
+        url = reverse("tasks_update", args=[self.task.pk])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_task_update_view_template(self):
-        response = self.client.get(
-            reverse('tasks_update', args=[self.task.pk])
-        )
-        self.assertTemplateUsed(response, 'apps/tasks/update.html')
+        url = reverse("tasks_update", args=[self.task.pk])
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "apps/tasks/update.html")
 
     def test_update_task_success(self):
+        url = reverse("tasks_update", kwargs={"pk": self.task.pk})
         data = {
-            'name': 'Brend new Task Name',
-            'status': self.status.id,
+            "name": "Brand new Task Name",
+            "status": self.status.id,
         }
-        response = self.client.post(
-            reverse('tasks_update', kwargs={'pk': self.task.pk}), data
-        )
-        self.assertRedirects(response, reverse('tasks'))
+        response = self.client.post(url, data)
+        self.assertRedirects(response, reverse("tasks"))
         self.task.refresh_from_db()
-        self.assertEqual(self.task.name, 'Brend new Task Name')
+        self.assertEqual(self.task.name, "Brand new Task Name")
 
 
 class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_delete_view(self):
-        response = self.client.get(
-            reverse('tasks_delete', args=[self.task.pk])
-        )
+        url = reverse("tasks_delete", args=[self.task.pk])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_task_success(self):
-        response = self.client.post(
-            reverse('tasks_delete', args=[self.task.pk])
-        )
-        self.assertRedirects(response, reverse('tasks'))
+        url = reverse("tasks_delete", args=[self.task.pk])
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("tasks"))
         self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())
