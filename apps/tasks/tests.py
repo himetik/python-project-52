@@ -73,6 +73,18 @@ class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.task.refresh_from_db()
         self.assertEqual(self.task.name, "Brand new Task Name")
 
+    def test_task_name_max_length_exceeded(self):
+        url = reverse("tasks_update", kwargs={"pk": self.task.pk})
+        long_name = "A" * (self.task._meta.get_field("name").max_length + 1) 
+        data = {
+            "name": long_name,
+            "status": self.status.id,
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.task.refresh_from_db()
+        self.assertNotEqual(self.task.name, long_name)
+
 
 class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_delete_view(self):
