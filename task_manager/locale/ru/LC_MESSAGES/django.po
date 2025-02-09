@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-09 08:50+0000\n"
+"POT-Creation-Date: 2025-02-09 08:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr "Метка успешно удалена"
 #, fuzzy
 #| msgid "Unable to delete a status because it is being used"
 msgid "Unable to delete a label because it is being used"
-msgstr "Невозможно удалить статус, потому что он используется"
+msgstr "Невозможно удалить метку"
 
 #: apps/labels/tests.py:193 apps/labels/views.py:58
 #: build/lib/apps/labels/views.py:58
@@ -154,12 +154,13 @@ msgstr "Задачу может удалить только ее автор"
 msgid "The task has been successfully updated"
 msgstr "Задача успешно изменена"
 
-#: apps/users/views.py:19 build/lib/apps/users/tests.py:150
-#: build/lib/apps/users/views.py:19
+#: apps/users/tests.py:140 apps/users/views.py:19
+#: build/lib/apps/users/tests.py:150 build/lib/apps/users/views.py:19
 msgid "You are logged in"
 msgstr "Вы залогинены"
 
-#: apps/users/views.py:26 build/lib/apps/users/views.py:26
+#: apps/users/tests.py:171 apps/users/views.py:26
+#: build/lib/apps/users/views.py:26
 msgid "You are logged out"
 msgstr "Вы разлогинены"
 
