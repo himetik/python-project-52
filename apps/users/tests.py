@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from task_manager import settings
 from django.contrib.messages import get_messages
+from django.utils.translation import gettext as _
 
 
 class BaseAuthTestCase(TestCase):
@@ -136,7 +137,7 @@ class UserLoginViewTest(TestCase):
         })
         self.assertRedirects(response, settings.LOGIN_REDIRECT_URL)
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(any(str(m) == 'Вы залогинены' for m in messages))
+        self.assertTrue(any(str(m) == _('You are logged in') for m in messages))
 
     def test_login_failure(self):
         response = self.client.post(self.login_url, {
@@ -144,13 +145,9 @@ class UserLoginViewTest(TestCase):
             'password': 'wrongpassword'
         })
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response,
-            (
-                "Пожалуйста, введите правильные имя пользователя и пароль."
-                " Оба поля могут быть чувствительны к регистру."
-            )
-        )
+        form = response.context.get('form')
+        self.assertIsNotNone(form)
+        self.assertTrue(form.non_field_errors())
 
     def test_login_page_loads_successfully(self):
         response = self.client.get(self.login_url)
@@ -171,4 +168,4 @@ class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
         self.assertFalse(response.wsgi_request.user.is_authenticated)
         messages = list(response.context['messages'])
-        self.assertEqual(str(messages[0]), 'Вы разлогинены')
+        self.assertEqual(str(messages[0]), _('You are logged out'))

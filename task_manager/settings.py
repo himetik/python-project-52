@@ -5,19 +5,16 @@ import dj_database_url
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 
-# Load environment variables
+
 load_dotenv()
 
-# Base Directories
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_DIR = BASE_DIR / 'task_manager'
-
-# Security Settings
 SECRET_KEY = os.getenv('SECRET_KEY', 'fallback_secret_key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,webserver,webserver:9000").split(",")
 
-# Installed Applications
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,7 +30,6 @@ INSTALLED_APPS = [
     'apps.labels',
 ]
 
-# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -45,7 +41,6 @@ MIDDLEWARE = [
     'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
-# Rollbar Configuration
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
 if ACCESS_TOKEN:
     ROLLBAR = {
@@ -55,10 +50,8 @@ if ACCESS_TOKEN:
         'root': str(BASE_DIR),
     }
 
-# URL Configuration
 ROOT_URLCONF = 'task_manager.urls'
 
-# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -75,10 +68,8 @@ TEMPLATES = [
     },
 ]
 
-# WSGI Application
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-# Database Configuration
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv(
@@ -87,7 +78,6 @@ DATABASES = {
     )
 }
 
-# Authentication & Password Validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -95,7 +85,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -107,18 +96,10 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [PROJECT_DIR / 'locale']
-
-# Static Files
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Authentication Redirects
 LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = reverse_lazy('index')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')
-
-# Default Primary Key Field Type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# 404 Custom Handler
 HANDLER404 = 'core.views.get_404'
