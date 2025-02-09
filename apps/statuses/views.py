@@ -31,11 +31,14 @@ class StatusDeleteView(
     success_message = _('The status has been successfully deleted')
 
     def post(self, request, *args, **kwargs):
-        if self.get_object().tasks.exists():
+        status = self.get_object()
+
+        if status.tasks.exists():
             messages.error(
-                self.request,
-                _('Unable to delete a status because it is being used'))
+                request, _('Unable to delete a status because it is being used')
+            )
             return redirect('statuses')
+
         return super().post(request, *args, **kwargs)
 
 
