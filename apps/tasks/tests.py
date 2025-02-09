@@ -50,6 +50,18 @@ class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
         self.assertRedirects(response, reverse("tasks"))
         self.assertTrue(Task.objects.filter(name="Task 1").exists())
 
+    def test_create_task_max_length_exceeded(self):
+        url = reverse("tasks_create")
+        long_name = "A" * (self.task._meta.get_field("name").max_length + 1)
+        data = {
+            "name": long_name,
+            "status": self.status.id,
+            "description": "Description 1",
+        }
+        response = self.client.post(url, data)
+        self.assertTrue("name" in response.context["form"].errors)
+        self.assertFalse(Task.objects.filter(name=long_name).exists())
+
 
 class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_update_view(self):
