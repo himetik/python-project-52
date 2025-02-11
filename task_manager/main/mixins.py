@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from task_manager.labels.models import Label
 from task_manager.statuses.models import Status
 from task_manager.tasks.models import Task
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import DeleteView
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
@@ -50,3 +52,22 @@ class SetUpLoggedUserWithTaskMixin(SetUpLoggedUserMixin):
         cls.task = Task.objects.create(
             name='The Task', status=cls.status, creator=cls.user
         )
+
+
+class DeleteMixin(SuccessMessageMixin, DeleteView):
+    success_message = _('The object has been successfully deleted')
+
+    def test_func(self):
+        return True
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+    def handle_no_permission(self):
+        messages.error(self.request, _('You are not authorized to perform this action.'))
+        return redirect(self.get_redirect_url())
+
+    def get_redirect_url(self):
+        return self.success_url

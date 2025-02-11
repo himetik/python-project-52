@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from task_manager.users.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.conf import settings
@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
+from task_manager.main.mixins import DeleteMixin
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):
@@ -34,21 +35,17 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_message = _('The user has been successfully registered')
 
 
-class UserDeleteView(SuccessMessageMixin, UserPassesTestMixin, DeleteView):
+class UserDeleteView(DeleteMixin, UserPassesTestMixin):
     model = get_user_model()
     template_name = 'users/delete.html'
     success_url = reverse_lazy('users')
     success_message = _('The user has been successfully deleted')
 
     def test_func(self):
-        user = self.get_object()
-        return self.request.user == user
+        return self.request.user == self.get_object()
 
-    def handle_no_permission(self):
-        messages.error(
-            self.request, _('You are not authorized to modify another user.')
-        )
-        return redirect('users')
+    def get_redirect_url(self):
+        return reverse_lazy('users')
 
 
 class UserUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
