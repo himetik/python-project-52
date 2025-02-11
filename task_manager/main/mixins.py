@@ -103,7 +103,9 @@ class TaskCreatorCheckMixin:
     def check_task_creator(self) -> bool:
         task = self.get_object()
         if task.creator != self.request.user:
-            messages.error(self.request, _('Only the author of the task can delete it'))
+            messages.error(
+                self.request, _('Only the author of the task can delete it')
+            )
             return False
         return True
 
