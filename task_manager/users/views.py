@@ -13,6 +13,9 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from task_manager.main.mixins import DeleteMixin, UpdateMixin
 
 
+User = get_user_model()
+
+
 class UserLoginView(SuccessMessageMixin, LoginView):
     template_name = 'login.html'
     form_class = AuthenticationForm
@@ -36,7 +39,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
 
 
 class UserDeleteView(DeleteMixin, UserPassesTestMixin):
-    model = get_user_model()
+    model = User
     template_name = 'users/delete.html'
     success_url = reverse_lazy('users')
     success_message = _('The user has been successfully deleted')
@@ -49,7 +52,7 @@ class UserDeleteView(DeleteMixin, UserPassesTestMixin):
 
 
 class UserUpdateView(UpdateMixin, UserPassesTestMixin):
-    model = get_user_model()
+    model = User
     form_class = CustomUserChangeForm
     template_name = 'users/update.html'
     success_url = reverse_lazy('users')
@@ -64,5 +67,5 @@ class UserUpdateView(UpdateMixin, UserPassesTestMixin):
 
 class UserIndexView(ListView):
     template_name = 'users/users.html'
-    model = get_user_model()
+    model = User
     context_object_name = 'users'
