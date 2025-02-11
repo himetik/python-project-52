@@ -9,6 +9,7 @@ from task_manager.statuses.models import Status
 from task_manager.tasks.models import Task
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import DeleteView, UpdateView
+from django.urls import reverse_lazy
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
@@ -96,3 +97,20 @@ class UpdateMixin(SuccessMessageMixin, UpdateView):
 
     def get_redirect_url(self):
         return self.success_url
+
+
+class TaskCreatorCheckMixin:
+    def check_task_creator(self) -> bool:
+        task = self.get_object()
+        if task.creator != self.request.user:
+            messages.error(self.request, _('Only the author of the task can delete it'))
+            return False
+        return True
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.check_task_creator():
+            return redirect(self.get_failure_url())
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_failure_url(self):
+        return reverse_lazy('tasks')
