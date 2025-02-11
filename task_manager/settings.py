@@ -15,6 +15,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'fallback_secret_key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,webserver,webserver:9000").split(",")
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
