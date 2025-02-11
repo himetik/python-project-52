@@ -10,14 +10,14 @@ from django.shortcuts import redirect
 
 
 class LabelIndexView(CustomLoginRequiredMixin, ListView):
-    template_name = 'apps/labels/labels.html'
+    template_name = 'labels/labels.html'
     model = Label
     context_object_name = 'labels'
 
 
 class LabelCreateView(
     CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
-    template_name = 'apps/labels/create.html'
+    template_name = 'labels/create.html'
     form_class = LabelForm
     success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully created')
@@ -26,7 +26,7 @@ class LabelCreateView(
 class LabelDeleteView(
     CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Label
-    template_name = 'apps/labels/delete.html'
+    template_name = 'labels/delete.html'
     success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully deleted')
 
@@ -46,7 +46,7 @@ class LabelUpdateView(
     CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Label
     form_class = LabelForm
-    template_name = 'apps/labels/update.html'
+    template_name = 'labels/update.html'
     success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully changed')
 

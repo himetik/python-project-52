@@ -24,7 +24,7 @@ class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
 
     def test_users_view_uses_correct_template(self):
         response = self.client.get(reverse('users'))
-        self.assertTemplateUsed(response, 'apps/users/users.html')
+        self.assertTemplateUsed(response, 'users/users.html')
 
     def test_users_view_contains_single_user(self):
         response = self.client.get(reverse('users'))
@@ -46,7 +46,7 @@ class UserCreateViewTest(SetUpLoggedUserMixin, TestCase):
 
     def test_create_user_view_uses_correct_template(self):
         response = self.client.get(reverse('users_create'))
-        self.assertTemplateUsed(response, 'apps/users/create.html')
+        self.assertTemplateUsed(response, 'users/create.html')
 
     def test_create_user_view_creates_user(self):
         User = get_user_model()
@@ -75,7 +75,7 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
     def test_update_user_view_uses_correct_template(self):
         url = reverse("users_update", args=[self.user.pk])
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/users/update.html")
+        self.assertTemplateUsed(response, "users/update.html")
 
     def test_update_user_view_updates_user(self):
         User = get_user_model()
@@ -104,7 +104,7 @@ class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
     def test_delete_user_view_uses_correct_template(self):
         url = reverse("users_delete", args=[self.user.pk])
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/users/delete.html")
+        self.assertTemplateUsed(response, "users/delete.html")
 
     def test_delete_user_view_deletes_user(self):
         url = reverse("users_delete", args=[self.user.pk])

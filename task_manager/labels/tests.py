@@ -1,4 +1,4 @@
-from main.mixins import SetUpLoggedUserWithLabelMixin
+from task_manager.main.mixins import SetUpLoggedUserWithLabelMixin
 from django.test import TestCase
 from django.urls import reverse
 from task_manager.labels.models import Label
@@ -14,7 +14,7 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         
     def test_labels_page_uses_correct_template(self):
         response = self.client.get(reverse('labels'))
-        self.assertTemplateUsed(response, 'apps/labels/labels.html')
+        self.assertTemplateUsed(response, 'labels/labels.html')
         
     def test_labels_page_context_contains_labels(self):
         response = self.client.get(reverse('labels'))
@@ -44,7 +44,7 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
 
     def test_create_label_page_uses_correct_template(self):
         response = self.client.get(reverse('labels_create'))
-        self.assertTemplateUsed(response, 'apps/labels/create.html')
+        self.assertTemplateUsed(response, 'labels/create.html')
 
     def test_create_label_success(self):
         url = reverse("labels_create")
@@ -113,7 +113,7 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_delete_label_page_uses_correct_template(self):
         url = reverse("labels_delete", kwargs={"pk": self.label.id})
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/labels/delete.html")
+        self.assertTemplateUsed(response, "labels/delete.html")
 
     def test_delete_label_success(self):
         url = reverse("labels_delete", kwargs={"pk": self.label.id})
@@ -159,7 +159,7 @@ class LabelUpdateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_update_label_page_uses_correct_template(self):
         url = reverse("labels_update", kwargs={"pk": self.label.id})
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/labels/update.html")
+        self.assertTemplateUsed(response, "labels/update.html")
 
     def test_update_label_success(self):
         updated_data = {"name": "Updated Label"}

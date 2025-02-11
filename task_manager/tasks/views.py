@@ -12,7 +12,7 @@ from django.contrib import messages
 
 
 class TaskIndexView(CustomLoginRequiredMixin, FilterView):
-    template_name = 'apps/tasks/tasks.html'
+    template_name = 'tasks/tasks.html'
     model = Task
     context_object_name = 'tasks'
     filterset_class = TaskFilter
@@ -26,7 +26,7 @@ class TaskIndexView(CustomLoginRequiredMixin, FilterView):
 
 
 class TaskCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
-    template_name = 'apps/tasks/create.html'
+    template_name = 'tasks/create.html'
     form_class = TaskForm
     success_url = reverse_lazy('tasks')
     success_message = _('The task has been successfully created')
@@ -38,7 +38,7 @@ class TaskCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 class TaskDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Task
-    template_name = 'apps/tasks/delete.html'
+    template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks')
     success_message = _('The task has been successfully deleted')
 
@@ -68,12 +68,12 @@ class TaskDeleteView(CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
 class TaskUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Task
     form_class = TaskForm
-    template_name = 'apps/tasks/update.html'
+    template_name = 'tasks/update.html'
     success_url = reverse_lazy('tasks')
     success_message = _('The task has been successfully updated')
 
 
 class TaskDetailView(DetailView):
     model = Task
-    template_name = 'apps/tasks/task.html'
+    template_name = 'tasks/task.html'
     context_object_name = 'task'

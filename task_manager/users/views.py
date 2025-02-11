@@ -28,7 +28,7 @@ class UserLogoutView(SuccessMessageMixin, LogoutView):
 
 
 class UserCreateView(SuccessMessageMixin, CreateView):
-    template_name = 'apps/users/create.html'
+    template_name = 'users/create.html'
     form_class = CustomUserCreationForm
     success_url = settings.LOGIN_URL
     success_message = _('The user has been successfully registered')
@@ -36,7 +36,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
 
 class UserDeleteView(SuccessMessageMixin, UserPassesTestMixin, DeleteView):
     model = get_user_model()
-    template_name = 'apps/users/delete.html'
+    template_name = 'users/delete.html'
     success_url = reverse_lazy('users')
     success_message = _('The user has been successfully deleted')
 
@@ -54,7 +54,7 @@ class UserDeleteView(SuccessMessageMixin, UserPassesTestMixin, DeleteView):
 class UserUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
     model = get_user_model()
     form_class = CustomUserChangeForm
-    template_name = 'apps/users/update.html'
+    template_name = 'users/update.html'
     success_url = reverse_lazy('users')
     success_message = _('The user has been successfully updated')
 
@@ -69,6 +69,6 @@ class UserUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
 
 
 class UserIndexView(ListView):
-    template_name = 'apps/users/users.html'
+    template_name = 'users/users.html'
     model = get_user_model()
     context_object_name = 'users'

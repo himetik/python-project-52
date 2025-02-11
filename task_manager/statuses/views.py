@@ -10,14 +10,14 @@ from django.shortcuts import redirect
 
 
 class StatusIndexView(CustomLoginRequiredMixin, ListView):
-    template_name = 'apps/statuses/statuses.html'
+    template_name = 'statuses/statuses.html'
     model = Status
     context_object_name = 'statuses'
 
 
 class StatusCreateView(
     CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
-    template_name = 'apps/statuses/create.html'
+    template_name = 'statuses/create.html'
     form_class = StatusForm
     success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully created')
@@ -26,7 +26,7 @@ class StatusCreateView(
 class StatusDeleteView(
     CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Status
-    template_name = 'apps/statuses/delete.html'
+    template_name = 'statuses/delete.html'
     success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully deleted')
 
@@ -46,6 +46,6 @@ class StatusUpdateView(
     CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Status
     form_class = StatusForm
-    template_name = 'apps/statuses/update.html'
+    template_name = 'statuses/update.html'
     success_url = reverse_lazy('statuses')
     success_message = _("The status has been successfully changed")

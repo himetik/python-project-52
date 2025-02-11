@@ -1,6 +1,6 @@
 from django.test import TestCase
 from task_manager.statuses.models import Status
-from main.mixins import SetUpLoggedUserWithStatusMixin
+from task_manager.main.mixins import SetUpLoggedUserWithStatusMixin
 from django.urls import reverse
 from task_manager.tasks.models import Task
 from django.utils.translation import gettext as _
@@ -13,7 +13,7 @@ class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
 
     def test_status_index_view_template(self):
         response = self.client.get(reverse('statuses'))
-        self.assertTemplateUsed(response, 'apps/statuses/statuses.html')
+        self.assertTemplateUsed(response, 'statuses/statuses.html')
 
     def test_index_page_disallows_non_get_requests(self):
         disallowed_methods = ['post', 'put', 'delete', 'patch']
@@ -48,7 +48,7 @@ class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
 
     def test_status_create_view_template(self):
         response = self.client.get(reverse('statuses_create'))
-        self.assertTemplateUsed(response, 'apps/statuses/create.html')
+        self.assertTemplateUsed(response, 'statuses/create.html')
 
     def test_create_status_success(self):
         data = {'name': 'Status 1'}
@@ -66,7 +66,7 @@ class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_update_view_template(self):
         url = reverse("statuses_update", args=[self.status.pk])
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/statuses/update.html")
+        self.assertTemplateUsed(response, "statuses/update.html")
 
     def test_status_update_success(self):
         url = reverse("statuses_update", args=[self.status.pk])
@@ -86,7 +86,7 @@ class StatusDeleteViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_delete_view_template(self):
         url = reverse("statuses_delete", args=[self.status.pk])
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/statuses/delete.html")
+        self.assertTemplateUsed(response, "statuses/delete.html")
 
     def test_status_delete_success(self):
         url = reverse("statuses_delete", args=[self.status.pk])

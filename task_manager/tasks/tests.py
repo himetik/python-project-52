@@ -11,7 +11,7 @@ class TaskIndexViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
 
     def test_status_index_view_template(self):
         response = self.client.get(reverse('tasks'))
-        self.assertTemplateUsed(response, 'apps/tasks/tasks.html')
+        self.assertTemplateUsed(response, 'tasks/tasks.html')
 
     def test_task_list_view_empty_context(self):
         Task.objects.all().delete()
@@ -37,7 +37,7 @@ class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_create_view_template(self):
         url = reverse("tasks_create")
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/tasks/create.html")
+        self.assertTemplateUsed(response, "tasks/create.html")
 
     def test_create_task_success(self):
         url = reverse("tasks_create")
@@ -83,7 +83,7 @@ class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_update_view_template(self):
         url = reverse("tasks_update", args=[self.task.pk])
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/tasks/update.html")
+        self.assertTemplateUsed(response, "tasks/update.html")
 
     def test_update_task_success(self):
         url = reverse("tasks_update", kwargs={"pk": self.task.pk})
@@ -129,7 +129,7 @@ class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_task_delete_used_correct_tamplate(self):
         url = reverse("tasks_delete", args=[self.task.pk])
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "apps/tasks/delete.html")
+        self.assertTemplateUsed(response, "tasks/delete.html")
 
     def test_delete_task_success(self):
         url = reverse("tasks_delete", args=[self.task.pk])
