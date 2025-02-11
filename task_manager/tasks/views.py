@@ -27,7 +27,9 @@ class TaskCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class TaskDeleteView(CustomLoginRequiredMixin, TaskCreatorCheckMixin, SuccessMessageMixin, DeleteView):
+class TaskDeleteView(
+    CustomLoginRequiredMixin, TaskCreatorCheckMixin,
+    SuccessMessageMixin, DeleteView):
     model = Task
     template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks')
