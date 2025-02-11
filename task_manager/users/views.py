@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView
 from django.contrib.messages.views import SuccessMessageMixin
 from task_manager.users.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.conf import settings
@@ -8,9 +8,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
-from task_manager.main.mixins import DeleteMixin
+from task_manager.main.mixins import DeleteMixin, UpdateMixin
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):
@@ -48,21 +47,18 @@ class UserDeleteView(DeleteMixin, UserPassesTestMixin):
         return reverse_lazy('users')
 
 
-class UserUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
+class UserUpdateView(UpdateMixin, UserPassesTestMixin):
     model = get_user_model()
     form_class = CustomUserChangeForm
     template_name = 'users/update.html'
     success_url = reverse_lazy('users')
     success_message = _('The user has been successfully updated')
 
-    def test_func(self) -> bool:
+    def test_func(self):
         return self.request.user == self.get_object()
 
-    def handle_no_permission(self):
-        messages.error(
-            self.request, _("You are not authorized to modify another user.")
-        )
-        return redirect("users")
+    def get_redirect_url(self):
+        return reverse_lazy("users")
 
 
 class UserIndexView(ListView):
