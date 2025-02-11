@@ -66,7 +66,10 @@ class DeleteMixin(SuccessMessageMixin, DeleteView):
         return super().dispatch(request, *args, **kwargs)
 
     def handle_no_permission(self):
-        messages.error(self.request, _('You are not authorized to perform this action.'))
+        messages.error(
+            self.request,
+            _('You are not authorized to perform this action.')
+        )
         return redirect(self.get_redirect_url())
 
     def get_redirect_url(self):
@@ -85,7 +88,10 @@ class UpdateMixin(SuccessMessageMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def handle_no_permission(self):
-        messages.error(self.request, _("You are not authorized to perform this action."))
+        messages.error(
+            self.request,
+            _("You are not authorized to perform this action.")
+        )
         return redirect(self.get_redirect_url())
 
     def get_redirect_url(self):
