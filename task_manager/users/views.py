@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
-from apps.users.forms import CustomUserCreationForm, CustomUserChangeForm
+from task_manager.users.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.views import LoginView, LogoutView

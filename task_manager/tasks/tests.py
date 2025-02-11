@@ -1,7 +1,7 @@
 from django.test import TestCase
-from apps.main.mixins import SetUpLoggedUserWithTaskMixin
+from task_manager.main.mixins import SetUpLoggedUserWithTaskMixin
 from django.urls import reverse
-from apps.tasks.models import Task
+from task_manager.tasks.models import Task
 
 
 class TaskIndexViewTest(SetUpLoggedUserWithTaskMixin, TestCase):

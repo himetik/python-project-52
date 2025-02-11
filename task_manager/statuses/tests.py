@@ -1,8 +1,8 @@
 from django.test import TestCase
-from apps.statuses.models import Status
-from apps.main.mixins import SetUpLoggedUserWithStatusMixin
+from task_manager.statuses.models import Status
+from main.mixins import SetUpLoggedUserWithStatusMixin
 from django.urls import reverse
-from apps.tasks.models import Task
+from task_manager.tasks.models import Task
 from django.utils.translation import gettext as _
 
 

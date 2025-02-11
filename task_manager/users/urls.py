@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.users.views import (
+from task_manager.users.views import (
     UserIndexView,
     UserCreateView,
     UserDeleteView,

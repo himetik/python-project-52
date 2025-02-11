@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.labels.views import (
+from task_manager.labels.views import (
     LabelIndexView,
     LabelCreateView,
     LabelDeleteView,

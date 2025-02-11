@@ -1,12 +1,12 @@
-from apps.tasks.models import Task
+from task_manager.tasks.models import Task
 from django_filters.views import FilterView
-from apps.main.mixins import CustomLoginRequiredMixin
+from task_manager.main.mixins import CustomLoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
-from apps.tasks.forms import TaskForm
+from task_manager.tasks.forms import TaskForm
 from django.utils.translation import gettext_lazy as _
-from apps.tasks.filters import TaskFilter
+from task_manager.tasks.filters import TaskFilter
 from django.shortcuts import redirect
 from django.contrib import messages
 

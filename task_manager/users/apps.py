@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class StatusesConfig(AppConfig):
+class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.statuses'
+    name = 'task_manager.users'

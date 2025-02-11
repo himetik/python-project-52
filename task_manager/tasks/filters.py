@@ -1,8 +1,8 @@
 from django.forms import CheckboxInput
 from django_filters import filters, FilterSet
-from apps.tasks.models import Task
-from apps.statuses.models import Status
-from apps.labels.models import Label
+from task_manager.tasks.models import Task
+from task_manager.statuses.models import Status
+from task_manager.labels.models import Label
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 

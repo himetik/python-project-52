@@ -4,9 +4,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
-from apps.labels.models import Label
-from apps.statuses.models import Status
-from apps.tasks.models import Task
+from task_manager.labels.models import Label
+from task_manager.statuses.models import Status
+from task_manager.tasks.models import Task
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
