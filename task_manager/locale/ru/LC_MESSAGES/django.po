@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-12 13:24+0000\n"
+"POT-Creation-Date: 2025-02-12 13:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,7 +60,6 @@ msgstr "Метка успешно изменена"
 
 #: build/lib/apps/labels/views.py:62 build/lib/task_manager/labels/views.py:55
 #: task_manager/labels/views.py:55
-#| msgid "Update label"
 msgid "Edit Label"
 msgstr "Изменение метки"
 
@@ -221,19 +220,16 @@ msgid "This field is required."
 msgstr ""
 
 #: build/lib/task_manager/main/mixins.py:20 task_manager/main/mixins.py:20
-#| msgid "The label has been successfully deleted"
 msgid "The object has been successfully deleted"
 msgstr "Метка успешно удалена"
 
 #: build/lib/task_manager/main/mixins.py:33
 #: build/lib/task_manager/main/mixins.py:55 task_manager/main/mixins.py:33
 #: task_manager/main/mixins.py:55
-#| msgid "You are not authorized to modify another user."
 msgid "You are not authorized to perform this action."
 msgstr "У вас нет прав для изменения"
 
 #: build/lib/task_manager/main/mixins.py:42 task_manager/main/mixins.py:42
-#| msgid "The task has been successfully updated"
 msgid "The object has been successfully updated"
 msgstr "Задача успешно изменена"
 
