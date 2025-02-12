@@ -7,20 +7,31 @@ from task_manager.labels.models import Label
 
 
 class Task(models.Model):
-    name = models.CharField(_('name'), max_length=256, unique=True)
-    description = models.TextField(_('description'), blank=True)
+    name = models.CharField(
+        _('name'),
+        max_length=256,
+        unique=True
+    )
+
+    description = models.TextField(
+        _('description'),
+        blank=True
+    )
+
     status = models.ForeignKey(
         Status,
         on_delete=models.PROTECT,
         related_name='tasks',
         verbose_name=_('status'),
     )
+
     creator = models.ForeignKey(
         get_user_model(),
         on_delete=models.PROTECT,
         verbose_name=_('creator'),
         related_name='creator_tasks',
     )
+
     executor = models.ForeignKey(
         get_user_model(),
         on_delete=models.PROTECT,
@@ -29,12 +40,14 @@ class Task(models.Model):
         verbose_name=_('executor'),
         related_name='executor_tasks',
     )
+
     labels = models.ManyToManyField(
         Label,
         blank=True,
         verbose_name=_('labels'),
         related_name='tasks',
     )
+
     created_at = models.DateTimeField(
         default=timezone.now,
         verbose_name=_('created at')

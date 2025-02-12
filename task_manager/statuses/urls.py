@@ -6,11 +6,13 @@ from task_manager.statuses.views import (
 urlpatterns = [
     path('',
          StatusIndexView.as_view(), 
-        name='statuses'),
+        name='statuses'
+    ),
     path(
         'create/',
         StatusCreateView.as_view(),
-        name='statuses_create'),
+        name='statuses_create'
+    ),
     path(
         '<int:pk>/delete/',
         StatusDeleteView.as_view(),

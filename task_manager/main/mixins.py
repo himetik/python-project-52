@@ -3,47 +3,33 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import DeleteView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
     def handle_no_permission(self):
         messages.error(
-            self.request, _('You are not logged in! Please sign in.')
+            self.request,
+            _('You are not logged in! Please sign in.')
         )
         return redirect(reverse('login'))
 
 
-class BaseActionMixin(SuccessMessageMixin):
-    success_message = ""
-
+class UserModificationMixin(UserPassesTestMixin):
+    model = get_user_model()
+    success_url = reverse_lazy('users')
+    
     def test_func(self) -> bool:
-        return True
-
-    def dispatch(self, request, *args, **kwargs):
-        if not self.test_func():
-            return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
-
+        return self.request.user == self.get_object()
+    
     def handle_no_permission(self):
         messages.error(
             self.request,
-            _("You are not authorized to perform this action.")
+            _('You are not authorized to modify another user.')
         )
-        return redirect(self.get_redirect_url())
-
-    def get_redirect_url(self):
-        return self.success_url
-
-
-class UserDeleteMixin(BaseActionMixin, DeleteView):
-    success_message = _('The object has been successfully deleted')
-
-
-class UserUpdateMixin(BaseActionMixin, UpdateView):
-    success_message = _("The object has been successfully updated")
+        return redirect('users')
 
 
 class TaskCreatorCheckMixin:
@@ -51,7 +37,8 @@ class TaskCreatorCheckMixin:
         task = self.get_object()
         if task.creator != self.request.user:
             messages.error(
-                self.request, _('Only the author of the task can delete it')
+                self.request,
+                _('Only the author of the task can delete it')
             )
             return False
         return True

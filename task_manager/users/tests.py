@@ -4,12 +4,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
 from django.utils.translation import gettext as _
 from task_manager import settings
+from task_manager.tests import constants
 
 
 class SetUpLoggedUserMixin:
     @classmethod
     def setUpTestData(cls):
-        cls.user_data = {'username': 'testuser', 'password': 'testpassword'}
+        cls.user_data = {
+            'username': constants.MAIN_USER["username"],
+            'password': constants.MAIN_USER["password1"]
+        }
         cls.user = get_user_model().objects.create_user(**cls.user_data)
 
     def setUp(self):
@@ -18,52 +22,49 @@ class SetUpLoggedUserMixin:
 
 
 class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
+    view_url = reverse('users')
+
     def test_users_view_returns_200(self):
-        response = self.client.get(reverse('users'))
+        response = self.client.get(self.view_url)
         self.assertEqual(response.status_code, 200)
 
     def test_users_view_uses_correct_template(self):
-        response = self.client.get(reverse('users'))
+        response = self.client.get(self.view_url)
         self.assertTemplateUsed(response, 'users/users.html')
 
     def test_users_view_contains_single_user(self):
-        response = self.client.get(reverse('users'))
+        response = self.client.get(self.view_url)
         self.assertIn('users', response.context)
         self.assertEqual(len(response.context['users']), 1)
         self.assertEqual(response.context['users'][0], self.user)
 
     def test_users_view_empty_when_no_users(self):
         self.user.delete()
-        response = self.client.get(reverse('users'))
+        response = self.client.get(self.view_url)
         self.assertIn('users', response.context)
         self.assertEqual(len(response.context['users']), 0)
 
 
-class UserCreateViewTest(SetUpLoggedUserMixin, TestCase):
+class UserCreateViewTest(TestCase):
+    creation_url = reverse('users_create')
+
     def test_create_user_view_returns_200(self):
-        response = self.client.get(reverse('users_create'))
+        response = self.client.get(self.creation_url)
         self.assertEqual(response.status_code, 200)
 
     def test_create_user_view_uses_correct_template(self):
-        response = self.client.get(reverse('users_create'))
+        response = self.client.get(self.creation_url)
         self.assertTemplateUsed(response, 'users/create.html')
 
     def test_create_user_view_creates_user(self):
         User = get_user_model()
-        data = {
-            'username': 'test_user',
-            'first_name': 'Firstname',
-            'last_name': 'LastName',
-            'password1': '23977sdv',
-            'password2': '23977sdv',
-        }
-        response = self.client.post(reverse('users_create'), data)
+        response = self.client.post(self.creation_url, constants.USER_1)
         self.assertRedirects(response, settings.LOGIN_URL)
-        self.assertTrue(User.objects.filter(username='test_user').exists())
-        user = User.objects.get(username='test_user')
-        self.assertEqual(user.first_name, 'Firstname')
-        self.assertEqual(user.last_name, 'LastName')
-        self.assertTrue(user.check_password('23977sdv'))
+        self.assertTrue(User.objects.filter(username='user_1').exists())
+        user = User.objects.get(username=constants.USER_1['username'])
+        self.assertEqual(user.first_name, constants.USER_1['first_name'])
+        self.assertEqual(user.last_name, constants.USER_1['last_name'])
+        self.assertTrue(user.check_password(constants.USER_1['password1']))
 
 
 class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
@@ -80,19 +81,12 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
     def test_update_user_view_updates_user(self):
         User = get_user_model()
         url = reverse("users_update", args=[self.user.pk])
-        data = {
-            "username": "new_test_user",
-            "first_name": "NewFirstname",
-            "last_name": "NewLastName",
-            "password1": "23977sdv",
-            "password2": "23977sdv",
-        }
-        response = self.client.post(url, data)
+        response = self.client.post(url, constants.USER_2)
         self.assertRedirects(response, reverse("users"))
         user = User.objects.get(pk=self.user.pk)
-        self.assertEqual(user.username, "new_test_user")
-        self.assertEqual(user.first_name, "NewFirstname")
-        self.assertEqual(user.last_name, "NewLastName")
+        self.assertEqual(user.username, constants.USER_2["username"])
+        self.assertEqual(user.first_name, constants.USER_2["first_name"])
+        self.assertEqual(user.last_name, constants.USER_2["last_name"])
 
 
 class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
@@ -119,15 +113,15 @@ class UserLoginViewTest(TestCase):
     def setUp(self):
         super().setUp()
         self.user = get_user_model().objects.create_user(
-            username='testuser',
-            password='testpassword'
+            username=constants.USER_1["username"],
+            password=constants.USER_1["password1"]
         )
         self.login_url = reverse('login')
 
     def test_login_success(self):
         response = self.client.post(self.login_url, {
-            'username': 'testuser',
-            'password': 'testpassword',
+            'username': constants.USER_1["username"],
+            'password': constants.USER_1["password1"]
         })
         self.assertRedirects(response, settings.LOGIN_REDIRECT_URL)
         messages = list(get_messages(response.wsgi_request))
@@ -135,7 +129,7 @@ class UserLoginViewTest(TestCase):
 
     def test_login_failure(self):
         response = self.client.post(self.login_url, {
-            'username': 'testuser',
+            'username': constants.USER_1["username"],
             'password': 'wrongpassword'
         })
         self.assertEqual(response.status_code, 200)
@@ -153,12 +147,14 @@ class UserLoginViewTest(TestCase):
 
 
 class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
+    logout_url = reverse('logout')
+
     def test_logout_view_status_code(self):
-        response = self.client.post(reverse('logout'))
+        response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, 302)
 
     def test_logout_success(self):
-        response = self.client.post(reverse('logout'), follow=True)
+        response = self.client.post(self.logout_url, follow=True)
         self.assertRedirects(response, settings.LOGOUT_REDIRECT_URL)
         self.assertFalse(response.wsgi_request.user.is_authenticated)
         messages = list(response.context['messages'])

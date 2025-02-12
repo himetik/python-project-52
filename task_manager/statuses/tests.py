@@ -4,22 +4,25 @@ from django.utils.translation import gettext as _
 from task_manager.users.tests import SetUpLoggedUserMixin
 from task_manager.statuses.models import Status
 from task_manager.tasks.models import Task
+from task_manager.tests import constants
 
 
 class SetUpLoggedUserWithStatusMixin(SetUpLoggedUserMixin):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.status = Status.objects.create(name='The Status')
+        cls.main_status = Status.objects.create(name=constants.MAIN_STATUS)
 
 
 class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_index_view(self):
-        response = self.client.get(reverse('statuses'))
+        url = reverse('statuses')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_status_index_view_template(self):
-        response = self.client.get(reverse('statuses'))
+        url = reverse('statuses')
+        response = self.client.get(url)
         self.assertTemplateUsed(response, 'statuses/statuses.html')
 
     def test_index_page_disallows_non_get_requests(self):
@@ -32,86 +35,94 @@ class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
 
     def test_status_list_view_empty_context(self):
         Status.objects.all().delete()
-        response = self.client.get(reverse('statuses'))
+        url = reverse('statuses')
+        response = self.client.get(url)
         self.assertIn('statuses', response.context)
         self.assertEqual(len(response.context['statuses']), 0)
 
     def test_status_list_view_context(self):
-        Status.objects.create(name="Another Status")
+        Status.objects.create(name=constants.STATUS_NAME_1)
         url = reverse("statuses")
         response = self.client.get(url)
         self.assertIn("statuses", response.context)
         statuses = response.context["statuses"]
         self.assertGreaterEqual(len(statuses), 2)
-        expected_statuses = {"The Status", "Another Status"}
+        expected_statuses = {constants.MAIN_STATUS, constants.STATUS_NAME_1}
         actual_statuses = {status.name for status in statuses}
         self.assertTrue(expected_statuses.issubset(actual_statuses))
 
 
 class StatusCreateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_create_view(self):
-        response = self.client.get(reverse('statuses_create'))
+        url = reverse('statuses_create')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_status_create_view_template(self):
-        response = self.client.get(reverse('statuses_create'))
+        url = reverse('statuses_create')
+        response = self.client.get(url)
         self.assertTemplateUsed(response, 'statuses/create.html')
 
     def test_create_status_success(self):
-        data = {'name': 'Status 1'}
-        response = self.client.post(reverse('statuses_create'), data)
+        url = reverse('statuses_create')
+        response = self.client.post(url, {"name": constants.STATUS_NAME_1})
         self.assertRedirects(response, reverse('statuses'))
-        self.assertTrue(Status.objects.filter(name='Status 1').exists())
+        self.assertTrue(
+            Status.objects.filter(name=constants.STATUS_NAME_1).exists()
+        )
 
 
 class StatusUpdateViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_update_view(self):
-        url = reverse("statuses_update", args=[self.status.pk])
+        url = reverse("statuses_update", args=[self.main_status.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_status_update_view_template(self):
-        url = reverse("statuses_update", args=[self.status.pk])
+        url = reverse("statuses_update", args=[self.main_status.pk])
         response = self.client.get(url)
         self.assertTemplateUsed(response, "statuses/update.html")
 
     def test_status_update_success(self):
-        url = reverse("statuses_update", args=[self.status.pk])
-        updated_name = "Updated Status Name"
-        response = self.client.post(url, {"name": updated_name}, follow=True)
+        url = reverse("statuses_update", args=[self.main_status.pk])
+        response = self.client.post(
+            url,
+            {"name": constants.STATUS_NAME_2},
+            follow=True
+        )
         self.assertEqual(response.status_code, 200)
-        self.status.refresh_from_db()
-        self.assertEqual(self.status.name, updated_name)
+        self.main_status.refresh_from_db()
+        self.assertEqual(self.main_status.name, constants.STATUS_NAME_2)
 
 
 class StatusDeleteViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
     def test_status_delete_view(self):
-        url = reverse("statuses_delete", args=[self.status.pk])
+        url = reverse("statuses_delete", args=[self.main_status.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_status_delete_view_template(self):
-        url = reverse("statuses_delete", args=[self.status.pk])
+        url = reverse("statuses_delete", args=[self.main_status.pk])
         response = self.client.get(url)
         self.assertTemplateUsed(response, "statuses/delete.html")
 
     def test_status_delete_success(self):
-        url = reverse("statuses_delete", args=[self.status.pk])
+        url = reverse("statuses_delete", args=[self.main_status.pk])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(Status.objects.filter(pk=self.status.pk).exists())
+        self.assertFalse(Status.objects.filter(pk=self.main_status.pk).exists())
 
     def test_delete_status_with_tasks(self):
         Task.objects.create(
-            name="Test Task",
-            status=self.status,
+            name=constants.TASK_NAME_1,
+            status=self.main_status,
             creator=self.user,
             executor=self.user,
         )
-        url = reverse("statuses_delete", kwargs={"pk": self.status.pk})
+        url = reverse("statuses_delete", kwargs={"pk": self.main_status.pk})
         response = self.client.post(url)
         self.assertRedirects(response, reverse("statuses"))
-        self.assertTrue(Status.objects.filter(pk=self.status.pk).exists())
+        self.assertTrue(Status.objects.filter(pk=self.main_status.pk).exists())
         messages = list(response.wsgi_request._messages)
         expected_message = _(
             "Unable to delete a status because it is being used"

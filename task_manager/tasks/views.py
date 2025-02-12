@@ -45,5 +45,6 @@ class TaskUpdateView(BaseTaskView, SuccessMessageMixin, UpdateView):
 
 
 class TaskDetailView(DetailView):
+    model = Task
     template_name = 'tasks/task.html'
     context_object_name = 'task'

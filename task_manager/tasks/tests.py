@@ -3,84 +3,87 @@ from django.urls import reverse
 from task_manager.tasks.models import Task
 from task_manager.statuses.models import Status
 from task_manager.users.tests import SetUpLoggedUserMixin
+from task_manager.tests import constants 
+
 
 
 class SetUpLoggedUserWithTaskMixin(SetUpLoggedUserMixin):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.status = Status.objects.create(name='The Status')
+        cls.status = Status.objects.create(name=constants.MAIN_STATUS)
         cls.task = Task.objects.create(
-            name='The Task', status=cls.status, creator=cls.user
+            name=constants.MAIN_TASK,
+            status=cls.status,
+            creator=cls.user
         )
 
 
 class TaskIndexViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
+    task_view_url = reverse('tasks')
+
     def test_status_index_view(self):
-        response = self.client.get(reverse('tasks'))
+        response = self.client.get(self.task_view_url)
         self.assertEqual(response.status_code, 200)
 
     def test_status_index_view_template(self):
-        response = self.client.get(reverse('tasks'))
+        response = self.client.get(self.task_view_url)
         self.assertTemplateUsed(response, 'tasks/tasks.html')
 
     def test_task_list_view_empty_context(self):
         Task.objects.all().delete()
-        response = self.client.get(reverse('tasks'))
+        response = self.client.get(self.task_view_url)
         self.assertIn('tasks', response.context)
         self.assertEqual(len(response.context['tasks']), 0)
 
     def test_task_list_view_context(self):
-        url = reverse("tasks")
-        response = self.client.get(url)
+        response = self.client.get(self.task_view_url)
         self.assertIn("tasks", response.context)
         tasks = response.context["tasks"]
         self.assertGreaterEqual(len(tasks), 1)
-        self.assertTrue(any(task.name == "The Task" for task in tasks))
+        self.assertTrue(any(task.name == constants.MAIN_TASK for task in tasks))
 
 
 class TaskCreateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
+    creation_url = reverse("tasks_create")
+
     def test_task_create_view(self):
-        url = reverse("tasks_create")
-        response = self.client.get(url)
+        response = self.client.get(self.creation_url)
         self.assertEqual(response.status_code, 200)
 
     def test_task_create_view_template(self):
-        url = reverse("tasks_create")
-        response = self.client.get(url)
+        response = self.client.get(self.creation_url)
         self.assertTemplateUsed(response, "tasks/create.html")
 
     def test_create_task_success(self):
-        url = reverse("tasks_create")
         data = {
-            "name": "Task 1",
+            "name": constants.TASK_NAME_1,
             "status": self.status.id,
-            "description": "Description 1",
+            "description": constants.TASK_DESCRIPTION,
         }
-        response = self.client.post(url, data)
+        response = self.client.post(self.creation_url, data)
         self.assertRedirects(response, reverse("tasks"))
-        self.assertTrue(Task.objects.filter(name="Task 1").exists())
+        self.assertTrue(
+            Task.objects.filter(name=constants.TASK_NAME_1).exists()
+        )
 
     def test_create_task_max_length_exceeded(self):
-        url = reverse("tasks_create")
-        long_name = "A" * (self.task._meta.get_field("name").max_length + 1)
         data = {
-            "name": long_name,
+            "name": constants.LONG_TASK,
             "status": self.status.id,
-            "description": "Description 1",
+            "description": constants.TASK_DESCRIPTION,
         }
-        response = self.client.post(url, data)
+        response = self.client.post(self.creation_url, data)
         self.assertTrue("name" in response.context["form"].errors)
-        self.assertFalse(Task.objects.filter(name=long_name).exists())
+        self.assertFalse(Task.objects.filter(name=constants.LONG_TASK).exists())
 
     def test_create_task_empty_name(self):
-        url = reverse("tasks_create")
         data = {
-            "name": "",
+            "name": constants.EMPTY_NAME,
             "status": self.status.id,
-            "description": "Test description",
+            "description": constants.TASK_DESCRIPTION,
         }
-        response = self.client.post(url, data)
+        response = self.client.post(self.creation_url, data)
         self.assertTrue("name" in response.context["form"].errors)
         self.assertFalse(Task.objects.filter(name="").exists())
 
@@ -99,36 +102,35 @@ class TaskUpdateViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
     def test_update_task_success(self):
         url = reverse("tasks_update", kwargs={"pk": self.task.pk})
         data = {
-            "name": "Brand new Task Name",
+            "name": constants.TASK_NAME_2,
             "status": self.status.id,
         }
         response = self.client.post(url, data)
         self.assertRedirects(response, reverse("tasks"))
         self.task.refresh_from_db()
-        self.assertEqual(self.task.name, "Brand new Task Name")
+        self.assertEqual(self.task.name, constants.TASK_NAME_2)
 
     def test_task_name_max_length_exceeded(self):
         url = reverse("tasks_update", kwargs={"pk": self.task.pk})
-        long_name = "A" * (self.task._meta.get_field("name").max_length + 1) 
         data = {
-            "name": long_name,
+            "name": constants.LONG_TASK,
             "status": self.status.id,
         }
         response = self.client.post(url, data)
         self.assertTrue("name" in response.context["form"].errors)
         self.task.refresh_from_db()
-        self.assertNotEqual(self.task.name, long_name)
+        self.assertNotEqual(self.task.name, constants.LONG_TASK)
 
     def test_update_task_empty_name(self):
         url = reverse("tasks_update", kwargs={"pk": self.task.pk})
         data = {
-            "name": "",
+            "name": constants.EMPTY_NAME,
             "status": self.status.id,
         }
         response = self.client.post(url, data)
         self.assertTrue("name" in response.context["form"].errors)
         self.task.refresh_from_db()
-        self.assertNotEqual(self.task.name, "")
+        self.assertNotEqual(self.task.name, constants.EMPTY_NAME)
 
 
 class TaskDeleteViewTest(SetUpLoggedUserWithTaskMixin, TestCase):
