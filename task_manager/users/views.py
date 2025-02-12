@@ -16,6 +16,11 @@ from task_manager.main.mixins import UserDeleteMixin, UserUpdateMixin
 User = get_user_model()
 
 
+class BaseUserView:
+    model = User
+    success_url = reverse_lazy('users')
+
+
 class UserLoginView(SuccessMessageMixin, LoginView):
     template_name = 'login.html'
     form_class = AuthenticationForm
@@ -23,7 +28,7 @@ class UserLoginView(SuccessMessageMixin, LoginView):
     success_message = _('You are logged in')
 
 
-class UserLogoutView(SuccessMessageMixin, LogoutView):
+class UserLogoutView(LogoutView):
     next_page = settings.LOGOUT_REDIRECT_URL
 
     def dispatch(self, request, *args, **kwargs):
@@ -38,10 +43,8 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_message = _('The user has been successfully registered')
 
 
-class UserDeleteView(UserDeleteMixin, UserPassesTestMixin):
-    model = User
+class UserDeleteView(UserPassesTestMixin, BaseUserView, UserDeleteMixin):
     template_name = 'users/delete.html'
-    success_url = reverse_lazy('users')
     success_message = _('The user has been successfully deleted')
 
     def test_func(self):
@@ -51,11 +54,9 @@ class UserDeleteView(UserDeleteMixin, UserPassesTestMixin):
         return reverse_lazy('users')
 
 
-class UserUpdateView(UserUpdateMixin, UserPassesTestMixin):
-    model = User
+class UserUpdateView(UserPassesTestMixin, BaseUserView, UserUpdateMixin):
     form_class = CustomUserChangeForm
     template_name = 'users/update.html'
-    success_url = reverse_lazy('users')
     success_message = _('The user has been successfully updated')
 
     def test_func(self):
@@ -65,7 +66,6 @@ class UserUpdateView(UserUpdateMixin, UserPassesTestMixin):
         return reverse_lazy("users")
 
 
-class UserIndexView(ListView):
+class UserIndexView(BaseUserView, ListView):
     template_name = 'users/users.html'
-    model = User
     context_object_name = 'users'
