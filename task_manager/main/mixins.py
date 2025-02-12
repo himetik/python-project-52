@@ -38,11 +38,11 @@ class BaseActionMixin(SuccessMessageMixin):
         return self.success_url
 
 
-class DeleteMixin(BaseActionMixin, DeleteView):
+class UserDeleteMixin(BaseActionMixin, DeleteView):
     success_message = _('The object has been successfully deleted')
 
 
-class UpdateMixin(BaseActionMixin, UpdateView):
+class UserUpdateMixin(BaseActionMixin, UpdateView):
     success_message = _("The object has been successfully updated")
 
 

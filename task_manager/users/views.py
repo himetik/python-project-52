@@ -10,7 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
-from task_manager.main.mixins import DeleteMixin, UpdateMixin
+from task_manager.main.mixins import UserDeleteMixin, UserUpdateMixin
 
 
 User = get_user_model()
@@ -38,7 +38,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_message = _('The user has been successfully registered')
 
 
-class UserDeleteView(DeleteMixin, UserPassesTestMixin):
+class UserDeleteView(UserDeleteMixin, UserPassesTestMixin):
     model = User
     template_name = 'users/delete.html'
     success_url = reverse_lazy('users')
@@ -51,7 +51,7 @@ class UserDeleteView(DeleteMixin, UserPassesTestMixin):
         return reverse_lazy('users')
 
 
-class UserUpdateView(UpdateMixin, UserPassesTestMixin):
+class UserUpdateView(UserUpdateMixin, UserPassesTestMixin):
     model = User
     form_class = CustomUserChangeForm
     template_name = 'users/update.html'
