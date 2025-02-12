@@ -9,25 +9,26 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 
-class StatusIndexView(CustomLoginRequiredMixin, ListView):
-    template_name = 'statuses/statuses.html'
+class BaseStatusView(CustomLoginRequiredMixin):
     model = Status
+    success_url = reverse_lazy('statuses')
+
+
+class StatusIndexView(BaseStatusView, ListView):
+    template_name = 'statuses/statuses.html'
     context_object_name = 'statuses'
 
 
 class StatusCreateView(
-    CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
+    BaseStatusView, SuccessMessageMixin, CreateView):
     template_name = 'statuses/create.html'
     form_class = StatusForm
-    success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully created')
 
 
 class StatusDeleteView(
-    CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = Status
+    BaseStatusView, SuccessMessageMixin, DeleteView):
     template_name = 'statuses/delete.html'
-    success_url = reverse_lazy('statuses')
     success_message = _('The status has been successfully deleted')
 
     def post(self, request, *args, **kwargs):
@@ -43,9 +44,7 @@ class StatusDeleteView(
 
 
 class StatusUpdateView(
-    CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Status
+    BaseStatusView, SuccessMessageMixin, UpdateView):
     form_class = StatusForm
     template_name = 'statuses/update.html'
-    success_url = reverse_lazy('statuses')
     success_message = _("The status has been successfully changed")
