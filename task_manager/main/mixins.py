@@ -16,30 +16,8 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
         return redirect(reverse('login'))
 
 
-class DeleteMixin(SuccessMessageMixin, DeleteView):
-    success_message = _('The object has been successfully deleted')
-
-    def test_func(self):
-        return True
-
-    def dispatch(self, request, *args, **kwargs):
-        if not self.test_func():
-            return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
-
-    def handle_no_permission(self):
-        messages.error(
-            self.request,
-            _('You are not authorized to perform this action.')
-        )
-        return redirect(self.get_redirect_url())
-
-    def get_redirect_url(self):
-        return self.success_url
-
-
-class UpdateMixin(SuccessMessageMixin, UpdateView):
-    success_message = _("The object has been successfully updated")
+class BaseActionMixin(SuccessMessageMixin):
+    success_message = ""
 
     def test_func(self) -> bool:
         return True
@@ -58,6 +36,14 @@ class UpdateMixin(SuccessMessageMixin, UpdateView):
 
     def get_redirect_url(self):
         return self.success_url
+
+
+class DeleteMixin(BaseActionMixin, DeleteView):
+    success_message = _('The object has been successfully deleted')
+
+
+class UpdateMixin(BaseActionMixin, UpdateView):
+    success_message = _("The object has been successfully updated")
 
 
 class TaskCreatorCheckMixin:
