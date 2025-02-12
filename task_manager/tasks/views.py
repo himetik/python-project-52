@@ -1,13 +1,13 @@
-from task_manager.tasks.models import Task
 from django_filters.views import FilterView
-from task_manager.main.mixins import (
-    CustomLoginRequiredMixin, TaskCreatorCheckMixin)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
-from task_manager.tasks.forms import TaskForm
 from django.utils.translation import gettext_lazy as _
 from task_manager.tasks.filters import TaskFilter
+from task_manager.tasks.forms import TaskForm
+from task_manager.tasks.models import Task
+from task_manager.main.mixins import (
+    CustomLoginRequiredMixin, TaskCreatorCheckMixin)
 
 
 class BaseTaskView(CustomLoginRequiredMixin):

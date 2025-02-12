@@ -1,9 +1,9 @@
 from django.test import TestCase
-from task_manager.statuses.models import Status
 from django.urls import reverse
-from task_manager.tasks.models import Task
 from django.utils.translation import gettext as _
 from task_manager.users.tests import SetUpLoggedUserMixin
+from task_manager.statuses.models import Status
+from task_manager.tasks.models import Task
 
 
 class SetUpLoggedUserWithStatusMixin(SetUpLoggedUserMixin):

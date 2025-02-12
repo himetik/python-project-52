@@ -1,12 +1,12 @@
-from task_manager.labels.models import Label
-from task_manager.main.mixins import CustomLoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from task_manager.labels.forms import LabelForm
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.shortcuts import redirect
+from task_manager.labels.models import Label
+from task_manager.main.mixins import CustomLoginRequiredMixin
+from task_manager.labels.forms import LabelForm
 
 
 class BaseLabelClass(CustomLoginRequiredMixin):

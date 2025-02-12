@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from task_manager import settings
 from django.contrib.messages import get_messages
 from django.utils.translation import gettext as _
+from task_manager import settings
 
 
 class SetUpLoggedUserMixin:

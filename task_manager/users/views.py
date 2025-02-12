@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.views.generic import ListView, CreateView
 from django.contrib.messages.views import SuccessMessageMixin
-from task_manager.users.forms import (
-    CustomUserCreationForm, CustomUserChangeForm)
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.views import LoginView, LogoutView
@@ -11,6 +9,8 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from task_manager.main.mixins import UserDeleteMixin, UserUpdateMixin
+from task_manager.users.forms import (
+    CustomUserCreationForm, CustomUserChangeForm)
 
 
 User = get_user_model()

@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from task_manager.labels.models import Label
 from django.contrib.messages import get_messages
 from django.utils.translation import gettext as _
 from task_manager.tasks.models import Task, Status
 from task_manager.users.tests import SetUpLoggedUserMixin
+from task_manager.labels.models import Label
 
 
 class SetUpLoggedUserWithLabelMixin(SetUpLoggedUserMixin):
