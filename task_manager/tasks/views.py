@@ -10,18 +10,18 @@ from django.utils.translation import gettext_lazy as _
 from task_manager.tasks.filters import TaskFilter
 
 
-class BaseTaskView():
+class BaseTaskView(CustomLoginRequiredMixin):
     model = Task
     success_url = reverse_lazy('tasks')
 
 
-class TaskIndexView(CustomLoginRequiredMixin, FilterView):
+class TaskIndexView(BaseTaskView, FilterView):
     template_name = 'tasks/tasks.html'
     context_object_name = 'tasks'
     filterset_class = TaskFilter
 
 
-class TaskCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
+class TaskCreateView(BaseTaskView, SuccessMessageMixin, CreateView):
     template_name = 'tasks/create.html'
     form_class = TaskForm
     success_message = _('The task has been successfully created')
@@ -32,13 +32,13 @@ class TaskCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 
 class TaskDeleteView(
-    CustomLoginRequiredMixin, TaskCreatorCheckMixin,
+    BaseTaskView, TaskCreatorCheckMixin,
     SuccessMessageMixin, DeleteView):
     template_name = 'tasks/delete.html'
     success_message = _('The task has been successfully deleted')
 
 
-class TaskUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class TaskUpdateView(BaseTaskView, SuccessMessageMixin, UpdateView):
     form_class = TaskForm
     template_name = 'tasks/update.html'
     success_message = _('The task has been successfully updated')
