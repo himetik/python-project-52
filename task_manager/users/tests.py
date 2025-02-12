@@ -1,10 +1,20 @@
-from task_manager.main.mixins import SetUpLoggedUserMixin
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from task_manager import settings
 from django.contrib.messages import get_messages
 from django.utils.translation import gettext as _
+
+
+class SetUpLoggedUserMixin:
+    @classmethod
+    def setUpTestData(cls):
+        cls.user_data = {'username': 'testuser', 'password': 'testpassword'}
+        cls.user = get_user_model().objects.create_user(**cls.user_data)
+
+    def setUp(self):
+        super().setUp()
+        self.client.login(**self.user_data)
 
 
 class BaseAuthTestCase(TestCase):

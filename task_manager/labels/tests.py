@@ -1,10 +1,17 @@
-from task_manager.main.mixins import SetUpLoggedUserWithLabelMixin
 from django.test import TestCase
 from django.urls import reverse
 from task_manager.labels.models import Label
 from django.contrib.messages import get_messages
 from django.utils.translation import gettext as _
 from task_manager.tasks.models import Task, Status
+from task_manager.users.tests import SetUpLoggedUserMixin
+
+
+class SetUpLoggedUserWithLabelMixin(SetUpLoggedUserMixin):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.label = Label.objects.create(name='The Label')
 
 
 class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):

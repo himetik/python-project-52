@@ -1,7 +1,18 @@
 from django.test import TestCase
-from task_manager.main.mixins import SetUpLoggedUserWithTaskMixin
 from django.urls import reverse
 from task_manager.tasks.models import Task
+from task_manager.statuses.models import Status
+from task_manager.users.tests import SetUpLoggedUserMixin
+
+
+class SetUpLoggedUserWithTaskMixin(SetUpLoggedUserMixin):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.status = Status.objects.create(name='The Status')
+        cls.task = Task.objects.create(
+            name='The Task', status=cls.status, creator=cls.user
+        )
 
 
 class TaskIndexViewTest(SetUpLoggedUserWithTaskMixin, TestCase):

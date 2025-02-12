@@ -1,9 +1,16 @@
 from django.test import TestCase
 from task_manager.statuses.models import Status
-from task_manager.main.mixins import SetUpLoggedUserWithStatusMixin
 from django.urls import reverse
 from task_manager.tasks.models import Task
 from django.utils.translation import gettext as _
+from task_manager.users.tests import SetUpLoggedUserMixin
+
+
+class SetUpLoggedUserWithStatusMixin(SetUpLoggedUserMixin):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.status = Status.objects.create(name='The Status')
 
 
 class StatusIndexViewTest(SetUpLoggedUserWithStatusMixin, TestCase):
