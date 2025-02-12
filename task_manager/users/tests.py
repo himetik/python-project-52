@@ -17,16 +17,6 @@ class SetUpLoggedUserMixin:
         self.client.login(**self.user_data)
 
 
-class BaseAuthTestCase(TestCase):
-    def setUp(self):
-        super().setUp()
-        self.user = get_user_model().objects.create_user(
-            username="testuser",
-            password="testpassword",
-        )
-        self.login_url = reverse("login")
-
-
 class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
     def test_users_view_returns_200(self):
         response = self.client.get(reverse('users'))
