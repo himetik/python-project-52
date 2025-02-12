@@ -9,25 +9,26 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 
-class LabelIndexView(CustomLoginRequiredMixin, ListView):
-    template_name = 'labels/labels.html'
+class BaseLabelClass(CustomLoginRequiredMixin):
     model = Label
+    success_url = reverse_lazy('labels')
+
+
+class LabelIndexView(BaseLabelClass, ListView):
+    template_name = 'labels/labels.html'
     context_object_name = 'labels'
 
 
 class LabelCreateView(
-    CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
+    BaseLabelClass, SuccessMessageMixin, CreateView):
     template_name = 'labels/create.html'
     form_class = LabelForm
-    success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully created')
 
 
 class LabelDeleteView(
-    CustomLoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = Label
+    BaseLabelClass, SuccessMessageMixin, DeleteView):
     template_name = 'labels/delete.html'
-    success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully deleted')
 
     def post(self, request, *args, **kwargs):
@@ -43,11 +44,9 @@ class LabelDeleteView(
 
 
 class LabelUpdateView(
-    CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Label
+    BaseLabelClass, SuccessMessageMixin, UpdateView):
     form_class = LabelForm
     template_name = 'labels/update.html'
-    success_url = reverse_lazy('labels')
     success_message = _('The label has been successfully changed')
 
     def get_context_data(self, **kwargs):
