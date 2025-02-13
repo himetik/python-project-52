@@ -183,11 +183,10 @@ class LabelDeleteVewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertRedirects(response, reverse("labels"))
         self.assertTrue(Label.objects.filter(pk=self.main_label.pk).exists())
         messages = list(response.wsgi_request._messages)
-        expected_message = _(
-            "Unable to delete a label because it is being used"
+        self.assertEqual(
+            str(messages[0]),
+            _("Unable to delete a label because it is being used")
         )
-
-        self.assertEqual(str(messages[0]), expected_message)
 
     def test_delete_label_with_non_existing_id_fails(self):
         non_existing_id = self.main_label.id + 999
