@@ -15,11 +15,6 @@ from task_manager.users.forms import (
 User = get_user_model()
 
 
-class BaseUserView:
-    model = User
-    success_url = reverse_lazy('users')
-
-
 class UserLoginView(SuccessMessageMixin, LoginView):
     template_name = 'login.html'
     form_class = AuthenticationForm
@@ -53,6 +48,8 @@ class UserDeleteView(SuccessMessageMixin, UserModificationMixin, DeleteView):
     success_message = _('The user has been successfully deleted')
 
 
-class UserIndexView(BaseUserView, ListView):
+class UserIndexView(ListView):
+    model = User
     template_name = 'users/users.html'
     context_object_name = 'users'
+    success_url = reverse_lazy('users')

@@ -4,8 +4,12 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.urls import reverse_lazy
-from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth import get_user_model
+
+
+
+User = get_user_model()
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
@@ -18,7 +22,7 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
 
 
 class UserModificationMixin(UserPassesTestMixin):
-    model = get_user_model()
+    model = User
     success_url = reverse_lazy('users')
     
     def test_func(self) -> bool:
