@@ -6,7 +6,6 @@ from task_manager.users.tests import SetUpLoggedUserMixin
 from task_manager.tests import constants 
 
 
-
 class SetUpLoggedUserWithTaskMixin(SetUpLoggedUserMixin):
     @classmethod
     def setUpTestData(cls):
