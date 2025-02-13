@@ -82,7 +82,9 @@ class UserCreateViewTest(TestCase):
         invalid_data["password2"] = constants.WRONG_PASS
         response = self.client.post(self.creation_url, invalid_data)
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(User.objects.filter(username=constants.USER_1['username']).exists())
+        self.assertFalse(
+            User.objects.filter(username=constants.USER_1['username']).exists()
+        )
         form = response.context['form']
         self.assertIn('password2', form.errors)
         self.assertEqual(
