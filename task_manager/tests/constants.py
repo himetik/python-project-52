@@ -45,3 +45,5 @@ LONG_TASK = "A" * (Task._meta.get_field("name").max_length + 1)
 LONG_LABEL = "L" * (Label._meta.get_field("name").max_length + 1)
 EMPTY_NAME = ""
 WHITESPACED_LABEL_NAME_3 = "  Label 3  "
+
+WRONG_PASS = "wrongPass"

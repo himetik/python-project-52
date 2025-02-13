@@ -77,6 +77,19 @@ class UserCreateViewTest(TestCase):
         self.assertEqual(user.last_name, constants.USER_1['last_name'])
         self.assertTrue(user.check_password(constants.USER_1['password1']))
 
+    def test_create_user_fails_if_passwords_dont_match(self):
+        invalid_data = constants.USER_1.copy()
+        invalid_data["password2"] = constants.WRONG_PASS
+        response = self.client.post(self.creation_url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username=constants.USER_1['username']).exists())
+        form = response.context['form']
+        self.assertIn('password2', form.errors)
+        self.assertEqual(
+            form.errors['password2'][0],
+            _("The two password fields didn't match.")
+        )
+
 
 class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
     def test_update_user_view_returns_200(self):
