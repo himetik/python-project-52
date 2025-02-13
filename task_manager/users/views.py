@@ -7,10 +7,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 from task_manager.main.mixins import UserModificationMixin
-from task_manager.users.models import User
 from task_manager.users.forms import (
     CustomUserCreationForm, CustomUserChangeForm)
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):
