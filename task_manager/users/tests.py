@@ -7,6 +7,9 @@ from task_manager import settings
 from task_manager.tests import constants
 
 
+User = get_user_model()
+
+
 class SetUpLoggedUserMixin:
     @classmethod
     def setUpTestData(cls):
@@ -44,6 +47,15 @@ class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertIn('users', response.context)
         self.assertEqual(len(response.context['users']), 0)
 
+    def test_users_sorted_by_id_desc(self):
+        User.objects.create(username=constants.USER_1["username"])
+        User.objects.create(username=constants.USER_2["username"])
+        response = self.client.get(self.view_url)
+        self.assertIn('users', response.context)
+        users = list(response.context['users'])
+        sorted_users = sorted(users, key=lambda u: u.id, reverse=True)
+        self.assertEqual(users, sorted_users)
+
 
 class UserCreateViewTest(TestCase):
     creation_url = reverse('users_create')
@@ -57,7 +69,6 @@ class UserCreateViewTest(TestCase):
         self.assertTemplateUsed(response, 'users/create.html')
 
     def test_create_user_view_creates_user(self):
-        User = get_user_model()
         response = self.client.post(self.creation_url, constants.USER_1)
         self.assertRedirects(response, settings.LOGIN_URL)
         self.assertTrue(User.objects.filter(username='user_1').exists())
@@ -65,6 +76,21 @@ class UserCreateViewTest(TestCase):
         self.assertEqual(user.first_name, constants.USER_1['first_name'])
         self.assertEqual(user.last_name, constants.USER_1['last_name'])
         self.assertTrue(user.check_password(constants.USER_1['password1']))
+
+    def test_create_user_fails_if_passwords_dont_match(self):
+        invalid_data = constants.USER_1.copy()
+        invalid_data["password2"] = constants.WRONG_PASS
+        response = self.client.post(self.creation_url, invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(
+            User.objects.filter(username=constants.USER_1['username']).exists()
+        )
+        form = response.context['form']
+        self.assertIn('password2', form.errors)
+        self.assertEqual(
+            form.errors['password2'][0],
+            _("The two password fields didn't match.")
+        )
 
 
 class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
@@ -78,8 +104,7 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
         response = self.client.get(url)
         self.assertTemplateUsed(response, "users/update.html")
 
-    def test_update_user_view_updates_user(self):
-        User = get_user_model()
+    def test_user_update_view_changes_user_data(self):
         url = reverse("users_update", args=[self.user.pk])
         response = self.client.post(url, constants.USER_2)
         self.assertRedirects(response, reverse("users"))
@@ -87,6 +112,13 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertEqual(user.username, constants.USER_2["username"])
         self.assertEqual(user.first_name, constants.USER_2["first_name"])
         self.assertEqual(user.last_name, constants.USER_2["last_name"])
+
+    def test_update_nonexistent_user_returns_404(self):
+        nonexistent_user_id = self.user.pk
+        self.user.delete()
+        url = reverse("users_update", args=[nonexistent_user_id])
+        response = self.client.post(url, constants.USER_2)
+        self.assertEqual(response.status_code, 404)
 
 
 class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
@@ -107,6 +139,13 @@ class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertFalse(
             get_user_model().objects.filter(pk=self.user.pk).exists()
         )
+
+    def test_delete_nonexistent_user_returns_404(self):
+        nonexistent_user_id = self.user.pk
+        self.user.delete()
+        url = reverse("users_delete", args=[nonexistent_user_id])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 404)
 
 
 class UserLoginViewTest(TestCase):
@@ -130,7 +169,7 @@ class UserLoginViewTest(TestCase):
     def test_login_failure(self):
         response = self.client.post(self.login_url, {
             'username': constants.USER_1["username"],
-            'password': 'wrongpassword'
+            'password': constants.WRONG_PASS
         })
         self.assertEqual(response.status_code, 200)
         form = response.context.get('form')

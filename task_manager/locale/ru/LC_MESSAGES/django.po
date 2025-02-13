@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-12 13:31+0000\n"
+"POT-Creation-Date: 2025-02-13 20:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgstr ""
 #: build/lib/apps/tasks/models.py:10 build/lib/task_manager/labels/models.py:8
 #: build/lib/task_manager/statuses/models.py:7
 #: build/lib/task_manager/tasks/models.py:10 task_manager/labels/models.py:8
-#: task_manager/statuses/models.py:7 task_manager/tasks/models.py:10
+#: task_manager/statuses/models.py:7 task_manager/tasks/models.py:11
 msgid "name"
 msgstr "Имя"
 
@@ -32,19 +32,19 @@ msgstr "Имя"
 #: build/lib/apps/tasks/models.py:40 build/lib/task_manager/labels/models.py:14
 #: build/lib/task_manager/statuses/models.py:8
 #: build/lib/task_manager/tasks/models.py:40 task_manager/labels/models.py:14
-#: task_manager/statuses/models.py:8 task_manager/tasks/models.py:40
+#: task_manager/statuses/models.py:8 task_manager/tasks/models.py:53
 msgid "created at"
 msgstr "Дата создания"
 
 #: build/lib/apps/labels/views.py:26 build/lib/task_manager/labels/tests.py:62
-#: build/lib/task_manager/labels/views.py:23 task_manager/labels/tests.py:62
-#: task_manager/labels/views.py:23
+#: build/lib/task_manager/labels/views.py:23 task_manager/labels/tests.py:77
+#: task_manager/labels/views.py:26
 msgid "The label has been successfully created"
 msgstr "Метка успешно создана"
 
 #: build/lib/apps/labels/views.py:37 build/lib/task_manager/labels/tests.py:130
-#: build/lib/task_manager/labels/views.py:31 task_manager/labels/tests.py:130
-#: task_manager/labels/views.py:31
+#: build/lib/task_manager/labels/views.py:31 task_manager/labels/tests.py:167
+#: task_manager/labels/views.py:32
 msgid "The label has been successfully deleted"
 msgstr "Метка успешно удалена"
 
@@ -53,43 +53,43 @@ msgid "Cannot delete the label because it is currently in use"
 msgstr "Невозможно удалить метку, потому что она используется"
 
 #: build/lib/apps/labels/views.py:58 build/lib/task_manager/labels/tests.py:178
-#: build/lib/task_manager/labels/views.py:51 task_manager/labels/tests.py:178
-#: task_manager/labels/views.py:51
+#: build/lib/task_manager/labels/views.py:51 task_manager/labels/tests.py:219
+#: task_manager/labels/views.py:50
 msgid "The label has been successfully changed"
 msgstr "Метка успешно изменена"
 
 #: build/lib/apps/labels/views.py:62 build/lib/task_manager/labels/views.py:55
-#: task_manager/labels/views.py:55
+#: task_manager/labels/views.py:54
 msgid "Edit Label"
 msgstr "Изменение метки"
 
 #: build/lib/apps/main/mixins.py:27 build/lib/task_manager/main/mixins.py:14
-#: task_manager/main/mixins.py:14
+#: task_manager/main/mixins.py:18
 msgid "You are not logged in! Please sign in."
 msgstr "Вы не авторизованы! Пожалуйста, выполните вход."
 
 #: build/lib/apps/statuses/views.py:26
 #: build/lib/task_manager/statuses/views.py:23
-#: task_manager/statuses/views.py:23
+#: task_manager/statuses/views.py:26
 msgid "The status has been successfully created"
 msgstr "Статус успешно создан"
 
 #: build/lib/apps/statuses/views.py:37
 #: build/lib/task_manager/statuses/views.py:31
-#: task_manager/statuses/views.py:31
+#: task_manager/statuses/views.py:32
 msgid "The status has been successfully deleted"
 msgstr "Статус успешно удален"
 
 #: build/lib/apps/statuses/views.py:43
 #: build/lib/task_manager/statuses/tests.py:117
 #: build/lib/task_manager/statuses/views.py:38
-#: task_manager/statuses/tests.py:117 task_manager/statuses/views.py:38
+#: task_manager/statuses/tests.py:128 task_manager/statuses/views.py:39
 msgid "Unable to delete a status because it is being used"
 msgstr "Невозможно удалить статус, потому что он используется"
 
 #: build/lib/apps/statuses/views.py:57
 #: build/lib/task_manager/statuses/views.py:51
-#: task_manager/statuses/views.py:51
+#: task_manager/statuses/views.py:50
 msgid "The status has been successfully changed"
 msgstr "Статус успешно изменен"
 
@@ -99,109 +99,110 @@ msgid "Only your tasks"
 msgstr "Только свои задачи"
 
 #: build/lib/apps/tasks/filters.py:18
-#: build/lib/task_manager/tasks/filters.py:18 task_manager/tasks/filters.py:18
+#: build/lib/task_manager/tasks/filters.py:18 task_manager/tasks/filters.py:20
 #: task_manager/templates/tasks/task.html:23
 #: task_manager/templates/tasks/tasks.html:23
 msgid "Status"
 msgstr "Статус"
 
 #: build/lib/apps/tasks/filters.py:21
-#: build/lib/task_manager/tasks/filters.py:21 task_manager/tasks/filters.py:21
+#: build/lib/task_manager/tasks/filters.py:21 task_manager/tasks/filters.py:25
 #: task_manager/templates/tasks/task.html:19
 #: task_manager/templates/tasks/tasks.html:25
 msgid "Executor"
 msgstr "Исполнитель"
 
 #: build/lib/apps/tasks/filters.py:24
-#: build/lib/task_manager/tasks/filters.py:24 task_manager/tasks/filters.py:24
+#: build/lib/task_manager/tasks/filters.py:24 task_manager/tasks/filters.py:30
 msgid "Label"
 msgstr "Метка"
 
 #: build/lib/apps/tasks/models.py:11 build/lib/task_manager/tasks/models.py:11
-#: task_manager/tasks/models.py:11
+#: task_manager/tasks/models.py:17
 msgid "description"
 msgstr "описание"
 
 #: build/lib/apps/tasks/models.py:16 build/lib/task_manager/tasks/models.py:16
-#: task_manager/tasks/models.py:16
+#: task_manager/tasks/models.py:25
 msgid "status"
 msgstr "статус"
 
 #: build/lib/apps/tasks/models.py:21 build/lib/task_manager/tasks/models.py:21
-#: task_manager/tasks/models.py:21
+#: task_manager/tasks/models.py:31
 msgid "creator"
 msgstr "создать"
 
 #: build/lib/apps/tasks/models.py:29 build/lib/task_manager/tasks/models.py:29
-#: task_manager/tasks/models.py:29
+#: task_manager/tasks/models.py:40
 msgid "executor"
 msgstr "исполнитель"
 
 #: build/lib/apps/tasks/models.py:35 build/lib/task_manager/tasks/models.py:35
-#: task_manager/tasks/models.py:35
+#: task_manager/tasks/models.py:47
 msgid "labels"
 msgstr "метки"
 
 #: build/lib/apps/tasks/models.py:47 build/lib/task_manager/tasks/models.py:47
-#: task_manager/tasks/models.py:47
+#: task_manager/tasks/models.py:60
 msgid "Task"
 msgstr "Задачи"
 
 #: build/lib/apps/tasks/models.py:48 build/lib/task_manager/tasks/models.py:48
-#: task_manager/tasks/models.py:48 task_manager/templates/base.html:32
+#: task_manager/tasks/models.py:61 task_manager/templates/base.html:32
 #: task_manager/templates/tasks/tasks.html:5
 msgid "Tasks"
 msgstr "Задачи"
 
 #: build/lib/apps/tasks/views.py:30 build/lib/task_manager/tasks/views.py:24
-#: task_manager/tasks/views.py:24
+#: task_manager/tasks/views.py:27
 msgid "The task has been successfully created"
 msgstr "Задача успешно создана"
 
 #: build/lib/apps/tasks/views.py:41 build/lib/task_manager/tasks/views.py:37
-#: task_manager/tasks/views.py:37
+#: task_manager/tasks/views.py:38
 msgid "The task has been successfully deleted"
 msgstr "Задача успешно удалена"
 
 #: build/lib/apps/tasks/views.py:48 build/lib/task_manager/main/mixins.py:68
-#: task_manager/main/mixins.py:68
+#: task_manager/main/mixins.py:44
 msgid "Only the author of the task can delete it"
 msgstr "Задачу может удалить только ее автор"
 
 #: build/lib/apps/tasks/views.py:69 build/lib/task_manager/tasks/views.py:45
-#: task_manager/tasks/views.py:45
+#: task_manager/tasks/views.py:44
 msgid "The task has been successfully updated"
 msgstr "Задача успешно изменена"
 
 #: build/lib/apps/users/tests.py:150 build/lib/apps/users/views.py:19
 #: build/lib/task_manager/users/tests.py:144
-#: build/lib/task_manager/users/views.py:23 task_manager/users/tests.py:144
-#: task_manager/users/views.py:23
+#: build/lib/task_manager/users/views.py:23 task_manager/users/tests.py:151
+#: task_manager/users/views.py:22
 msgid "You are logged in"
 msgstr "Вы залогинены"
 
 #: build/lib/apps/users/views.py:26 build/lib/task_manager/users/tests.py:175
-#: build/lib/task_manager/users/views.py:30 task_manager/users/tests.py:175
-#: task_manager/users/views.py:30
+#: build/lib/task_manager/users/views.py:30 task_manager/users/tests.py:184
+#: task_manager/users/views.py:29
 msgid "You are logged out"
 msgstr "Вы разлогинены"
 
 #: build/lib/apps/users/views.py:34 build/lib/task_manager/users/views.py:38
-#: task_manager/users/views.py:38
+#: task_manager/users/views.py:37
 msgid "The user has been successfully registered"
 msgstr "Пользователь успешно зарегистрирован"
 
 #: build/lib/apps/users/views.py:41 build/lib/task_manager/users/views.py:45
-#: task_manager/users/views.py:45
+#: task_manager/users/views.py:48
 msgid "The user has been successfully deleted"
 msgstr "Пользователь успешно удален"
 
 #: build/lib/apps/users/views.py:49 build/lib/apps/users/views.py:67
+#: task_manager/main/mixins.py:33
 msgid "You are not authorized to modify another user."
 msgstr "У вас нет прав для изменения"
 
 #: build/lib/apps/users/views.py:59 build/lib/task_manager/users/views.py:59
-#: task_manager/users/views.py:59
+#: task_manager/users/views.py:43
 msgid "The user has been successfully updated"
 msgstr "Пользователь успешно изменен"
 
@@ -210,26 +211,25 @@ msgid "Label name cannot be empty."
 msgstr "Название метки не может быть пустым."
 
 #: build/lib/task_manager/labels/tests.py:149
-#: build/lib/task_manager/labels/views.py:38 task_manager/labels/tests.py:149
-#: task_manager/labels/views.py:38
+#: build/lib/task_manager/labels/views.py:38 task_manager/labels/tests.py:188
+#: task_manager/labels/views.py:39
 msgid "Unable to delete a label because it is being used"
 msgstr "Невозможно удалить метку"
 
-#: build/lib/task_manager/labels/tests.py:209 task_manager/labels/tests.py:209
+#: build/lib/task_manager/labels/tests.py:209 task_manager/labels/tests.py:254
 msgid "This field is required."
 msgstr ""
 
-#: build/lib/task_manager/main/mixins.py:20 task_manager/main/mixins.py:20
+#: build/lib/task_manager/main/mixins.py:20
 msgid "The object has been successfully deleted"
 msgstr "Метка успешно удалена"
 
 #: build/lib/task_manager/main/mixins.py:33
-#: build/lib/task_manager/main/mixins.py:55 task_manager/main/mixins.py:33
-#: task_manager/main/mixins.py:55
+#: build/lib/task_manager/main/mixins.py:55
 msgid "You are not authorized to perform this action."
 msgstr "У вас нет прав для изменения"
 
-#: build/lib/task_manager/main/mixins.py:42 task_manager/main/mixins.py:42
+#: build/lib/task_manager/main/mixins.py:42
 msgid "The object has been successfully updated"
 msgstr "Задача успешно изменена"
 
@@ -441,6 +441,10 @@ msgstr "Имя пользователя"
 #: task_manager/templates/users/users.html:13
 msgid "Full name"
 msgstr "Полное имя"
+
+#: task_manager/users/tests.py:90
+msgid "The two password fields didn't match."
+msgstr "Введенные пароли не совпадают."
 
 #~ msgid "Обязательное поле."
 #~ msgstr "This field is required."

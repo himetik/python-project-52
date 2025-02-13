@@ -53,3 +53,4 @@ class UserIndexView(ListView):
     template_name = 'users/users.html'
     context_object_name = 'users'
     success_url = reverse_lazy('users')
+    ordering = ['-id']
