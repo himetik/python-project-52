@@ -5,11 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.auth import get_user_model
-
-
-
-User = get_user_model()
+from task_manager.users.models import User
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):

@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.conf import settings
@@ -8,11 +7,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 from task_manager.main.mixins import UserModificationMixin
+from task_manager.users.models import User
 from task_manager.users.forms import (
     CustomUserCreationForm, CustomUserChangeForm)
 
-
-User = get_user_model()
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):
