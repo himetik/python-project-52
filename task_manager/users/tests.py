@@ -104,7 +104,7 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
         response = self.client.get(url)
         self.assertTemplateUsed(response, "users/update.html")
 
-    def test_update_user_view_updates_user(self):
+    def test_user_update_view_changes_user_data(self):
         url = reverse("users_update", args=[self.user.pk])
         response = self.client.post(url, constants.USER_2)
         self.assertRedirects(response, reverse("users"))
