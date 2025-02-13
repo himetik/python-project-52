@@ -7,6 +7,9 @@ from task_manager import settings
 from task_manager.tests import constants
 
 
+User = get_user_model()
+
+
 class SetUpLoggedUserMixin:
     @classmethod
     def setUpTestData(cls):
@@ -44,6 +47,15 @@ class UserIndexViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertIn('users', response.context)
         self.assertEqual(len(response.context['users']), 0)
 
+    def test_users_sorted_by_id_desc(self):
+        User.objects.create(username=constants.USER_1["username"])
+        User.objects.create(username=constants.USER_2["username"])
+        response = self.client.get(self.view_url)
+        self.assertIn('users', response.context)
+        users = list(response.context['users'])
+        sorted_users = sorted(users, key=lambda u: u.id, reverse=True)
+        self.assertEqual(users, sorted_users)
+
 
 class UserCreateViewTest(TestCase):
     creation_url = reverse('users_create')
@@ -57,7 +69,6 @@ class UserCreateViewTest(TestCase):
         self.assertTemplateUsed(response, 'users/create.html')
 
     def test_create_user_view_creates_user(self):
-        User = get_user_model()
         response = self.client.post(self.creation_url, constants.USER_1)
         self.assertRedirects(response, settings.LOGIN_URL)
         self.assertTrue(User.objects.filter(username='user_1').exists())
@@ -79,7 +90,6 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertTemplateUsed(response, "users/update.html")
 
     def test_update_user_view_updates_user(self):
-        User = get_user_model()
         url = reverse("users_update", args=[self.user.pk])
         response = self.client.post(url, constants.USER_2)
         self.assertRedirects(response, reverse("users"))
