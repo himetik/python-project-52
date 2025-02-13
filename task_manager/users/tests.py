@@ -169,7 +169,7 @@ class UserLoginViewTest(TestCase):
     def test_login_failure(self):
         response = self.client.post(self.login_url, {
             'username': constants.USER_1["username"],
-            'password': 'wrongpassword'
+            'password': constants.WRONG_PASS
         })
         self.assertEqual(response.status_code, 200)
         form = response.context.get('form')
