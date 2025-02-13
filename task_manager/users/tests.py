@@ -133,6 +133,13 @@ class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
             get_user_model().objects.filter(pk=self.user.pk).exists()
         )
 
+    def test_delete_nonexistent_user_returns_404(self):
+        nonexistent_user_id = self.user.pk
+        self.user.delete()
+        url = reverse("users_delete", args=[nonexistent_user_id])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 404)
+
 
 class UserLoginViewTest(TestCase):
     def setUp(self):
