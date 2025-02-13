@@ -113,6 +113,13 @@ class UserUpdateViewTest(SetUpLoggedUserMixin, TestCase):
         self.assertEqual(user.first_name, constants.USER_2["first_name"])
         self.assertEqual(user.last_name, constants.USER_2["last_name"])
 
+    def test_update_nonexistent_user_returns_404(self):
+        nonexistent_user_id = self.user.pk
+        self.user.delete()
+        url = reverse("users_update", args=[nonexistent_user_id])
+        response = self.client.post(url, constants.USER_2)
+        self.assertEqual(response.status_code, 404)
+
 
 class UserDeleteViewTest(SetUpLoggedUserMixin, TestCase):
     def test_delete_user_view_returns_200(self):
