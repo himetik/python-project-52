@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.conf import settings
@@ -10,14 +9,10 @@ from django.urls import reverse_lazy
 from task_manager.main.mixins import UserModificationMixin
 from task_manager.users.forms import (
     CustomUserCreationForm, CustomUserChangeForm)
+from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
-
-
-class BaseUserView:
-    model = User
-    success_url = reverse_lazy('users')
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):
@@ -53,6 +48,8 @@ class UserDeleteView(SuccessMessageMixin, UserModificationMixin, DeleteView):
     success_message = _('The user has been successfully deleted')
 
 
-class UserIndexView(BaseUserView, ListView):
+class UserIndexView(ListView):
+    model = User
     template_name = 'users/users.html'
     context_object_name = 'users'
+    success_url = reverse_lazy('users')

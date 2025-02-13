@@ -44,7 +44,6 @@ class TaskUpdateView(BaseTaskView, SuccessMessageMixin, UpdateView):
     success_message = _('The task has been successfully updated')
 
 
-class TaskDetailView(DetailView):
-    model = Task
+class TaskDetailView(BaseTaskView, DetailView):
     template_name = 'tasks/task.html'
     context_object_name = 'task'
