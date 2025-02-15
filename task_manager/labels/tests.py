@@ -62,7 +62,10 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
 
         for method in disallowed_methods:
             response = getattr(self.client, method)(url)
-            self.assertEqual(response.status_code, 405, f"Method {method.upper()} did not return 405")
+            self.assertEqual(
+                response.status_code, 405,
+                f"Method {method.upper()} did not return 405"
+            )
 
 
 class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
