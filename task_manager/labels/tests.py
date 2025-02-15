@@ -56,6 +56,14 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertNotEqual(response.status_code, 200)
         self.assertRedirects(response, reverse('login'))
 
+    def test_labels_page_disallows_non_get_requests(self):
+        disallowed_methods = ['post', 'put', 'delete', 'patch']
+        url = reverse('labels')
+
+        for method in disallowed_methods:
+            response = getattr(self.client, method)(url)
+            self.assertEqual(response.status_code, 405, f"Method {method.upper()} did not return 405")
+
 
 class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_create_label_page_is_accessible(self):
