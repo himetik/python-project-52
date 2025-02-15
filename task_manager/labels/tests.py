@@ -49,6 +49,24 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         response = self.client.get(url)
         self.assertContains(response, self.main_label.name)
 
+    def test_labels_page_requires_login(self):
+        self.client.logout()
+        url = reverse('labels')
+        response = self.client.get(url)
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('login'))
+
+    def test_labels_page_disallows_non_get_requests(self):
+        disallowed_methods = ['post', 'put', 'delete', 'patch']
+        url = reverse('labels')
+
+        for method in disallowed_methods:
+            response = getattr(self.client, method)(url)
+            self.assertEqual(
+                response.status_code, 405,
+                f"Method {method.upper()} did not return 405"
+            )
+
 
 class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_create_label_page_is_accessible(self):
@@ -106,17 +124,6 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertIn("name", form.errors)
         self.assertGreater(len(form.errors["name"]), 0)
 
-    def test_create_label_with_empty_name_fails(self):
-        initial_label_count = Label.objects.count()
-        url = reverse("labels_create")
-        response = self.client.post(url, {"name": constants.EMPTY_NAME})
-        self.assertEqual(Label.objects.count(), initial_label_count)
-        form = response.context.get("form")
-        self.assertIsNotNone(form)
-        self.assertTrue(form.errors)
-        self.assertIn("name", form.errors)
-        self.assertTrue(len(form.errors["name"]) > 0)
-
     def test_create_label_with_whitespace_name(self):
         Label.objects.create(name=constants.LABEL_NAME_3)
         url = reverse("labels_create")
@@ -129,6 +136,17 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
                 name=constants.LABEL_NAME_3).count(),
                 1
             )
+        form = response.context.get("form")
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn("name", form.errors)
+        self.assertTrue(len(form.errors["name"]) > 0)
+
+    def test_create_label_with_empty_name_fails(self):
+        initial_label_count = Label.objects.count()
+        url = reverse("labels_create")
+        response = self.client.post(url, {"name": constants.EMPTY_NAME})
+        self.assertEqual(Label.objects.count(), initial_label_count)
         form = response.context.get("form")
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
