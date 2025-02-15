@@ -49,6 +49,13 @@ class LabelIndexViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         response = self.client.get(url)
         self.assertContains(response, self.main_label.name)
 
+    def test_labels_page_requires_login(self):
+        self.client.logout()
+        url = reverse('labels')
+        response = self.client.get(url)
+        self.assertNotEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('login'))
+
 
 class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
     def test_create_label_page_is_accessible(self):
