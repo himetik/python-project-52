@@ -184,6 +184,13 @@ class UserLoginViewTest(TestCase):
         response = self.client.get(self.login_url)
         self.assertTemplateUsed(response, 'login.html')
 
+    def test_login_missing_credentials(self):
+        response = self.client.post(self.login_url, {})
+        self.assertEqual(response.status_code, 200)
+        form = response.context.get('form')
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+
 
 class UserLogoutViewTest(SetUpLoggedUserMixin, TestCase):
     logout_url = reverse('logout')
