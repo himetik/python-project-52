@@ -113,17 +113,6 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
         self.assertIn("name", form.errors)
         self.assertGreater(len(form.errors["name"]), 0)
 
-    def test_create_label_with_empty_name_fails(self):
-        initial_label_count = Label.objects.count()
-        url = reverse("labels_create")
-        response = self.client.post(url, {"name": constants.EMPTY_NAME})
-        self.assertEqual(Label.objects.count(), initial_label_count)
-        form = response.context.get("form")
-        self.assertIsNotNone(form)
-        self.assertTrue(form.errors)
-        self.assertIn("name", form.errors)
-        self.assertTrue(len(form.errors["name"]) > 0)
-
     def test_create_label_with_whitespace_name(self):
         Label.objects.create(name=constants.LABEL_NAME_3)
         url = reverse("labels_create")
@@ -136,6 +125,17 @@ class LabelCreateViewTest(SetUpLoggedUserWithLabelMixin, TestCase):
                 name=constants.LABEL_NAME_3).count(),
                 1
             )
+        form = response.context.get("form")
+        self.assertIsNotNone(form)
+        self.assertTrue(form.errors)
+        self.assertIn("name", form.errors)
+        self.assertTrue(len(form.errors["name"]) > 0)
+
+    def test_create_label_with_empty_name_fails(self):
+        initial_label_count = Label.objects.count()
+        url = reverse("labels_create")
+        response = self.client.post(url, {"name": constants.EMPTY_NAME})
+        self.assertEqual(Label.objects.count(), initial_label_count)
         form = response.context.get("form")
         self.assertIsNotNone(form)
         self.assertTrue(form.errors)
