@@ -11,6 +11,10 @@ class IndexViewTest(TestCase):
         response = self.client.get(reverse('index'))
         self.assertTemplateUsed(response, 'index.html')
 
+    def test_index_head_request(self):
+        response = self.client.head(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+
     def test_index_page_disallows_non_get_requests(self):
         disallowed_methods = ['post', 'put', 'delete', 'patch']
         url = reverse('index')
